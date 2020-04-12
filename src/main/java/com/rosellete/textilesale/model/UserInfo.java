@@ -18,6 +18,9 @@ public class UserInfo extends Page {
     @Column(name = "depart_id")
     private String departId;//部门字符串
 
+    @Column(name = "password")
+    private String password;//密码
+
     @Column(name = "account")
     private String account;//登录名
 
@@ -77,6 +80,7 @@ public class UserInfo extends Page {
         return "UserInfo{" +
                 "id='" + id + '\'' +
                 ", departId='" + departId + '\'' +
+                ", password='" + password + '\'' +
                 ", account='" + account + '\'' +
                 ", sex=" + sex +
                 ", position='" + position + '\'' +

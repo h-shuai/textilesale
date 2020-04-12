@@ -5,6 +5,7 @@ import com.rosellete.textilesale.business.UserBusiness;
 import com.rosellete.textilesale.interfaces.UserApi;
 import com.rosellete.textilesale.model.UserInfo;
 import com.rosellete.textilesale.util.RestResponse;
+import com.rosellete.textilesale.vo.LoginReqVO;
 import com.rosellete.textilesale.vo.UserInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,21 @@ public class UserController implements UserApi {
     @Override
     public UserInfo getUserById(String id) {
         return userBusiness.getUserById(id);
+    }
+
+    @Override
+    public RestResponse login(@RequestBody Map param) {
+        return userBusiness.login(param);
+    }
+
+    @Override
+    public RestResponse info(String token) {
+        LoginReqVO data = new LoginReqVO();
+        data.getRole().add("admin");
+        data.setIntrodution("i am login in!");
+        data.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        data.setUsername("superAdmin");
+        data.setName("admin");
+        return new RestResponse(data);
     }
 }

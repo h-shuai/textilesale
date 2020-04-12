@@ -3,6 +3,7 @@ package com.rosellete.textilesale.interfaces;
 import com.rosellete.textilesale.model.UserInfo;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.UserInfoVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,4 +31,10 @@ public interface UserApi {
 
     @GetMapping(value = "/getUserById",consumes = MediaType.APPLICATION_JSON_VALUE)
     UserInfo getUserById(@RequestParam("id") String id);
+
+    @PostMapping(value = "/login",consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse login(@RequestBody Map param);
+
+    @RequestMapping("/info")
+    RestResponse info(@Param("token") String token);
 }

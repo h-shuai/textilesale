@@ -10,14 +10,14 @@ public class RestResponse<T> {
 
     public RestResponse() {
         this.msg = "SUCCESS";
-        this.code = 200;
+        this.code = 20000;
     }
 
 
     public RestResponse(T data) {
         this.data = data;
         this.msg = "SUCCESS";
-        this.code = 200;
+        this.code = 20000;
     }
 
     public RestResponse(int code, String message) {

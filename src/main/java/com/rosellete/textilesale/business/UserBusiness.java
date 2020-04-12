@@ -21,4 +21,6 @@ public interface UserBusiness {
     RestResponse updateStatus(Map param);
 
     UserInfo getUserById(String id);
+
+    RestResponse login(Map param);
 }

@@ -4,18 +4,19 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.UserBusiness;
 import com.rosellete.textilesale.model.UserInfo;
+import com.rosellete.textilesale.model.UserLinkRole;
 import com.rosellete.textilesale.service.UserService;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.UserInfoVO;
 import com.rosellete.textilesale.vo.UserLinkRoleVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,14 +46,18 @@ public class UserBusinessImpl implements UserBusiness {
         userInfoVO.setCreateTime(new Date());
         userInfoVO.setCreateUser("");
         userInfoVO.setStatus(1);
-        userService.saveUser(userInfoVO);
-        UserLinkRoleVO userLinkRole = new UserLinkRoleVO();
-        userLinkRole.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        userLinkRole.setUserId(userInfoVO.getId());
-        userLinkRole.setRoleId(userInfoVO.getRoleId());
-        userLinkRole.setStatus(1);
-        userLinkRole.setCreateTime(new Date());
-        userLinkRole.setCreateUser("");
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(userInfo,userInfoVO);
+        userService.saveUser(userInfo);
+        UserLinkRoleVO userLinkRoleVO = new UserLinkRoleVO();
+        userLinkRoleVO.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        userLinkRoleVO.setUserId(userInfoVO.getId());
+        userLinkRoleVO.setRoleId(userInfoVO.getRoleId());
+        userLinkRoleVO.setStatus(1);
+        userLinkRoleVO.setCreateTime(new Date());
+        userLinkRoleVO.setCreateUser("");
+        UserLinkRole userLinkRole = new UserLinkRole();
+        BeanUtils.copyProperties(userLinkRole,userLinkRoleVO);
         userService.saveUserRole(userLinkRole);
         return new RestResponse();
     }
@@ -93,12 +98,15 @@ public class UserBusinessImpl implements UserBusiness {
                 return new RestResponse(500,"手机号码已存在！");
             }
         }
-        userService.updateUser(userInfoVO);
-        UserLinkRoleVO userLinkRole = new UserLinkRoleVO();
-        userLinkRole.setUserId(userInfoVO.getId());
-        userLinkRole.setRoleId(userInfoVO.getRoleId());
-        userLinkRole.setUpdateTime(new Date());
-        userLinkRole.setUpdateUser("");
+        BeanUtils.copyProperties(userInfo,userInfoVO);
+        userService.updateUser(userInfo);
+        UserLinkRoleVO userLinkRoleVO = new UserLinkRoleVO();
+        userLinkRoleVO.setUserId(userInfoVO.getId());
+        userLinkRoleVO.setRoleId(userInfoVO.getRoleId());
+        userLinkRoleVO.setUpdateTime(new Date());
+        userLinkRoleVO.setUpdateUser("");
+        UserLinkRole userLinkRole = new UserLinkRole();
+        BeanUtils.copyProperties(userLinkRole,userLinkRoleVO);
         userService.updateUserRole(userLinkRole);
         return new RestResponse();
     }
@@ -117,5 +125,11 @@ public class UserBusinessImpl implements UserBusiness {
     @Override
     public UserInfo getUserById(String id) {
         return userService.getUserById(id);
+    }
+
+    @Override
+    public RestResponse login(Map param) {
+        Map<String,Object> result = userService.login(param);
+        return new RestResponse(Integer.parseInt(result.get("statusCode").toString()),result.get("msgText").toString(),result.get("data"));
     }
 }

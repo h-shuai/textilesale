@@ -5,13 +5,11 @@ import com.rosellete.textilesale.dto.OrganizationDTO;
 import com.rosellete.textilesale.model.Organization;
 import com.rosellete.textilesale.vo.DepartmentVO;
 import com.rosellete.textilesale.vo.Tree;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrganizationService {
@@ -45,10 +43,10 @@ public class OrganizationService {
         tree.setId(sysDept.getId());
         tree.setParentId(sysDept.getParentId());
         tree.setName(sysDept.getDepartmentName());
-        DepartmentVO departmentVO = organizationDao.getOrganizaInfoById(sysDept.getId());
-        tree.setStatus(departmentVO.getStatus());
-        tree.setUserId(departmentVO.getUserId());
-        tree.setDescription(departmentVO.getDescription());
+        Organization organization = organizationDao.getOrganizaInfoById(sysDept.getId());
+        tree.setStatus(organization.getStatus());
+        tree.setUserId(organization.getUserId());
+        tree.setDescription(organization.getDescription());
         return tree;
     }
 
@@ -61,16 +59,16 @@ public class OrganizationService {
     }
 
     public int updateDepartment(Organization organization){
-        Optional<Organization> oldOrganOpt = organizationDao.findById(organization.getId());
-        Organization oldOrgan = oldOrganOpt.orElse(organization);
-        if (StringUtils.isBlank(organization.getDepartmentName())) {
-            organization.setDepartmentName(oldOrgan.getDepartmentName());
-        }
-        return organizationDao.updateDepartment(organization);
+        Organization result = organizationDao.save(organization);
+        return result == null ? 0 : 1;
     }
 
     public int insertDepartment(Organization organization){
         Organization result = organizationDao.save(organization);
         return result == null ? 0 : 1;
+    }
+
+    public int updateStatus(String id){
+        return organizationDao.updateStatus(id);
     }
 }
