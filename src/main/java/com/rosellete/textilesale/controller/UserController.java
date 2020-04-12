@@ -73,7 +73,7 @@ public class UserController implements UserApi {
         data.setIntrodution("i am login in!");
         data.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
         data.setUsername("superAdmin");
-        data.setName("admin");
+        data.setName("系统管理员");
         return new RestResponse(data);
     }
 }
