@@ -1,15 +1,16 @@
 package com.rosellete.textilesale.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrganizationDao;
 import com.rosellete.textilesale.dto.OrganizationDTO;
 import com.rosellete.textilesale.model.Organization;
-import com.rosellete.textilesale.vo.DepartmentVO;
 import com.rosellete.textilesale.vo.Tree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrganizationService {
@@ -18,7 +19,12 @@ public class OrganizationService {
     private OrganizationDao organizationDao;
 
     public Tree<OrganizationDTO> getTreeNode(String id){
-        List<OrganizationDTO> list = organizationDao.getTreePath(id);
+        List<Map<String,Object>> treeMaps = organizationDao.getTreePath(id);
+        List<OrganizationDTO> list = new ArrayList<>();
+        for (Map<String,Object> treeMap : treeMaps){
+            OrganizationDTO organizationDTO = JSONObject.parseObject(JSONObject.toJSONString(treeMap),OrganizationDTO.class);
+            list.add(organizationDTO);
+        }
         if (list.size() == 1) {
             OrganizationDTO organizationDTO = list.get(0);
             Tree<OrganizationDTO> tree = getDeptTree(organizationDTO);
@@ -30,9 +36,10 @@ public class OrganizationService {
 
     public List<Tree<OrganizationDTO>> getChildNode(String id){
         List<Tree<OrganizationDTO>> trees = new ArrayList<>();
-        List<OrganizationDTO> sysDepts = organizationDao.getTreePathByPid(id);
-        for (OrganizationDTO organization : sysDepts){
-            Tree<OrganizationDTO> tree = getDeptTree(organization);
+        List<Map<String,Object>> maps = organizationDao.getTreePathByPid(id);
+        for (Map<String,Object> map : maps){
+            OrganizationDTO organizationDTO = JSONObject.parseObject(JSONObject.toJSONString(map),OrganizationDTO.class);
+            Tree<OrganizationDTO> tree = getDeptTree(organizationDTO);
             trees.add(tree);
         }
         return trees;
@@ -51,7 +58,13 @@ public class OrganizationService {
     }
 
     public List<OrganizationDTO> getOneNode(){
-        return organizationDao.getNodePath();
+        List<Map<String,Object>> maps = organizationDao.getNodePath();
+        List<OrganizationDTO> list = new ArrayList<>();
+        for (Map<String,Object> map : maps){
+            OrganizationDTO organizationDTO = JSONObject.parseObject(JSONObject.toJSONString(map),OrganizationDTO.class);
+            list.add(organizationDTO);
+        }
+        return list;
     }
 
     public List<Organization> getOrganizaInfoByParentId(String parentId){

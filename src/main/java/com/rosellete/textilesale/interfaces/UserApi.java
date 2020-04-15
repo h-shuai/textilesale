@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.Map;
 
 public interface UserApi {
-    @GetMapping(value = "/getList",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getList",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getUserList(@RequestBody UserInfo userInfo);
 
     @GetMapping("/getManager")
@@ -37,4 +37,7 @@ public interface UserApi {
 
     @RequestMapping("/info")
     RestResponse info(@Param("token") String token);
+
+    @PostMapping("/logout")
+    RestResponse logout();
 }

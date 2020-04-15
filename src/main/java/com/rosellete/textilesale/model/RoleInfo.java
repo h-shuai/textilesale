@@ -7,11 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "t_role_info")
 @Data
-public class RoleInfo extends Page {
+public class RoleInfo extends Page implements Serializable {
     /**
      * 角色id
      */

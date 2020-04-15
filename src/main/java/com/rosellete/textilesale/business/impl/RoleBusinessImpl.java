@@ -7,11 +7,13 @@ import com.rosellete.textilesale.model.PowerLinkRole;
 import com.rosellete.textilesale.model.RoleInfo;
 import com.rosellete.textilesale.service.PowerService;
 import com.rosellete.textilesale.service.RoleService;
+import com.rosellete.textilesale.util.NullPropertiesUtil;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.RoleInfoVO;
 import com.rosellete.textilesale.vo.RolePowerVO;
 import com.rosellete.textilesale.vo.SetPowerVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +70,9 @@ public class RoleBusinessImpl implements RoleBusiness {
         roleInfoVO.setCode(code());
         roleInfoVO.setStatus(1);
         roleInfoVO.setDescription(roleInfoVO.getDescription());
-        roleService.saveRole(roleInfoVO);
+        RoleInfo roleInfo = new RoleInfo();
+        BeanUtils.copyProperties(roleInfoVO,roleInfo);
+        roleService.saveRole(roleInfo);
         return new RestResponse();
     }
 
@@ -96,7 +100,9 @@ public class RoleBusinessImpl implements RoleBusiness {
         roleInfoVO.setUpdateTime(new Date());
         roleInfoVO.setUpdateUser("");
         roleInfoVO.setDescription(roleInfoVO.getDescription());
-        roleService.updateRole(roleInfoVO);
+        RoleInfo roleInfo = new RoleInfo();
+        BeanUtils.copyProperties(roleInfoVO,roleInfo, NullPropertiesUtil.getNullPropertyNames(roleInfoVO));
+        roleService.updateRole(roleInfo);
         return new RestResponse();
     }
 
@@ -121,10 +127,9 @@ public class RoleBusinessImpl implements RoleBusiness {
         log.info("角色设置权限删除, delResult={}",delResult);
 
         List<String> list1 = setPowerVO.getPowerList();//传进来的code
-        PowerLinkRole powerLinkRole = new PowerLinkRole();
 
         for (String string1: list1) {
-            powerLinkRole = new PowerLinkRole();
+            PowerLinkRole powerLinkRole = new PowerLinkRole();
             String powerid = powerService.powerId(string1);
             powerLinkRole.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             powerLinkRole.setCreateTime(new Date());

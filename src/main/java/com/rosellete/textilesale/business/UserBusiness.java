@@ -23,4 +23,6 @@ public interface UserBusiness {
     UserInfo getUserById(String id);
 
     RestResponse login(Map param);
+
+    RestResponse info(String token);
 }

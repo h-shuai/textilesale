@@ -1,5 +1,6 @@
 package com.rosellete.textilesale.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrganizationDao;
 import com.rosellete.textilesale.dao.PowerDao;
 import com.rosellete.textilesale.dao.UserDao;
@@ -7,10 +8,11 @@ import com.rosellete.textilesale.dao.UserRoleDao;
 import com.rosellete.textilesale.model.Organization;
 import com.rosellete.textilesale.model.UserInfo;
 import com.rosellete.textilesale.model.UserLinkRole;
-import com.rosellete.textilesale.vo.DepartmentVO;
 import com.rosellete.textilesale.vo.LoginReqVO;
+import com.rosellete.textilesale.vo.RoleVO;
 import com.rosellete.textilesale.vo.UserInfoVO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -43,7 +45,12 @@ public class UserService {
     private PowerDao powerDao;
 
     public List<UserInfoVO> getUserList(String departId, String name, String phone, Integer status) {
-        List<UserInfoVO> list =userDao.getUserList(departId,name,phone,status);
+        List<Map<String,Object>> maps = userDao.getUserList(departId,name,phone,status);
+        List<UserInfoVO> list = new ArrayList<>();
+        for (Map<String,Object> map : maps){
+            UserInfoVO userInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map),UserInfoVO.class);
+            list.add(userInfoVO);
+        }
         return list;
     }
 
@@ -60,7 +67,6 @@ public class UserService {
         return result == null ? 0 : 1;
     }
 
-
     public int updateUser(UserInfo userInfo) {
         UserInfo result = userDao.save(userInfo);
         return result == null ? 0 : 1;
@@ -73,7 +79,10 @@ public class UserService {
         return userRoleDao.userRole(userId,roleId);
     }
     public UserInfoVO getUserDetails(String userId) {
-        return userDao.getUserDetails(userId);
+        UserInfo userInfo = userDao.getUserDetails(userId);
+        UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtils.copyProperties(userInfoVO,userInfo);
+        return userInfoVO;
     }
 
     public int getUserByAccount(String accout) {
@@ -95,12 +104,21 @@ public class UserService {
     }
 
     public List<UserInfoVO> getUsersByRoleId(String roleId) {
-        List<UserInfoVO> list = userDao.getUsersByRoleId(roleId);
-        return list;
+        List<UserInfo> list = userDao.getUsersByRoleId(roleId);
+        List<UserInfoVO> returnList = new ArrayList<>();
+        for (UserInfo userInfo : list){
+            UserInfoVO userInfoVO = new UserInfoVO();
+            BeanUtils.copyProperties(userInfoVO,userInfo);
+            returnList.add(userInfoVO);
+        }
+        return returnList;
     }
 
     public UserInfoVO getUserDetailsByAccount(String account){
-        return userDao.getUserDetailsByAccount(account);
+        UserInfo userInfo = userDao.getUserDetailsByAccount(account);
+        UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtils.copyProperties(userInfoVO,userInfo);
+        return userInfoVO;
     }
 
     public Map<String, Object> login(Map param) {
@@ -163,7 +181,7 @@ public class UserService {
             }
         }
 
-        List<String> powerList = powerDao.getPowerList(userInfo.getId());
+//        List<String> powerList = powerDao.getPowerList(userInfo.getId());
 //        Map<String, Object> data = new HashMap<String, Object>();
 //        // data.put(TOKEN_KEY, token);
 //        data.put("userId", userInfo.getId());
@@ -175,7 +193,7 @@ public class UserService {
 //        data.put("deptName", organization.getDepartmentName());
         LoginReqVO data = new LoginReqVO();
         data.setUsername(userInfo.getName());
-        data.setToken("admin-token");
+        data.setToken(userInfo.getId());
 
         result.put(MAIN_DATA, data);
         result.put(STATUS_KEY, SUCCESS_CODE);
@@ -204,5 +222,15 @@ public class UserService {
             }
         }
         return resultList;
+    }
+
+    public RoleVO info(String token){
+        List<String> roleIdList = new ArrayList<>();
+        roleIdList.add(userRoleDao.getRole(token));
+        List<String> premList = powerDao.getPowerList(token);
+        RoleVO roleVO = new RoleVO();
+        roleVO.setRoles(roleIdList);
+        roleVO.setPrems(premList);
+        return roleVO;
     }
 }

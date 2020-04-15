@@ -4,10 +4,12 @@ import com.rosellete.textilesale.business.OrganizationBusiness;
 import com.rosellete.textilesale.dto.OrganizationDTO;
 import com.rosellete.textilesale.model.Organization;
 import com.rosellete.textilesale.service.OrganizationService;
+import com.rosellete.textilesale.util.NullPropertiesUtil;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.DepartmentVO;
 import com.rosellete.textilesale.vo.Tree;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -63,13 +65,8 @@ public class OrganizationBusinessImpl implements OrganizationBusiness {
         }
         try{
             Organization organiza = new Organization();
-            organiza.setId(departmentVO.getId());
-            organiza.setUpdateDate(new Date());
-            organiza.setUpdateUser("");
+            BeanUtils.copyProperties(departmentVO,organiza, NullPropertiesUtil.getNullPropertyNames(departmentVO));
             organiza.setDepartmentName(departmentVO.getName());
-            organiza.setDescription(departmentVO.getDescription());
-            organiza.setStatus(departmentVO.getStatus());
-            organiza.setUserId(departmentVO.getUserId());//部门负责人id
             organizationService.updateDepartment(organiza);
             return new RestResponse(200,"修改成功");
         }catch (Exception e){
@@ -97,14 +94,11 @@ public class OrganizationBusinessImpl implements OrganizationBusiness {
         }else{
             pathId = departmentVO.getId()+"01";
         }
+        BeanUtils.copyProperties(departmentVO,organiza);
         organiza.setId(pathId);
-        organiza.setParentId(departmentVO.getId());
+        organiza.setDepartmentName(departmentVO.getName());
         organiza.setCreateDate(new Date());
         organiza.setCreateUser("");
-        organiza.setDepartmentName(departmentVO.getName());
-        organiza.setDescription(departmentVO.getDescription());
-        organiza.setStatus(departmentVO.getStatus());
-        organiza.setUserId(departmentVO.getUserId());
         organizationService.insertDepartment(organiza);
         return new RestResponse(200,"保存成功");
     }

@@ -6,7 +6,9 @@ import com.rosellete.textilesale.business.UserBusiness;
 import com.rosellete.textilesale.model.UserInfo;
 import com.rosellete.textilesale.model.UserLinkRole;
 import com.rosellete.textilesale.service.UserService;
+import com.rosellete.textilesale.util.NullPropertiesUtil;
 import com.rosellete.textilesale.util.RestResponse;
+import com.rosellete.textilesale.vo.LoginReqVO;
 import com.rosellete.textilesale.vo.UserInfoVO;
 import com.rosellete.textilesale.vo.UserLinkRoleVO;
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +100,7 @@ public class UserBusinessImpl implements UserBusiness {
                 return new RestResponse(500,"手机号码已存在！");
             }
         }
-        BeanUtils.copyProperties(userInfo,userInfoVO);
+        BeanUtils.copyProperties(userInfo,userInfoVO, NullPropertiesUtil.getNullPropertyNames(userInfoVO));
         userService.updateUser(userInfo);
         UserLinkRoleVO userLinkRoleVO = new UserLinkRoleVO();
         userLinkRoleVO.setUserId(userInfoVO.getId());
@@ -131,5 +133,18 @@ public class UserBusinessImpl implements UserBusiness {
     public RestResponse login(Map param) {
         Map<String,Object> result = userService.login(param);
         return new RestResponse(Integer.parseInt(result.get("statusCode").toString()),result.get("msgText").toString(),result.get("data"));
+    }
+
+    @Override
+    public RestResponse info(String token) {
+        UserInfo userInfo = userService.getUserById(token);
+        LoginReqVO loginReqVO = new LoginReqVO();
+        loginReqVO.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        loginReqVO.setIntrodution("");
+        loginReqVO.setName(userInfo.getName());
+        loginReqVO.setUsername(userInfo.getAccount());
+        loginReqVO.setRoles(userService.info(token));
+        loginReqVO.setToken(token);
+        return new RestResponse(loginReqVO);
     }
 }

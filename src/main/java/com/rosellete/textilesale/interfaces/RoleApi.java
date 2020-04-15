@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 public interface RoleApi {
 
-    @GetMapping(value = "/getList",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getList",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getRoleList(@RequestBody RoleInfo roleInfo);
 
     @GetMapping("/queryRole")
