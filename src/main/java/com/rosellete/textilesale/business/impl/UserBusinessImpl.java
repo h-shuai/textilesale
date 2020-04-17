@@ -45,11 +45,12 @@ public class UserBusinessImpl implements UserBusiness {
         RestResponse x = verifiparam(userInfoVO,1);
         if (x != null) return x;
         userInfoVO.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        userInfoVO.setPassword("000000");
         userInfoVO.setCreateTime(new Date());
         userInfoVO.setCreateUser("");
         userInfoVO.setStatus(1);
         UserInfo userInfo = new UserInfo();
-        BeanUtils.copyProperties(userInfo,userInfoVO);
+        BeanUtils.copyProperties(userInfoVO,userInfo);
         userService.saveUser(userInfo);
         UserLinkRoleVO userLinkRoleVO = new UserLinkRoleVO();
         userLinkRoleVO.setId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -59,7 +60,7 @@ public class UserBusinessImpl implements UserBusiness {
         userLinkRoleVO.setCreateTime(new Date());
         userLinkRoleVO.setCreateUser("");
         UserLinkRole userLinkRole = new UserLinkRole();
-        BeanUtils.copyProperties(userLinkRole,userLinkRoleVO);
+        BeanUtils.copyProperties(userLinkRoleVO,userLinkRole);
         userService.saveUserRole(userLinkRole);
         return new RestResponse();
     }
@@ -91,7 +92,7 @@ public class UserBusinessImpl implements UserBusiness {
     public RestResponse updateUser(UserInfoVO userInfoVO) {
         userInfoVO.setUpdateTime(new Date());
         userInfoVO.setUpdateUser("");
-        UserInfo userInfo = userService.getUserDetails(userInfoVO.getId());
+        UserInfo userInfo = userService.getUserById(userInfoVO.getId());
         String phone = userInfoVO.getPhone();
         if(!userInfo.getPhone().equals(phone)){
             //如果修改手机号,那么需要校验手机号是否已经存在
@@ -100,7 +101,7 @@ public class UserBusinessImpl implements UserBusiness {
                 return new RestResponse(500,"手机号码已存在！");
             }
         }
-        BeanUtils.copyProperties(userInfo,userInfoVO, NullPropertiesUtil.getNullPropertyNames(userInfoVO));
+        BeanUtils.copyProperties(userInfoVO,userInfo, NullPropertiesUtil.getNullPropertyNames(userInfoVO));
         userService.updateUser(userInfo);
         UserLinkRoleVO userLinkRoleVO = new UserLinkRoleVO();
         userLinkRoleVO.setUserId(userInfoVO.getId());
@@ -108,7 +109,7 @@ public class UserBusinessImpl implements UserBusiness {
         userLinkRoleVO.setUpdateTime(new Date());
         userLinkRoleVO.setUpdateUser("");
         UserLinkRole userLinkRole = new UserLinkRole();
-        BeanUtils.copyProperties(userLinkRole,userLinkRoleVO);
+        BeanUtils.copyProperties(userLinkRoleVO,userLinkRole);
         userService.updateUserRole(userLinkRole);
         return new RestResponse();
     }
@@ -121,7 +122,8 @@ public class UserBusinessImpl implements UserBusiness {
 
     @Override
     public RestResponse updateStatus(Map param) {
-        return new RestResponse(userService.updateStatus(param));
+        userService.updateStatus(param);
+        return new RestResponse();
     }
 
     @Override

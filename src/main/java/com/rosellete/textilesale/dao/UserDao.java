@@ -2,8 +2,10 @@ package com.rosellete.textilesale.dao;
 
 import com.rosellete.textilesale.model.UserInfo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -42,4 +44,9 @@ public interface UserDao extends BaseRepository<UserInfo,String>{
 
     @Query(value = "SELECT u.* FROM t_user_info u where u.id = ?1",nativeQuery = true)
     UserInfo getUserById(@Param("id") String id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update t_user_info set status=?1,update_time=now(),update_user='' where id=?2",nativeQuery = true)
+    int updateStatus(@Param("status") Integer status,@Param("id") String id);
 }

@@ -38,7 +38,7 @@ public class UserLinkRole implements Serializable {
     * 有效状态
     */
     @Column(name = "status")
-    private String status;
+    private Integer status;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Temporal(TemporalType.TIMESTAMP)

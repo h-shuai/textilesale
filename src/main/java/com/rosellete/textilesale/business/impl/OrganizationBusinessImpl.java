@@ -64,11 +64,12 @@ public class OrganizationBusinessImpl implements OrganizationBusiness {
             return new RestResponse(401,"参数错误");
         }
         try{
-            Organization organiza = new Organization();
+            Organization organiza = organizationService.getInfoById(departmentVO.getId());
             BeanUtils.copyProperties(departmentVO,organiza, NullPropertiesUtil.getNullPropertyNames(departmentVO));
             organiza.setDepartmentName(departmentVO.getName());
+            organiza.setUpdateDate(new Date());
             organizationService.updateDepartment(organiza);
-            return new RestResponse(200,"修改成功");
+            return new RestResponse();
         }catch (Exception e){
             return new RestResponse(500,"修改失败");
         }
@@ -96,16 +97,11 @@ public class OrganizationBusinessImpl implements OrganizationBusiness {
         }
         BeanUtils.copyProperties(departmentVO,organiza);
         organiza.setId(pathId);
+        organiza.setParentId(departmentVO.getId());
         organiza.setDepartmentName(departmentVO.getName());
         organiza.setCreateDate(new Date());
         organiza.setCreateUser("");
         organizationService.insertDepartment(organiza);
-        return new RestResponse(200,"保存成功");
-    }
-
-    @Override
-    public RestResponse updateStatus(String id) {
-        organizationService.updateStatus(id);
         return new RestResponse();
     }
 }

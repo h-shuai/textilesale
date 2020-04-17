@@ -29,9 +29,6 @@ public interface UserApi {
     @PostMapping(value = "/updateStatus",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse updateStatus(@RequestBody @Valid Map param);
 
-    @GetMapping(value = "/getUserById",consumes = MediaType.APPLICATION_JSON_VALUE)
-    UserInfo getUserById(@RequestParam("id") String id);
-
     @PostMapping(value = "/login",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse login(@RequestBody Map param);
 

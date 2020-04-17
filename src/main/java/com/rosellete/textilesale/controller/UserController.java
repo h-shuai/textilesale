@@ -57,11 +57,6 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public UserInfo getUserById(String id) {
-        return userBusiness.getUserById(id);
-    }
-
-    @Override
     public RestResponse login(@RequestBody Map param) {
         return userBusiness.login(param);
     }

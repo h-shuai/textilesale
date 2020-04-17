@@ -13,6 +13,4 @@ public interface OrganizationBusiness {
     RestResponse updateDepartment(DepartmentVO departmentVO);
 
     RestResponse insertDepartment(DepartmentVO departmentVO);
-
-    RestResponse updateStatus(String id);
 }

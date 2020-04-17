@@ -57,6 +57,7 @@ public class UserService {
     public List<Map<String,Object>> getManager() {
         return userDao.getManager();
     }
+
     public int saveUser(UserInfo userInfo) {
         userInfo.setPassword(DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).toLowerCase());
         UserInfo result = userDao.save(userInfo);
@@ -72,8 +73,7 @@ public class UserService {
         return result == null ? 0 : 1;
     }
     public int updateUserRole(UserLinkRole userLinkRole) {
-        UserLinkRole result = userRoleDao.save(userLinkRole);
-        return result == null ? 0 : 1;
+        return userRoleDao.updateUserRole(userLinkRole);
     }
     public int userRole(String userId,String roleId) {
         return userRoleDao.userRole(userId,roleId);
@@ -81,7 +81,7 @@ public class UserService {
     public UserInfoVO getUserDetails(String userId) {
         UserInfo userInfo = userDao.getUserDetails(userId);
         UserInfoVO userInfoVO = new UserInfoVO();
-        BeanUtils.copyProperties(userInfoVO,userInfo);
+        BeanUtils.copyProperties(userInfo,userInfoVO);
         return userInfoVO;
     }
 
@@ -96,7 +96,7 @@ public class UserService {
     }
 
     public int updateStatus(Map param) {
-        return 0;
+        return userDao.updateStatus(Integer.valueOf(param.get("status").toString()),(String)param.get("id"));
     }
 
     public UserInfo getUserById(String id) {
@@ -180,17 +180,6 @@ public class UserService {
                 return result;
             }
         }
-
-//        List<String> powerList = powerDao.getPowerList(userInfo.getId());
-//        Map<String, Object> data = new HashMap<String, Object>();
-//        // data.put(TOKEN_KEY, token);
-//        data.put("userId", userInfo.getId());
-//        data.put("account", userInfo.getAccount());
-//        data.put("userName", userInfo.getName());
-//        data.put("powerList", powerList);
-//        data.put("roleId", userRoleDao.getRole(userInfo.getId()));
-//        data.put("deptId", departId);
-//        data.put("deptName", organization.getDepartmentName());
         LoginReqVO data = new LoginReqVO();
         data.setUsername(userInfo.getName());
         data.setToken(userInfo.getId());

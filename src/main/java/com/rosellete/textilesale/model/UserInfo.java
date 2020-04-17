@@ -5,12 +5,13 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "t_user_info")
 @Data
-public class UserInfo extends Page {
+public class UserInfo extends Page implements Serializable {
     @Id
     @Column(name = "id",unique = true,nullable = false)
     private String id;//主键id

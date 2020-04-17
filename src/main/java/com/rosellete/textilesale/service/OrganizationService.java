@@ -81,7 +81,7 @@ public class OrganizationService {
         return result == null ? 0 : 1;
     }
 
-    public int updateStatus(String id){
-        return organizationDao.updateStatus(id);
+    public Organization getInfoById(String id){
+        return organizationDao.getOrganizaInfoById(id);
     }
 }

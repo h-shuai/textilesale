@@ -28,7 +28,4 @@ public interface OrganizationDao extends BaseRepository<Organization,String> {
 
     @Query(value = "SELECT d.* FROM t_department_info d",nativeQuery = true)
     List<Organization> getAllOrgList();
-
-    @Query(value = "update t_department_info set status=1 where id = ?1",nativeQuery = true)
-    int updateStatus(String id);
 }

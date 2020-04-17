@@ -36,9 +36,4 @@ public class OrganizationController implements OrganizationApi {
     public RestResponse insertDepartment(@RequestBody DepartmentVO departmentVO) {
         return organizationBusiness.insertDepartment(departmentVO);
     }
-
-    @Override
-    public RestResponse updateStatus(String id) {
-        return organizationBusiness.updateStatus(id);
-    }
 }
