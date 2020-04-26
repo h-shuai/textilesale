@@ -88,7 +88,7 @@ SELECT '20202504152455384',
        now()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
 SELECT '20202504152455384',
        CONCAT('DEF', '-', '001'),
@@ -103,7 +103,7 @@ SELECT '20202504152455384',
        NOW()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
 SELECT '20202504152455384',
        CONCAT('DEF', '-', '002'),

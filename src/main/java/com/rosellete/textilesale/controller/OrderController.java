@@ -3,11 +3,9 @@ package com.rosellete.textilesale.controller;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
 import com.rosellete.textilesale.interfaces.OrderApi;
+import com.rosellete.textilesale.model.OrderStockDetailInfo;
 import com.rosellete.textilesale.util.RestResponse;
-import com.rosellete.textilesale.vo.OrderDetailInfoVO;
-import com.rosellete.textilesale.vo.OrderInfoVO;
-import com.rosellete.textilesale.vo.OrderSaveVO;
-import com.rosellete.textilesale.vo.OrderStockDetailInfoVO;
+import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -86,5 +85,32 @@ public class OrderController implements OrderApi {
             log.error("保存订单数据失败", orderSaveVO, e);
         }
         return response;
+    }
+
+    @Override
+    public RestResponse updateOrder(@Valid OrderSaveVO orderSaveVO) {
+        RestResponse response = new RestResponse();
+        try {
+            orderBusiness.updateOrder(orderSaveVO);
+        } catch (Exception e) {
+            response.setCode(999);
+            response.setMsg("系统内部错误，请稍后重试");
+            log.error("保存订单数据失败", orderSaveVO, e);
+        }
+        return response;
+    }
+
+    @Override
+    public RestResponse saveOrderStockDetail(@Valid OrderStockSaveVO orderStockSaveVO) {
+        RestResponse response = new RestResponse();
+        try {
+            orderBusiness.saveOrderStockDetail(orderStockSaveVO);
+        } catch (Exception e) {
+            response.setCode(999);
+            response.setMsg("系统内部错误，请稍后重试");
+            log.error("保存订单数据失败", orderStockSaveVO, e);
+        }
+        return response;
+
     }
 }

@@ -35,4 +35,8 @@ public class OrderInfoService {
     public void saveOrderInfo(OrderInfo orderInfo) {
         orderInfoDao.save(orderInfo);
     }
+
+    public void updateOrderInfo(String orderNo,Double sumAmount,String updater) {
+        orderInfoDao.updateAmount(orderNo,sumAmount,updater);
+    }
 }
