@@ -1,16 +1,23 @@
 package com.rosellete.textilesale.business;
 
 import com.github.pagehelper.PageInfo;
+import com.rosellete.textilesale.vo.OrderDetailInfoVO;
 import com.rosellete.textilesale.vo.OrderInfoVO;
+import com.rosellete.textilesale.vo.OrderSaveVO;
+import com.rosellete.textilesale.vo.OrderStockDetailInfoVO;
 
 public interface OrderBusiness {
     PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO);
 
-    OrderInfoVO getOrderDetailInfo(String orderNo);
+    PageInfo<OrderDetailInfoVO> getOrderStockDetailInfo(String orderNo);
 
-    OrderInfoVO getOrderDetailInfo(String orderNo,String productType);
+    PageInfo<OrderStockDetailInfoVO> getOrderStockDetailInfo(String orderNo, String productType);
 
-    OrderInfoVO getOrderStockDetailInfo(String orderNo);
+    void confirmOrderStock(String orderNo);
 
-    OrderInfoVO getOrderStockDetailInfo(String orderNo,String productType);
+    void orderRestock(String orderNo);
+
+    PageInfo<OrderDetailInfoVO> getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO);
+
+    void saveOrder(OrderSaveVO orderSaveVO);
 }

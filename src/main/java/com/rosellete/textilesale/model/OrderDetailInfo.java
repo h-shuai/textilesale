@@ -19,8 +19,9 @@ public class OrderDetailInfo extends Page implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "id", nullable = false, length = 50)
-    private String id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, length = 30)
+    private Long id;
 
     @Column(name = "order_no", nullable = false, length = 30)
     private String orderNo;

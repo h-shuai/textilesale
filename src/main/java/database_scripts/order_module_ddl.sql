@@ -30,7 +30,7 @@ CREATE TABLE t_order_info
 
 CREATE TABLE t_order_detail_info
 (
-    id             varchar(50)  NOT NULL COMMENT '主键',
+    id             bigint  NOT NULL auto_increment COMMENT '主键',
     order_no       varchar(30)  NOT NULL COMMENT '订单编号',
     product_type   varchar(10)  NOT NULL COMMENT '产品型号',
     unit_price     double       NOT NULL COMMENT '单价(元/米)',
@@ -48,7 +48,7 @@ CREATE TABLE t_order_detail_info
 
 CREATE TABLE t_order_stock_detail_info
 (
-    id           varchar(50)              NOT NULL COMMENT '主键',
+    id           bigint  NOT NULL auto_increment COMMENT '主键',
     order_no     varchar(30)              NOT NULL COMMENT '订单编号',
     product_type varchar(10)              NOT NULL COMMENT '产品型号',
     stock_no     smallint                 NOT NULL COMMENT '货物序号',

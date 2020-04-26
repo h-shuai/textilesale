@@ -1,15 +1,23 @@
 package com.rosellete.textilesale.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
 import com.rosellete.textilesale.interfaces.OrderApi;
 import com.rosellete.textilesale.util.RestResponse;
+import com.rosellete.textilesale.vo.OrderDetailInfoVO;
 import com.rosellete.textilesale.vo.OrderInfoVO;
-import org.apache.ibatis.annotations.Param;
+import com.rosellete.textilesale.vo.OrderSaveVO;
+import com.rosellete.textilesale.vo.OrderStockDetailInfoVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/order")
 public class OrderController implements OrderApi {
@@ -24,20 +32,59 @@ public class OrderController implements OrderApi {
 
     @Override
     public RestResponse getOrderDetailInfo(@RequestParam("orderNo") String orderNo) {
-        OrderInfoVO orderInfo = orderBusiness.getOrderDetailInfo(orderNo);
-        return new RestResponse(JSONObject.toJSONString(orderInfo));
+        PageInfo<OrderDetailInfoVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo);
+        return new RestResponse(pageInfo);
     }
 
     @Override
-    public RestResponse getOrderStockDetailInfoByOrderNo(@RequestBody String orderNo) {
-        OrderInfoVO orderInfo = orderBusiness.getOrderStockDetailInfo(orderNo);
-        return new RestResponse(orderInfo);
+    public RestResponse confirmOrderStock(@RequestParam("orderNo") String orderNo) {
+        RestResponse response = new RestResponse();
+        try {
+            orderBusiness.confirmOrderStock(orderNo);
+        } catch (Exception e) {
+            response.setCode(999);
+            response.setMsg("系统内部错误，请稍后重试");
+            log.error("订单{}备货完成确认失败", orderNo, e);
+        }
+        return response;
     }
 
     @Override
-    public RestResponse getOrderStockDetailInfoByOrderNoAndProductType(@RequestBody String orderNo, @RequestBody String productType) {
-        OrderInfoVO orderInfo = orderBusiness.getOrderStockDetailInfo(orderNo,productType);
-        return new RestResponse(orderInfo);
+    public RestResponse orderRestock(@RequestParam("orderNo") String orderNo) {
+        RestResponse response = new RestResponse();
+        try {
+            orderBusiness.orderRestock(orderNo);
+        } catch (Exception e) {
+            response.setCode(999);
+            response.setMsg("系统内部错误，请稍后重试");
+            log.error("订单{}重新备货失败", orderNo, e);
+        }
+        return response;
     }
 
+    @Override
+    public RestResponse getOrderStockDetailInfo(String orderNo, String productType) {
+        PageInfo<OrderStockDetailInfoVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo,productType);
+        return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public RestResponse getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO) {
+        PageInfo<OrderDetailInfoVO> pageInfo = orderBusiness.getOrderDetailList(orderDetailInfoVO);
+        return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public RestResponse saveOrder(@RequestBody @Valid OrderSaveVO orderSaveVO) {
+
+        RestResponse response = new RestResponse();
+        try {
+            orderBusiness.saveOrder(orderSaveVO);
+        } catch (Exception e) {
+            response.setCode(999);
+            response.setMsg("系统内部错误，请稍后重试");
+            log.error("保存订单数据失败", orderSaveVO, e);
+        }
+        return response;
+    }
 }

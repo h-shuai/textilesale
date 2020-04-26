@@ -29,10 +29,9 @@ SELECT '20202504151603979',
        now()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504151603979', '001'),
-       '20202504151603979',
+SELECT '20202504151603979',
        CONCAT('ABC', '-', '001'),
        10,
        400,
@@ -45,10 +44,9 @@ SELECT CONCAT('20202504151603979', '001'),
        NOW()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504151603979', '002'),
-       '20202504151603979',
+SELECT '20202504151603979',
        CONCAT('ABC', '-', '002'),
        10,
        600,
@@ -92,8 +90,7 @@ FROM DUAL;
 
 insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504152455384', '001'),
-       '20202504152455384',
+SELECT '20202504152455384',
        CONCAT('DEF', '-', '001'),
        20,
        400,
@@ -108,8 +105,7 @@ FROM DUAL;
 
 insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504152455384', '002'),
-       '20202504152455384',
+SELECT '20202504152455384',
        CONCAT('DEF', '-', '002'),
        20,
        600,
@@ -151,10 +147,9 @@ SELECT '20202504152731617',
        now()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504152731617', '001'),
-       '20202504152731617',
+SELECT '20202504152731617',
        CONCAT('ASD', '-', '001'),
        10,
        1000,
@@ -167,10 +162,9 @@ SELECT CONCAT('20202504152731617', '001'),
        NOW()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504152731617', '002'),
-       '20202504152731617',
+SELECT '20202504152731617',
        CONCAT('ASD', '-', '002'),
        20,
        500,
@@ -183,10 +177,9 @@ SELECT CONCAT('20202504152731617', '002'),
        NOW()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504152731617', '003'),
-       '20202504152731617',
+SELECT '20202504152731617',
        CONCAT('ASD', '-', '003'),
        50,
        200,
@@ -200,11 +193,10 @@ SELECT CONCAT('20202504152731617', '003'),
 FROM DUAL;
 
 
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504152731617', '002', '001'),
-       '20202504152731617',
+SELECT '20202504152731617',
        CONCAT('ASD', '-', '002'),
        1,
        300,
@@ -215,11 +207,10 @@ SELECT CONCAT('20202504152731617', '002', '001'),
        NOW()
 FROM DUAL;
 
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504152731617', '003', '001'),
-       '20202504152731617',
+SELECT '20202504152731617',
        CONCAT('ASD', '-', '003'),
        1,
        100,
@@ -229,11 +220,10 @@ SELECT CONCAT('20202504152731617', '003', '001'),
        NOW(),
        NOW()
 FROM DUAL;
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504152731617', '003', '002'),
-       '20202504152731617',
+SELECT '20202504152731617',
        CONCAT('ASD', '-', '003'),
        2,
        100,
@@ -273,10 +263,9 @@ SELECT '20202504153726525',
        now()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504153726525', '001'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '001'),
        20,
        1000,
@@ -289,10 +278,9 @@ SELECT CONCAT('20202504153726525', '001'),
        NOW()
 FROM DUAL;
 
-insert into t_order_detail_info(id, order_no, product_type, unit_price, product_length, amount, extra_crafts,
+insert into t_order_detail_info(order_no, product_type, unit_price, product_length, amount, extra_crafts,
                                 stock_status, create_user, update_user, create_date, update_date)
-SELECT CONCAT('20202504153726525', '002'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '002'),
        40,
        500,
@@ -306,11 +294,10 @@ SELECT CONCAT('20202504153726525', '002'),
 FROM DUAL;
 
 
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504153726525', '001', '001'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '001'),
        1,
        100,
@@ -321,11 +308,10 @@ SELECT CONCAT('20202504153726525', '001', '001'),
        NOW()
 FROM DUAL;
 
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504153726525', '001', '002'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '001'),
        2,
        200,
@@ -336,11 +322,10 @@ SELECT CONCAT('20202504153726525', '001', '002'),
        NOW()
 FROM DUAL;
 
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504153726525', '001', '003'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '001'),
        3,
        300,
@@ -351,11 +336,10 @@ SELECT CONCAT('20202504153726525', '001', '003'),
        NOW()
 FROM DUAL;
 
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504153726525', '001', '004'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '001'),
        4,
        400,
@@ -366,11 +350,10 @@ SELECT CONCAT('20202504153726525', '001', '004'),
        NOW()
 FROM DUAL;
 
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504153726525', '002', '001'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '002'),
        1,
        300,
@@ -380,11 +363,10 @@ SELECT CONCAT('20202504153726525', '002', '001'),
        NOW(),
        NOW()
 FROM DUAL;
-INSERT INTO t_order_stock_detail_info(ID, ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
+INSERT INTO t_order_stock_detail_info(ORDER_NO, PRODUCT_TYPE, STOCK_NO, STOCK_LENGTH, status, CREATE_USER,
                                       UPDATE_USER,
                                       CREATE_DATE, UPDATE_DATE)
-SELECT CONCAT('20202504153726525', '002', '002'),
-       '20202504153726525',
+SELECT '20202504153726525',
        CONCAT('QWE', '-', '002'),
        2,
        200,

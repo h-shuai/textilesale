@@ -9,6 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("订单测试用例")
 @SpringBootTest
@@ -31,5 +35,16 @@ class OrderBusinessTest {
         PageInfo<OrderInfoVO> orderList = orderBusiness.getOrderList(orderInfoVO);
         System.out.println("orderList = " + orderList);
         orderList.getList().stream().forEach(e -> System.out.println("OrderNo="+e.getOrderNo() +"\tCustomerName = " + e.getCustomerName()));
+    }
+
+    @Test
+    void generateOrderNo(){
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("LocalDateTime = " + now);
+        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
+        System.out.println("now.format(dateTimeFormatter) = " + now.format(dateTimeFormatter));
+        System.out.println("nanoTime = " + System.nanoTime());
+        System.out.println("currentTimeMillis = " + System.currentTimeMillis());
+
     }
 }
