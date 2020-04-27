@@ -12,10 +12,7 @@ import com.rosellete.textilesale.service.OrderDetailInfoService;
 import com.rosellete.textilesale.service.OrderInfoService;
 import com.rosellete.textilesale.service.OrderStockDetailInfoService;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
-import com.rosellete.textilesale.vo.OrderDetailInfoVO;
-import com.rosellete.textilesale.vo.OrderInfoVO;
-import com.rosellete.textilesale.vo.OrderSaveVO;
-import com.rosellete.textilesale.vo.OrderStockDetailInfoVO;
+import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,13 +133,13 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Override
     public void saveOrder(OrderSaveVO orderSaveVO) {
         String[] nullPropertyNames = NullPropertiesUtil.getNullPropertyNames(orderSaveVO);
-        OrderInfo orderInfo=new OrderInfo();
-        BeanUtils.copyProperties(orderSaveVO,orderInfo,nullPropertyNames);
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
         List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList();
-        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
-        String orderNo=  LocalDateTime.now().format(dateTimeFormatter);
-        String creater="admin";
-        Date now=new Date();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
+        String orderNo = LocalDateTime.now().format(dateTimeFormatter);
+        String creater = "admin";
+        Date now = new Date();
 
         List<OrderDetailInfo> collect = orderDetailList.stream().map(e -> {
             e.setOrderNo(orderNo);
@@ -163,5 +160,46 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderInfo.setUpdateDate(now);
         orderInfoService.saveOrderInfo(orderInfo);
         orderDetailInfoService.saveOrderDetailInfo(collect);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @Override
+    public void updateOrder(OrderSaveVO orderSaveVO) {
+        String[] nullPropertyNames = NullPropertiesUtil.getNullPropertyNames(orderSaveVO);
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
+        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList();
+        String orderNo = orderInfo.getOrderNo();
+        String creater = "admin";
+        Date now = new Date();
+
+        List<OrderDetailInfo> collect = orderDetailList.stream().map(e -> {
+            e.setOrderNo(orderNo);
+            e.setUpdateUser(creater);
+            e.setUpdateDate(now);
+            e.setStockStatus("0");
+            return e;
+        }).collect(Collectors.toList());
+        double sumAmount = orderDetailList.stream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
+        orderInfoService.updateOrderInfo(orderNo, sumAmount, creater);
+        orderDetailInfoService.saveOrderDetailInfo(collect);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @Override
+    public void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO) {
+        List<OrderStockDetailInfo> orderStockingArrays = orderStockSaveVO.getOrderStockingArrays();
+        String updater = "admin";
+        Date now = new Date();
+        List<OrderStockDetailInfo> collect = orderStockingArrays.stream().map(e -> {
+            e.setCreateDate(now);
+            e.setCreateUser(updater);
+            e.setStatus("0");
+            e.setUpdateDate(now);
+            e.setUpdateUser(updater);
+            return e;
+        }).collect(Collectors.toList());
+        orderStockDetailInfoService.deleteOrderStockDetail(orderStockSaveVO.getOrderNo(),orderStockSaveVO.getProductType());
+        orderStockDetailInfoService.saveOrderStockDetail(collect);
     }
 }

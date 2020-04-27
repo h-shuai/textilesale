@@ -17,4 +17,14 @@ public class OrderStockDetailInfoService {
         return orderStockDetailInfoDao.findAllByOrderNoAndProductType(orderNo,productType);
     }
 
+    public void deleteOrderStockDetail(String orderNo, String productType) {
+        OrderStockDetailInfo orderStockDetailInfo = new OrderStockDetailInfo();
+        orderStockDetailInfo.setOrderNo(orderNo);
+        orderStockDetailInfo.setProductType(productType);
+        orderStockDetailInfoDao.delete(orderStockDetailInfo);
+    }
+
+    public void saveOrderStockDetail(List<OrderStockDetailInfo> orderStockDetailInfoList) {
+        orderStockDetailInfoDao.saveAll(orderStockDetailInfoList);
+    }
 }

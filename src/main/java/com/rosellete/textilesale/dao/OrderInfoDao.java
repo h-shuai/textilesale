@@ -25,4 +25,9 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
     @Modifying
     @Query(value = "update t_order_info t set t.order_status = ?2, t.update_user = ?3, t.update_date = NOW() where t.order_no = ?1", nativeQuery = true)
     int updateOrderStatus(@Param("orderNo") String orderNo, @Param("orderStatus") String orderStatus, @Param("updateUser") String updateUser);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update t_order_info t set t.order_amount = ?2, t.update_user = ?3, t.update_date = NOW() where t.order_no = ?1", nativeQuery = true)
+    int updateAmount(@Param("orderNo")String orderNo, @Param("amount")Double amount, String updater);
 }

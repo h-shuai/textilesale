@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TextilesaleApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("jasypt.encryptor.password","jasypt");
 		SpringApplication.run(TextilesaleApplication.class, args);
 	}
 

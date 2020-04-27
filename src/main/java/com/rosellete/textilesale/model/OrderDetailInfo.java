@@ -38,7 +38,6 @@ public class OrderDetailInfo extends Page implements Serializable {
     @Column(name = "amount", nullable = false, scale = 16, precision = 2)
     private Double amount;
 
-
     @Column(name = "extra_crafts", length = 1)
     private String extraCrafts;
 
