@@ -56,7 +56,7 @@ public class OrderController implements OrderApi {
         } catch (Exception e) {
             response.setCode(999);
             response.setMsg("系统内部错误，请稍后重试");
-            log.error("订单{}重新备货失败", orderNo, e);
+            log.error("订单{}提交重新备货失败", orderNo, e);
         }
         return response;
     }
@@ -82,7 +82,7 @@ public class OrderController implements OrderApi {
         } catch (Exception e) {
             response.setCode(999);
             response.setMsg("系统内部错误，请稍后重试");
-            log.error("保存订单数据失败", orderSaveVO, e);
+            log.error("保存订单数据{}失败", orderSaveVO, e);
         }
         return response;
     }
@@ -95,7 +95,7 @@ public class OrderController implements OrderApi {
         } catch (Exception e) {
             response.setCode(999);
             response.setMsg("系统内部错误，请稍后重试");
-            log.error("保存订单数据失败", orderSaveVO, e);
+            log.error("更新订单数据{}失败", orderSaveVO, e);
         }
         return response;
     }
@@ -108,7 +108,7 @@ public class OrderController implements OrderApi {
         } catch (Exception e) {
             response.setCode(999);
             response.setMsg("系统内部错误，请稍后重试");
-            log.error("保存订单数据失败", orderStockSaveVO, e);
+            log.error("保存订单备货数据{}失败", orderStockSaveVO, e);
         }
         return response;
 

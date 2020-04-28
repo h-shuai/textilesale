@@ -14,20 +14,19 @@ public class OrderDetailInfoService {
     @Autowired
     private OrderDetailInfoDao orderDetailInfoDao;
 
-    public List<OrderDetailInfo> getOrderDetailInfoByOrderNoAndProductType(String orderNo, String productType) {
+    public List<OrderDetailInfo> findOrderDetailInfoByOrderNoAndProductType(String orderNo, String productType) {
         return orderDetailInfoDao.findAllByOrderNoAndProductType(orderNo, productType);
     }
 
-    public List<OrderDetailInfo> getOrderDetailInfoByOrderNo(String orderNo) {
+    public List<OrderDetailInfo> findOrderDetailInfoByOrderNo(String orderNo) {
         return orderDetailInfoDao.findAllByOrderNo(orderNo);
     }
 
-    public List<Map<String, Object>> getOrderDetailInfo(String orderNo, String productType, String customerName, String deliveryMode, String consignmentDepartment) {
-        return orderDetailInfoDao.findByCustomerInfoAndProductType(orderNo, productType, customerName, deliveryMode, consignmentDepartment);
-    }
-
-    public List<Map<String, Object>> getOrderDetailInfo(String orderNo, String productType, String customerName, String deliveryMode, String consignmentDepartment, Date startDate, Date endDate) {
-        return orderDetailInfoDao.findByCustomerInfoAndDate(orderNo, productType, customerName, deliveryMode, consignmentDepartment, startDate, endDate);
+    public List<Map<String, Object>> findOrderDetailInfo(String orderNo, String productType, String customerName,
+                                                         String deliveryMode, String consignmentDepartment,
+                                                         Date startDate, Date endDate) {
+        return orderDetailInfoDao.findByCustomerInfoAndDate(orderNo, productType, customerName, deliveryMode,
+                consignmentDepartment, startDate, endDate);
     }
 
     public void saveOrderDetailInfo(List<OrderDetailInfo> orderDetailInfoList) {

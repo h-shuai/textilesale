@@ -12,7 +12,7 @@ import javax.validation.Valid;
 
 public interface OrderApi {
     @PostMapping(value = "/queryOrderList", consumes = MediaType.APPLICATION_JSON_VALUE)
-    RestResponse getOrderList(@RequestBody OrderInfoVO orderInfoVO);
+    RestResponse getOrderList(@RequestBody @Valid OrderInfoVO orderInfoVO);
 
     @GetMapping(path = "/queryOrderDetail")
     RestResponse getOrderDetailInfo(@RequestParam("orderNo") String orderNo);
@@ -27,7 +27,7 @@ public interface OrderApi {
     RestResponse getOrderStockDetailInfo(@RequestParam("orderNo") String orderNo,@RequestParam("productType") String productType);
 
     @PostMapping(value = "/queryOrderDetailList", consumes = MediaType.APPLICATION_JSON_VALUE)
-    RestResponse getOrderDetailList(@RequestBody OrderDetailInfoVO orderDetailInfoVO);
+    RestResponse getOrderDetailList(@RequestBody @Valid OrderDetailInfoVO orderDetailInfoVO);
 
     @PostMapping(value = "/saveOrder",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse saveOrder(@RequestBody @Valid OrderSaveVO orderSaveVO);
