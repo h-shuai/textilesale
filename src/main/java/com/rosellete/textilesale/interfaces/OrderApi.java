@@ -1,5 +1,6 @@
 package com.rosellete.textilesale.interfaces;
 
+import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.OrderDetailInfoVO;
 import com.rosellete.textilesale.vo.OrderInfoVO;
@@ -37,4 +38,7 @@ public interface OrderApi {
 
     @PostMapping(value = "/saveOrderStockDetail",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse saveOrderStockDetail(@RequestBody @Valid OrderStockSaveVO orderStockSaveVO);
+
+    @PostMapping(value = "/getWaitPackOrderList",consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse getWaitPackOrderList(@RequestBody OrderInfo orderInfo);
 }

@@ -12,4 +12,6 @@ public class OrderInfoVO extends OrderInfo {
     private Date startDate;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
+
+    private String productLength;
 }

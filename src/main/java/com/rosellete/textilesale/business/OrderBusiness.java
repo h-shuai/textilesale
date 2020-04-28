@@ -1,6 +1,7 @@
 package com.rosellete.textilesale.business;
 
 import com.github.pagehelper.PageInfo;
+import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.vo.*;
 
 public interface OrderBusiness {
@@ -21,4 +22,6 @@ public interface OrderBusiness {
     void updateOrder(OrderSaveVO orderSaveVO);
 
     void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO);
+
+    PageInfo<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo);
 }

@@ -3,6 +3,7 @@ package com.rosellete.textilesale.controller;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
 import com.rosellete.textilesale.interfaces.OrderApi;
+import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.model.OrderStockDetailInfo;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.*;
@@ -112,5 +113,10 @@ public class OrderController implements OrderApi {
         }
         return response;
 
+    }
+
+    @Override
+    public RestResponse getWaitPackOrderList(OrderInfo orderInfo) {
+        return new RestResponse(orderBusiness.getWaitPackOrderList(orderInfo));
     }
 }

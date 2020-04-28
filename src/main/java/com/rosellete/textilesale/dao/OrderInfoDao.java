@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
@@ -30,4 +31,7 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
     @Modifying
     @Query(value = "update t_order_info t set t.order_amount = ?2, t.update_user = ?3, t.update_date = NOW() where t.order_no = ?1", nativeQuery = true)
     int updateAmount(@Param("orderNo")String orderNo, @Param("amount")Double amount, String updater);
+
+    @Query(value = "select a.order_no orderNo,a.customer_name customerName,sum(b.product_length) productLength from t_order_info a,t_order_detail_info b where a.order_status='1' and a.order_no=b.order_no and IF(?1 is not null, a.order_no=?1, 1=1) and IF(?2 is not null, a.customer_name like CONCAT('%', ?2, '%'), 1=1) group by a.order_no,a.customer_name order by a.order_date desc", nativeQuery = true)
+    List<Map<String,Object>> getWaitPackOrderList(@Param("orderNo") String OrderNo, @Param("customerName") String customerName);
 }

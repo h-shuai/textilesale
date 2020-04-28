@@ -1,13 +1,13 @@
 package com.rosellete.textilesale.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrderInfoDao;
 import com.rosellete.textilesale.model.OrderInfo;
+import com.rosellete.textilesale.vo.OrderInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderInfoService {
@@ -38,5 +38,15 @@ public class OrderInfoService {
 
     public void updateOrderInfo(String orderNo,Double sumAmount,String updater) {
         orderInfoDao.updateAmount(orderNo,sumAmount,updater);
+    }
+
+    public List<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo){
+        List<Map<String,Object>> maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(),orderInfo.getCustomerName());
+        List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
+        for (Map<String,Object> map : maps){
+            OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map),OrderInfoVO.class);
+            orderInfoVOList.add(orderInfoVO);
+        }
+        return orderInfoVOList;
     }
 }

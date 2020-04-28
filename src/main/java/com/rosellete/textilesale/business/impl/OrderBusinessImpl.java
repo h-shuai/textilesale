@@ -202,4 +202,10 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderStockDetailInfoService.deleteOrderStockDetail(orderStockSaveVO.getOrderNo(),orderStockSaveVO.getProductType());
         orderStockDetailInfoService.saveOrderStockDetail(collect);
     }
+
+    @Override
+    public PageInfo<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo) {
+        PageHelper.startPage(orderInfo.getPageNum(),orderInfo.getPageSize());
+        return new PageInfo<>(orderInfoService.getWaitPackOrderList(orderInfo));
+    }
 }
