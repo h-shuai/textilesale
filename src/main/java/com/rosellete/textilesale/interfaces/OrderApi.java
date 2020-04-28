@@ -41,4 +41,10 @@ public interface OrderApi {
 
     @PostMapping(value = "/getWaitPackOrderList",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getWaitPackOrderList(@RequestBody OrderInfo orderInfo);
+
+    @RequestMapping("/getTotalCount")
+    RestResponse getTotalCount(@RequestParam("orderNo") String orderNo);
+
+    @RequestMapping("/getPieceList")
+    RestResponse getPieceList(@RequestParam("orderNo") String orderNo);
 }

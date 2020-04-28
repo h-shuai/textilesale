@@ -27,4 +27,8 @@ public class OrderStockDetailInfoService {
     public void saveOrderStockDetail(List<OrderStockDetailInfo> orderStockDetailInfoList) {
         orderStockDetailInfoDao.saveAll(orderStockDetailInfoList);
     }
+
+    public List<String> getPieceList(String orderNo,String productType){
+        return orderStockDetailInfoDao.getPieceList(orderNo,productType);
+    }
 }

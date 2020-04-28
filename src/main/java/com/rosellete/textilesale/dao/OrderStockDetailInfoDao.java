@@ -13,4 +13,8 @@ public interface OrderStockDetailInfoDao extends BaseRepository<OrderStockDetail
             nativeQuery = true)
     List<OrderStockDetailInfo> findAllByOrderNoAndProductType(@Param("orderNo") String orderNo,
                                                               @Param("productType") String productType);
+
+    @Query(value = "SELECT t.stock_length FROM t_order_stock_detail_info t where t.order_no = ?1 and t.product_type=?2 and t.status='0'",
+            nativeQuery = true)
+    List<String> getPieceList(@Param("orderNo") String orderNo, @Param("productType") String productType);
 }

@@ -4,6 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.vo.*;
 
+import java.util.List;
+import java.util.Map;
+
 public interface OrderBusiness {
     PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO);
 
@@ -24,4 +27,8 @@ public interface OrderBusiness {
     void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO);
 
     PageInfo<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo);
+
+    Map<String,Object> getTotalCount(String orderNo);
+
+    List<PackInfoVO> getPieceList(String orderNo);
 }

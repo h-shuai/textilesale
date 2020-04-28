@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrderInfoDao;
 import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.vo.OrderInfoVO;
+import com.rosellete.textilesale.vo.PackInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,5 +46,22 @@ public class OrderInfoService {
             orderInfoVOList.add(orderInfoVO);
         }
         return orderInfoVOList;
+    }
+
+    public Map<String,Object> getTotalCount(String orderNo){
+        return orderInfoDao.getTotalCount(orderNo);
+    }
+
+    public List<PackInfoVO> getWaitPieceList(String orderNo){
+        List<PackInfoVO> returnList = new ArrayList<>();
+        List<Map<String,Object>> pieceList = orderInfoDao.getWaitPieceList(orderNo);
+        for (Map<String,Object> map : pieceList){
+            PackInfoVO packInfoVO = new PackInfoVO();
+            packInfoVO.setPicurl((String)map.get("picurl"));
+            packInfoVO.setColthModel((String)map.get("colthModel"));
+            packInfoVO.setCheckSelected(new String[0]);
+            returnList.add(packInfoVO);
+        }
+        return returnList;
     }
 }

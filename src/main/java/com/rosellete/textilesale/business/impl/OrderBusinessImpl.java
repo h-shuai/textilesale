@@ -212,4 +212,22 @@ public class OrderBusinessImpl implements OrderBusiness {
         PageHelper.startPage(orderInfo.getPageNum(),orderInfo.getPageSize());
         return new PageInfo<>(orderInfoService.getWaitPackOrderList(orderInfo));
     }
+
+    @Override
+    public Map<String, Object> getTotalCount(String orderNo) {
+        return orderInfoService.getTotalCount(orderNo);
+    }
+
+    @Override
+    public List<PackInfoVO> getPieceList(String orderNo) {
+        List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(orderNo);
+        List<String> stockDetailInfoList = null;
+        String[] pieceArr = null;
+        for (PackInfoVO packInfoVO : returnList){
+            stockDetailInfoList = orderStockDetailInfoService.getPieceList(orderNo,packInfoVO.getColthModel());
+            pieceArr = stockDetailInfoList.toArray(new String[stockDetailInfoList.size()]);
+            packInfoVO.setPieceOptions(pieceArr);
+        }
+        return returnList;
+    }
 }
