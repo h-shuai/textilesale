@@ -22,34 +22,34 @@ CREATE TABLE t_order_info
     deliverer_date         datetime     DEFAULT NULL COMMENT '发货时间',
     create_user            varchar(100) DEFAULT NULL COMMENT '创建人',
     update_user            varchar(100) DEFAULT NULL COMMENT '修改人',
-    create_date            datetime DEFAULT NOW() COMMENT '创建时间',
-    update_date            datetime DEFAULT NOW() COMMENT '修改时间',
+    create_date            datetime     DEFAULT NOW() COMMENT '创建时间',
+    update_date            datetime     DEFAULT NOW() COMMENT '修改时间',
     PRIMARY KEY (order_no)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 comment ='订单表';
 
 CREATE TABLE t_order_detail_info
 (
-    id             bigint  NOT NULL auto_increment COMMENT '主键',
+    id             bigint       NOT NULL auto_increment COMMENT '主键',
     order_no       varchar(30)  NOT NULL COMMENT '订单编号',
     product_type   varchar(10)  NOT NULL COMMENT '产品型号',
     unit_price     double       NOT NULL COMMENT '单价(元/米)',
     product_length double(8, 2) NOT NULL COMMENT '预订数量(米)',
-    url            varchar(250)  DEFAULT NULL COMMENT '样品图像地址',
+    url            varchar(250) DEFAULT NULL COMMENT '样品图像地址',
     amount         double(16, 2) COMMENT '金额',
     extra_crafts   varchar(1)   DEFAULT NULL COMMENT '额外工艺',
     stock_status   varchar(1)   DEFAULT '0' COMMENT '备货状态 备货状态 0-待备货 1-备货中 2-备货完成',
     create_user    varchar(100) DEFAULT NULL COMMENT '创建人',
     update_user    varchar(100) DEFAULT NULL COMMENT '修改人',
-    create_date    datetime DEFAULT NOW() COMMENT '创建时间',
-    update_date    datetime DEFAULT NOW() COMMENT '修改时间',
+    create_date    datetime     DEFAULT NOW() COMMENT '创建时间',
+    update_date    datetime     DEFAULT NOW() COMMENT '修改时间',
     PRIMARY KEY (id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 comment ='订单明细表';
 
 CREATE TABLE t_order_stock_detail_info
 (
-    id           bigint  NOT NULL auto_increment COMMENT '主键',
+    id           bigint                   NOT NULL auto_increment COMMENT '主键',
     order_no     varchar(30)              NOT NULL COMMENT '订单编号',
     product_type varchar(10)              NOT NULL COMMENT '产品型号',
     stock_no     smallint                 NOT NULL COMMENT '货物序号',

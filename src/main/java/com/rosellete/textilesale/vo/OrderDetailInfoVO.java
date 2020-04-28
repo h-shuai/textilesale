@@ -9,15 +9,24 @@ import java.util.Date;
 @Data
 public class OrderDetailInfoVO extends OrderDetailInfo {
     private String customerName;
+
     private String customerPhoneNo;
+
+    private String deliveryMode;
+
+    private String contact;
+
+    private String contactPhoneNo;
+
+    private String deliveryAddress;
+
+    private String consignmentDepartment;
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
-    private String deliveryMode;
-    private String contact;
-    private String contactPhoneNo;;
-    private String deliveryAddress;
-    private String consignmentDepartment;
+
 
 }

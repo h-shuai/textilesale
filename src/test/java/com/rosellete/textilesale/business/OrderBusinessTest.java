@@ -1,16 +1,20 @@
 package com.rosellete.textilesale.business;
 
 import com.github.pagehelper.PageInfo;
+import com.rosellete.textilesale.util.NullPropertiesUtil;
 import com.rosellete.textilesale.vo.OrderInfoVO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +41,7 @@ class OrderBusinessTest {
         orderList.getList().stream().forEach(e -> System.out.println("OrderNo="+e.getOrderNo() +"\tCustomerName = " + e.getCustomerName()));
     }
 
+    @DisplayName("时间格式化字符串")
     @Test
     void generateOrderNo(){
         LocalDateTime now = LocalDateTime.now();
@@ -46,5 +51,16 @@ class OrderBusinessTest {
         System.out.println("nanoTime = " + System.nanoTime());
         System.out.println("currentTimeMillis = " + System.currentTimeMillis());
 
+    }
+
+    @DisplayName("空字符串转化")
+    @Test
+    void objectTrim2Null(){
+
+        OrderInfoVO orderInfoVO =new OrderInfoVO();
+        orderInfoVO.setOrderNo("1");
+        orderInfoVO.setCustomerName("   ");
+        String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderInfoVO);
+        Arrays.stream(nullOrBlankPropertyNames).forEach(e-> System.out.println(e));
     }
 }

@@ -15,17 +15,14 @@ public class OrderInfoService {
     private OrderInfoDao orderInfoDao;
 
 
-    public OrderInfo getOrderInfo(String orderNo) {
+    public OrderInfo findByPrimaryKey(String orderNo) {
         Optional<OrderInfo> orderInfo = orderInfoDao.findById(orderNo);
         return orderInfo.isPresent() ? orderInfo.get() : null;
     }
 
-    public List<OrderInfo> getOrderListByCustomerInfo(OrderInfo orderInfo) {
-        return orderInfoDao.getOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(), orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus());
-    }
-
-    public List<OrderInfo> getOrderListByCustomerInfoAndDate(OrderInfo orderInfo, Date startDate, Date endDate) {
-        return orderInfoDao.getOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(), orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate);
+    public List<OrderInfo> findOrderListByCustomerInfo(OrderInfo orderInfo, Date startDate, Date endDate) {
+        return orderInfoDao.getOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(),
+                orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate);
     }
 
     public void updateOrderStatus(String orderNo, String orderStatus) {

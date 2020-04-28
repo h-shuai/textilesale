@@ -16,20 +16,26 @@ import java.util.Map;
 @Repository
 public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
 
-    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no = ?1, 1 = 1) and IF(?2 is not null, t.customer_name like CONCAT(?2, '%'), 1 = 1) and IF(?3 is not null, t.customer_phone_no like CONCAT(?3, '%'), 1 = 1) and IF(?4 is not null, t.order_status = ?4, 1 = 1)", nativeQuery = true)
-    List<OrderInfo> getOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName, @Param("customerPhoneNo") String customerPhoneNo, @Param("orderStatus") String orderStatus);
+    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no= ?1, 1 = 1)" +
+            " and IF(?2 is not null, t.customer_name like CONCAT(?2, '%'), 1 = 1)" +
+            " and IF(?3 is not null, t.customer_phone_no like CONCAT(?3, '%'), 1 = 1)" +
+            " and IF(?4 is not null, t.order_status = ?4, 1 = 1) and IF(?5 is not null, t.order_date >= ?5, 1 = 1)" +
+            " and IF(?6 is not null, t.order_date < ?6, 1 = 1)", nativeQuery = true)
+    List<OrderInfo> getOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName,
+                                 @Param("customerPhoneNo") String customerPhoneNo,
+                                 @Param("orderStatus") String orderStatus,
+                                 @Temporal(TemporalType.TIMESTAMP) Date startDate,
+                                 @Temporal(TemporalType.TIMESTAMP) Date endDate);
 
-    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no= ?1, 1 = 1) and IF(?2 is not null, t.customer_name like CONCAT(?2, '%'), 1 = 1) and IF(?3 is not null, t.customer_phone_no like CONCAT(?3, '%'), 1 = 1) and IF(?4 is not null, t.order_status = ?4, 1 = 1) and IF(?5 is not null, t.order_date >= ?5, 1 = 1)  and IF(?6 is not null, t.order_date < ?6, 1 = 1)", nativeQuery = true)
-    List<OrderInfo> getOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName, @Param("customerPhoneNo") String customerPhoneNo, @Param("orderStatus") String orderStatus, @Temporal(TemporalType.TIMESTAMP) Date startDate, @Temporal(TemporalType.TIMESTAMP) Date endDate);
-
-    @Transactional
     @Modifying
-    @Query(value = "update t_order_info t set t.order_status = ?2, t.update_user = ?3, t.update_date = NOW() where t.order_no = ?1", nativeQuery = true)
-    int updateOrderStatus(@Param("orderNo") String orderNo, @Param("orderStatus") String orderStatus, @Param("updateUser") String updateUser);
+    @Query(value = "update t_order_info t set t.order_status = ?2, t.update_user = ?3, t.update_date = NOW()" +
+            " where t.order_no = ?1", nativeQuery = true)
+    int updateOrderStatus(@Param("orderNo") String orderNo, @Param("orderStatus") String orderStatus,
+                          @Param("updateUser") String updateUser);
 
-    @Transactional
     @Modifying
-    @Query(value = "update t_order_info t set t.order_amount = ?2, t.update_user = ?3, t.update_date = NOW() where t.order_no = ?1", nativeQuery = true)
+    @Query(value = "update t_order_info t set t.order_amount = ?2, t.update_user = ?3, t.update_date = NOW()" +
+            " where t.order_no = ?1", nativeQuery = true)
     int updateAmount(@Param("orderNo")String orderNo, @Param("amount")Double amount, String updater);
 
     @Query(value = "select a.order_no orderNo,a.customer_name customerName,sum(b.product_length) productLength from t_order_info a,t_order_detail_info b where a.order_status='1' and a.order_no=b.order_no and IF(?1 is not null, a.order_no=?1, 1=1) and IF(?2 is not null, a.customer_name like CONCAT('%', ?2, '%'), 1=1) group by a.order_no,a.customer_name order by a.order_date desc", nativeQuery = true)

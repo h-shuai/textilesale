@@ -13,7 +13,7 @@ public class OrderStockDetailInfoService {
 
     private OrderStockDetailInfoDao orderStockDetailInfoDao;
 
-    public List<OrderStockDetailInfo> getOrderStockDetailInfo(String orderNo,String productType){
+    public List<OrderStockDetailInfo> findOrderStockDetailInfo(String orderNo, String productType){
         return orderStockDetailInfoDao.findAllByOrderNoAndProductType(orderNo,productType);
     }
 

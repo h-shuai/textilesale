@@ -40,11 +40,11 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Override
     public PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO) {
         PageHelper.startPage(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
-        String[] nullPropertyNames = NullPropertiesUtil.getNullPropertyNames(orderInfoVO);
+        String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderInfoVO);
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderInfoVO, orderInfo, nullPropertyNames);
         List<OrderInfo> orderList;
-        Date startDate = orderInfoVO.getEndDate(), endDate = orderInfoVO.getStartDate();
+        Date startDate = orderInfoVO.getStartDate(), endDate = orderInfoVO.getEndDate();
         if (!(null == startDate && null == endDate)) {
             if (null != endDate) {
                 Calendar calendarInstance = Calendar.getInstance();
@@ -52,9 +52,9 @@ public class OrderBusinessImpl implements OrderBusiness {
                 calendarInstance.add(Calendar.DATE, 1);
                 endDate = calendarInstance.getTime();
             }
-            orderList = orderInfoService.getOrderListByCustomerInfoAndDate(orderInfo, startDate, endDate);
+            orderList = orderInfoService.findOrderListByCustomerInfo(orderInfo, startDate, endDate);
         } else {
-            orderList = orderInfoService.getOrderListByCustomerInfo(orderInfo);
+            orderList = orderInfoService.findOrderListByCustomerInfo(orderInfo,null,null);
         }
         List<OrderInfoVO> collect = orderList.stream().map(e -> {
             OrderInfoVO temp = new OrderInfoVO();
@@ -66,8 +66,8 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public PageInfo<OrderDetailInfoVO> getOrderStockDetailInfo(String orderNo) {
-        OrderInfo orderInfo = orderInfoService.getOrderInfo(orderNo);
-        List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.getOrderDetailInfoByOrderNo(orderNo);
+        OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
+        List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(orderNo);
         List<OrderDetailInfoVO> parsedList = orderDetailInfoList.stream().map(e -> {
             OrderDetailInfoVO temp = new OrderDetailInfoVO();
             BeanUtils.copyProperties(orderInfo, temp);
@@ -79,10 +79,10 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public PageInfo<OrderStockDetailInfoVO> getOrderStockDetailInfo(String orderNo, String productType) {
-        OrderInfo orderInfo = orderInfoService.getOrderInfo(orderNo);
-        List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.getOrderDetailInfoByOrderNoAndProductType(orderNo, productType);
+        OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
+        List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(orderNo, productType);
         OrderDetailInfo orderDetailInfo = orderDetailInfoList.stream().findFirst().orElse(null);
-        List<OrderStockDetailInfo> orderStockDetailInfoList = orderStockDetailInfoService.getOrderStockDetailInfo(orderNo, productType);
+        List<OrderStockDetailInfo> orderStockDetailInfoList = orderStockDetailInfoService.findOrderStockDetailInfo(orderNo, productType);
         List<OrderStockDetailInfoVO> parsedList = orderStockDetailInfoList.stream().map(e -> {
             OrderStockDetailInfoVO temp = new OrderStockDetailInfoVO();
             BeanUtils.copyProperties(orderInfo, temp);
@@ -106,11 +106,11 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Override
     public PageInfo<OrderDetailInfoVO> getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO) {
         PageHelper.startPage(orderDetailInfoVO.getPageNum(), orderDetailInfoVO.getPageSize());
-        String[] nullPropertyNames = NullPropertiesUtil.getNullPropertyNames(orderDetailInfoVO);
+        String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderDetailInfoVO);
         OrderDetailInfo orderDetailInfo = new OrderDetailInfo();
         BeanUtils.copyProperties(orderDetailInfoVO, orderDetailInfo, nullPropertyNames);
         List<Map<String, Object>> resultSetList;
-        Date startDate = orderDetailInfoVO.getEndDate(), endDate = orderDetailInfoVO.getStartDate();
+        Date startDate = orderDetailInfoVO.getStartDate(), endDate = orderDetailInfoVO.getEndDate();
         if (!(null == startDate && null == endDate)) {
             if (null != endDate) {
                 Calendar calendarInstance = Calendar.getInstance();
@@ -118,9 +118,13 @@ public class OrderBusinessImpl implements OrderBusiness {
                 calendarInstance.add(Calendar.DATE, 1);
                 endDate = calendarInstance.getTime();
             }
-            resultSetList = orderDetailInfoService.getOrderDetailInfo(orderDetailInfoVO.getOrderNo(), orderDetailInfoVO.getProductType(), orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(), orderDetailInfoVO.getConsignmentDepartment(), startDate, endDate);
+            resultSetList = orderDetailInfoService.findOrderDetailInfo(orderDetailInfo.getOrderNo(), orderDetailInfo.getProductType(),
+                    orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
+                    orderDetailInfoVO.getConsignmentDepartment(), startDate, endDate);
         } else {
-            resultSetList = orderDetailInfoService.getOrderDetailInfo(orderDetailInfoVO.getOrderNo(), orderDetailInfoVO.getProductType(), orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(), orderDetailInfoVO.getConsignmentDepartment());
+            resultSetList = orderDetailInfoService.findOrderDetailInfo(orderDetailInfo.getOrderNo(), orderDetailInfo.getProductType(),
+                    orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
+                    orderDetailInfoVO.getConsignmentDepartment(),null,null);
         }
         List<OrderDetailInfoVO> collect = resultSetList.stream().map(e -> {
             String jsonString = JSON.toJSONString(e);
@@ -132,7 +136,7 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Transactional(rollbackOn = RuntimeException.class)
     @Override
     public void saveOrder(OrderSaveVO orderSaveVO) {
-        String[] nullPropertyNames = NullPropertiesUtil.getNullPropertyNames(orderSaveVO);
+        String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
         List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList();
@@ -165,7 +169,7 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Transactional(rollbackOn = Exception.class)
     @Override
     public void updateOrder(OrderSaveVO orderSaveVO) {
-        String[] nullPropertyNames = NullPropertiesUtil.getNullPropertyNames(orderSaveVO);
+        String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
         List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList();
