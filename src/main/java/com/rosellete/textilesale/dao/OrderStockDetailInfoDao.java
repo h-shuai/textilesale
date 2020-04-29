@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface OrderStockDetailInfoDao extends BaseRepository<OrderStockDetailInfo, Long> {
@@ -14,7 +15,7 @@ public interface OrderStockDetailInfoDao extends BaseRepository<OrderStockDetail
     List<OrderStockDetailInfo> findAllByOrderNoAndProductType(@Param("orderNo") String orderNo,
                                                               @Param("productType") String productType);
 
-    @Query(value = "SELECT t.stock_length FROM t_order_stock_detail_info t where t.order_no = ?1 and t.product_type=?2 and t.status='0'",
+    @Query(value = "SELECT t.id id,t.product_type productType,t.stock_length stockLength FROM t_order_stock_detail_info t where t.order_no = ?1 and t.product_type=?2 and t.status='0'",
             nativeQuery = true)
-    List<String> getPieceList(@Param("orderNo") String orderNo, @Param("productType") String productType);
+    List<Map<String,Object>> getPieceList(@Param("orderNo") String orderNo, @Param("productType") String productType);
 }

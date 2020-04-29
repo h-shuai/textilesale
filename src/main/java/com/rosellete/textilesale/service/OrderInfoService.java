@@ -48,7 +48,7 @@ public class OrderInfoService {
         return orderInfoVOList;
     }
 
-    public Map<String,Object> getTotalCount(String orderNo){
+    public List<String> getTotalCount(String orderNo){
         return orderInfoDao.getTotalCount(orderNo);
     }
 
@@ -59,7 +59,6 @@ public class OrderInfoService {
             PackInfoVO packInfoVO = new PackInfoVO();
             packInfoVO.setPicurl((String)map.get("picurl"));
             packInfoVO.setColthModel((String)map.get("colthModel"));
-            packInfoVO.setCheckSelected(new String[0]);
             returnList.add(packInfoVO);
         }
         return returnList;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderStockDetailInfoService {
@@ -28,7 +29,7 @@ public class OrderStockDetailInfoService {
         orderStockDetailInfoDao.saveAll(orderStockDetailInfoList);
     }
 
-    public List<String> getPieceList(String orderNo,String productType){
+    public List<Map<String,Object>> getPieceList(String orderNo, String productType){
         return orderStockDetailInfoDao.getPieceList(orderNo,productType);
     }
 }
