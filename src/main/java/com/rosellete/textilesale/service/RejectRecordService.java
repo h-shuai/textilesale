@@ -26,6 +26,6 @@ public class RejectRecordService {
 
     public RejectRecord findByPrimaryKey(String recordNo) {
         Optional<RejectRecord> optional = rejectRecordDao.findById(recordNo);
-        return optional.isPresent() ? optional.get() : null;
+        return optional.orElse(null);
     }
 }

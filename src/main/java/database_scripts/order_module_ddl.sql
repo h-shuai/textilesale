@@ -37,7 +37,7 @@ CREATE TABLE t_order_detail_info
     product_length double(8, 2) NOT NULL COMMENT '预订数量(米)',
     url            varchar(250) DEFAULT NULL COMMENT '样品图像地址',
     amount         double(16, 2) COMMENT '金额',
-    extra_crafts   varchar(1)   DEFAULT NULL COMMENT '额外工艺',
+    extra_crafts   varchar(200) DEFAULT NULL COMMENT '额外工艺',
     stock_status   varchar(1)   DEFAULT '0' COMMENT '备货状态 备货状态 0-待备货 1-备货中 2-备货完成',
     create_user    varchar(100) DEFAULT NULL COMMENT '创建人',
     update_user    varchar(100) DEFAULT NULL COMMENT '修改人',

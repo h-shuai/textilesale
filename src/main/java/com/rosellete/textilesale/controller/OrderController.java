@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
 import com.rosellete.textilesale.interfaces.OrderApi;
 import com.rosellete.textilesale.model.OrderInfo;
-import com.rosellete.textilesale.model.OrderStockDetailInfo;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -64,7 +62,7 @@ public class OrderController implements OrderApi {
 
     @Override
     public RestResponse getOrderStockDetailInfo(String orderNo, String productType) {
-        PageInfo<OrderStockDetailInfoVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo,productType);
+        PageInfo<OrderStockDetailInfoVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo, productType);
         return new RestResponse(pageInfo);
     }
 

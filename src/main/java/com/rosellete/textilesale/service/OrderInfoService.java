@@ -18,7 +18,7 @@ public class OrderInfoService {
 
     public OrderInfo findByPrimaryKey(String orderNo) {
         Optional<OrderInfo> orderInfo = orderInfoDao.findById(orderNo);
-        return orderInfo.isPresent() ? orderInfo.get() : null;
+        return orderInfo.orElse(null);
     }
 
     public List<OrderInfo> findOrderListByCustomerInfo(OrderInfo orderInfo, Date startDate, Date endDate) {
@@ -34,31 +34,31 @@ public class OrderInfoService {
         orderInfoDao.save(orderInfo);
     }
 
-    public void updateOrderInfo(String orderNo,Double sumAmount,String updater) {
-        orderInfoDao.updateAmount(orderNo,sumAmount,updater);
+    public void updateOrderInfo(String orderNo, String orderStatus, Double sumAmount, String updater) {
+        orderInfoDao.updateStatusAndAmount(orderNo, orderStatus, sumAmount, updater);
     }
 
-    public List<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo){
-        List<Map<String,Object>> maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(),orderInfo.getCustomerName());
+    public List<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo) {
+        List<Map<String, Object>> maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName());
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
-        for (Map<String,Object> map : maps){
-            OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map),OrderInfoVO.class);
+        for (Map<String, Object> map : maps) {
+            OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
             orderInfoVOList.add(orderInfoVO);
         }
         return orderInfoVOList;
     }
 
-    public Map<String,Object> getTotalCount(String orderNo){
+    public Map<String, Object> getTotalCount(String orderNo) {
         return orderInfoDao.getTotalCount(orderNo);
     }
 
-    public List<PackInfoVO> getWaitPieceList(String orderNo){
+    public List<PackInfoVO> getWaitPieceList(String orderNo) {
         List<PackInfoVO> returnList = new ArrayList<>();
-        List<Map<String,Object>> pieceList = orderInfoDao.getWaitPieceList(orderNo);
-        for (Map<String,Object> map : pieceList){
+        List<Map<String, Object>> pieceList = orderInfoDao.getWaitPieceList(orderNo);
+        for (Map<String, Object> map : pieceList) {
             PackInfoVO packInfoVO = new PackInfoVO();
-            packInfoVO.setPicurl((String)map.get("picurl"));
-            packInfoVO.setColthModel((String)map.get("colthModel"));
+            packInfoVO.setPicurl((String) map.get("picurl"));
+            packInfoVO.setColthModel((String) map.get("colthModel"));
             packInfoVO.setCheckSelected(new String[0]);
             returnList.add(packInfoVO);
         }

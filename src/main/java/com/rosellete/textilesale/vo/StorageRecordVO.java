@@ -5,6 +5,7 @@ import com.rosellete.textilesale.model.StorageRecord;
 import lombok.Data;
 
 import java.util.Date;
+
 @Data
 public class StorageRecordVO extends StorageRecord {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")

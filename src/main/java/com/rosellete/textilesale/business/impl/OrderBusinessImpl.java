@@ -14,17 +14,16 @@ import com.rosellete.textilesale.service.OrderStockDetailInfoService;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
 import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("orderBusiness")
@@ -54,11 +53,17 @@ public class OrderBusinessImpl implements OrderBusiness {
             }
             orderList = orderInfoService.findOrderListByCustomerInfo(orderInfo, startDate, endDate);
         } else {
-            orderList = orderInfoService.findOrderListByCustomerInfo(orderInfo,null,null);
+            orderList = orderInfoService.findOrderListByCustomerInfo(orderInfo, null, null);
         }
         List<OrderInfoVO> collect = orderList.stream().map(e -> {
             OrderInfoVO temp = new OrderInfoVO();
             BeanUtils.copyProperties(e, temp);
+            List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(e.getOrderNo());
+            temp.setReserveTypeCount(orderDetailInfoList.size());
+            temp.setReserveSumLength(orderDetailInfoList.stream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
+            List<OrderDetailInfo> filteredList = orderDetailInfoList.stream().filter(detail -> StringUtils.equals("2", detail.getStockStatus())).collect(Collectors.toList());
+            temp.setStockedTypeCount(filteredList.size());
+            temp.setStockedSumLength(filteredList.stream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
             return temp;
         }).collect(Collectors.toList());
         return new PageInfo<>(collect);
@@ -72,6 +77,10 @@ public class OrderBusinessImpl implements OrderBusiness {
             OrderDetailInfoVO temp = new OrderDetailInfoVO();
             BeanUtils.copyProperties(orderInfo, temp);
             BeanUtils.copyProperties(e, temp);
+            List<OrderStockDetailInfo> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(e.getOrderNo(), e.getProductType());
+            temp.setOrderStockingArrays(orderStockDetailInfo);
+            temp.setStockedFabricCount(orderStockDetailInfo.size());
+            temp.setStockedLength(orderStockDetailInfo.stream().map(stock -> stock.getStockLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
             return temp;
         }).collect(Collectors.toList());
         return new PageInfo<>(parsedList);
@@ -124,7 +133,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         } else {
             resultSetList = orderDetailInfoService.findOrderDetailInfo(orderDetailInfo.getOrderNo(), orderDetailInfo.getProductType(),
                     orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
-                    orderDetailInfoVO.getConsignmentDepartment(),null,null);
+                    orderDetailInfoVO.getConsignmentDepartment(), null, null);
         }
         List<OrderDetailInfoVO> collect = resultSetList.stream().map(e -> {
             String jsonString = JSON.toJSONString(e);
@@ -158,6 +167,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderInfo.setOrderNo(orderNo);
         orderInfo.setOrderDate(now);
         orderInfo.setOrderAmount(sumAmount);
+        orderInfo.setClerkName(creater);
         orderInfo.setCreateUser(creater);
         orderInfo.setUpdateUser(creater);
         orderInfo.setCreateDate(now);
@@ -169,14 +179,13 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Transactional(rollbackOn = Exception.class)
     @Override
     public void updateOrder(OrderSaveVO orderSaveVO) {
+        String orderNo = orderSaveVO.getOrderNo();
+        OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
-        OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
         List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList();
-        String orderNo = orderInfo.getOrderNo();
         String creater = "admin";
         Date now = new Date();
-
         List<OrderDetailInfo> collect = orderDetailList.stream().map(e -> {
             e.setOrderNo(orderNo);
             e.setUpdateUser(creater);
@@ -185,31 +194,65 @@ public class OrderBusinessImpl implements OrderBusiness {
             return e;
         }).collect(Collectors.toList());
         double sumAmount = orderDetailList.stream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
-        orderInfoService.updateOrderInfo(orderNo, sumAmount, creater);
+        orderInfo.setOrderAmount(sumAmount);
+        orderInfoService.saveOrderInfo(orderInfo);
         orderDetailInfoService.saveOrderDetailInfo(collect);
     }
 
     @Transactional(rollbackOn = Exception.class)
     @Override
     public void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO) {
-        List<OrderStockDetailInfo> orderStockingArrays = orderStockSaveVO.getOrderStockingArrays();
+        String orderNo = orderStockSaveVO.getOrderNo();
+        OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
+        String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderStockSaveVO);
+        BeanUtils.copyProperties(orderStockSaveVO, orderInfo, nullPropertyNames);
+        List<OrderDetailInfoVO> orderDetailList = orderStockSaveVO.getOrderDetailList();
+        List<OrderDetailInfo> orderDetailInfos = new ArrayList<>(orderDetailList.size());
+        List<OrderStockDetailInfo> existedOrderStockList = new ArrayList<>(10);
+        List<OrderStockDetailInfo> toBeInsertOrderStockList = new ArrayList<>(10);
         String updater = "admin";
         Date now = new Date();
-        List<OrderStockDetailInfo> collect = orderStockingArrays.stream().map(e -> {
-            e.setCreateDate(now);
-            e.setCreateUser(updater);
-            e.setStatus("0");
-            e.setUpdateDate(now);
-            e.setUpdateUser(updater);
-            return e;
-        }).collect(Collectors.toList());
-        orderStockDetailInfoService.deleteOrderStockDetail(orderStockSaveVO.getOrderNo(),orderStockSaveVO.getProductType());
-        orderStockDetailInfoService.saveOrderStockDetail(collect);
+        orderDetailList.stream().forEach(e -> {
+                    String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(e);
+                    List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(e.getOrderNo(), e.getProductType());
+                    OrderDetailInfo orderDetailInfo = orderDetailInfoList.stream().findFirst().orElse(null);
+                    BeanUtils.copyProperties(e, orderDetailInfo, nullOrBlankPropertyNames);
+                    List<OrderStockDetailInfo> orderStockingArrays = e.getOrderStockingArrays();
+                    Double stockedLength = 0.0D;
+                    for (OrderStockDetailInfo stock : orderStockingArrays) {
+                        List<OrderStockDetailInfo> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(orderNo, e.getProductType());
+                        if (CollectionUtils.isEmpty(orderStockDetailInfo)) {
+                            stock.setCreateDate(now);
+                            stock.setCreateUser(updater);
+                            stock.setStatus("0");
+                            stock.setUpdateDate(now);
+                            stock.setUpdateUser(updater);
+                            stockedLength += stock.getStockLength();
+                            toBeInsertOrderStockList.add(stock);
+                        } else {
+                            existedOrderStockList.addAll(orderStockDetailInfo);
+                        }
+                    }
+                    if (stockedLength.compareTo(0.0D) > 0 && stockedLength.compareTo(orderDetailInfo.getProductLength()) >= 0D) {
+                        orderDetailInfo.setStockStatus("2");
+                    } else {
+                        orderDetailInfo.setStockStatus("1");
+                    }
+                    orderDetailInfo.setUpdateUser(updater);
+                    orderDetailInfo.setUpdateDate(now);
+                    orderDetailInfos.add(orderDetailInfo);
+                }
+        );
+        orderStockDetailInfoService.deleteOrderStockDetail(existedOrderStockList);
+        orderStockDetailInfoService.saveOrderStockDetail(toBeInsertOrderStockList);
+        orderDetailInfoService.saveOrderDetailInfo(orderDetailInfos);
+        orderInfoService.saveOrderInfo(orderInfo);
+
     }
 
     @Override
     public PageInfo<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo) {
-        PageHelper.startPage(orderInfo.getPageNum(),orderInfo.getPageSize());
+        PageHelper.startPage(orderInfo.getPageNum(), orderInfo.getPageSize());
         return new PageInfo<>(orderInfoService.getWaitPackOrderList(orderInfo));
     }
 
@@ -223,8 +266,8 @@ public class OrderBusinessImpl implements OrderBusiness {
         List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(orderNo);
         List<String> stockDetailInfoList = null;
         String[] pieceArr = null;
-        for (PackInfoVO packInfoVO : returnList){
-            stockDetailInfoList = orderStockDetailInfoService.getPieceList(orderNo,packInfoVO.getColthModel());
+        for (PackInfoVO packInfoVO : returnList) {
+            stockDetailInfoList = orderStockDetailInfoService.getPieceList(orderNo, packInfoVO.getColthModel());
             pieceArr = stockDetailInfoList.toArray(new String[stockDetailInfoList.size()]);
             packInfoVO.setPieceOptions(pieceArr);
         }

@@ -19,7 +19,7 @@ public interface StorageRecordDao extends BaseRepository<StorageRecord, String> 
             " and IF(?5 is not null, t.consignor_type = ?5, 1 = 1)" +
             " and IF(?6 is not null, t.industry_type = ?6, 1 = 1) and IF(?7 is not null, t.storage_date >= ?7, 1 = 1)" +
             " and IF(?8 is not null, t.storage_date < ?8, 1 = 1)", nativeQuery = true)
-    List<StorageRecord> findByConsignorInfo(String recordNo,String storageType, String consignor, String consignorPhoneNo,
+    List<StorageRecord> findByConsignorInfo(String recordNo, String storageType, String consignor, String consignorPhoneNo,
                                             String consignorType, String industryType,
                                             @Temporal(TemporalType.TIMESTAMP) Date startDate,
                                             @Temporal(TemporalType.TIMESTAMP) Date endDate);

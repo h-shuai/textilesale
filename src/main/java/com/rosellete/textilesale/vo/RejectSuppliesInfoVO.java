@@ -16,10 +16,10 @@ public class RejectSuppliesInfoVO extends RejectSuppliesInfo {
     @Column(name = "supplier_phone_no", length = 15)
     private String supplierPhoneNo;
 
-    @Column(name = "supplier_type",length = 1)
+    @Column(name = "supplier_type", length = 1)
     private String supplierType;
 
-    @Column(name = "supplier_name",length = 200)
+    @Column(name = "supplier_name", length = 200)
     private String supplierName;
 
     @Column(name = "industry_type", length = 1)

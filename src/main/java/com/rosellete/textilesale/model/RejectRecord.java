@@ -16,7 +16,7 @@ import java.util.Date;
 public class RejectRecord extends Page implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name = "record_no",length = 30,nullable = false, unique = true)
+    @Column(name = "record_no", length = 30, nullable = false, unique = true)
     private String recordNo;
 
     @Column(name = "reject_date")
@@ -27,10 +27,10 @@ public class RejectRecord extends Page implements Serializable {
     @Column(name = "supplier_phone_no", length = 15)
     private String supplierPhoneNo;
 
-    @Column(name = "supplier_type",length = 1)
+    @Column(name = "supplier_type", length = 1)
     private String supplierType;
 
-    @Column(name = "supplier_name",length = 200)
+    @Column(name = "supplier_name", length = 200)
     private String supplierName;
 
     @Column(name = "industry_type", length = 1)

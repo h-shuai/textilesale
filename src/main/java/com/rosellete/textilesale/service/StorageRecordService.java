@@ -16,8 +16,8 @@ public class StorageRecordService {
     private StorageRecordDao storageRecordDao;
 
     public List<StorageRecord> getStorageRecordList(StorageRecord storageRecord, Date startDate, Date endDate) {
-        return storageRecordDao.findByConsignorInfo(storageRecord.getRecordNo(),storageRecord.getStorageType(),
-                storageRecord.getConsignor(),storageRecord.getConsignorPhoneNo(), storageRecord.getConsignorType(),
+        return storageRecordDao.findByConsignorInfo(storageRecord.getRecordNo(), storageRecord.getStorageType(),
+                storageRecord.getConsignor(), storageRecord.getConsignorPhoneNo(), storageRecord.getConsignorType(),
                 storageRecord.getIndustryType(), startDate, endDate);
     }
 

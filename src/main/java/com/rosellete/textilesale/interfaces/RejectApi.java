@@ -1,8 +1,8 @@
 package com.rosellete.textilesale.interfaces;
 
 import com.rosellete.textilesale.util.RestResponse;
-import com.rosellete.textilesale.vo.RejectRecordVO;
 import com.rosellete.textilesale.vo.RejectRecordSaveVO;
+import com.rosellete.textilesale.vo.RejectRecordVO;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -28,7 +28,7 @@ public interface OrderBusiness {
 
     PageInfo<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo);
 
-    Map<String,Object> getTotalCount(String orderNo);
+    Map<String, Object> getTotalCount(String orderNo);
 
     List<PackInfoVO> getPieceList(String orderNo);
 }

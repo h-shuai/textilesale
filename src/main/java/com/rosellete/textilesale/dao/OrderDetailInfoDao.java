@@ -29,11 +29,11 @@ public interface OrderDetailInfoDao extends BaseRepository<OrderDetailInfo, Long
             " and IF(?3 is not null, t1.customer_name like CONCAT(?3, '%'), 1 = 1)" +
             " and IF(?4 is not null, t1.delivery_mode = ?4, 1 = 1)" +
             " and IF(?5 is not null, t1.consignment_department = ?5, 1 = 1)", nativeQuery = true)
-    List<Map<String,Object>> findByCustomerInfoAndProductType(@Param("orderNo") String orderNo,
-                                                              @Param("productType") String productType,
-                                                              @Param("customerName") String customerName,
-                                                              @Param("deliveryMode") String deliveryMode,
-                                                              @Param("consignmentDepartment") String consignmentDepartment);
+    List<Map<String, Object>> findByCustomerInfoAndProductType(@Param("orderNo") String orderNo,
+                                                               @Param("productType") String productType,
+                                                               @Param("customerName") String customerName,
+                                                               @Param("deliveryMode") String deliveryMode,
+                                                               @Param("consignmentDepartment") String consignmentDepartment);
 
     @Query(value = "SELECT t2.*, t1.customer_name, t1.customer_phone_no, t1.order_date, t1.delivery_mode," +
             " t1.consignment_department FROM t_order_info t1,t_order_detail_info t2" +
@@ -44,12 +44,12 @@ public interface OrderDetailInfoDao extends BaseRepository<OrderDetailInfo, Long
             " and IF(?5 is not null, t1.consignment_department = ?5, 1 = 1)" +
             " and IF(?6 is not null, t1.order_date >= ?6, 1 = 1)" +
             "  and IF(?7 is not null, t1.order_date < ?7, 1 = 1)", nativeQuery = true)
-    List<Map<String,Object>> findByCustomerInfoAndDate(@Param("orderNo") String orderNo,
-                                                       @Param("productType") String productType,
-                                                       @Param("customerName") String customerName,
-                                                       @Param("deliveryMode") String deliveryMode,
-                                                       @Param("consignmentDepartment") String consignmentDepartment,
-                                                       @Temporal(TemporalType.TIMESTAMP) Date startDate,
-                                                       @Temporal(TemporalType.TIMESTAMP) Date endDate);
+    List<Map<String, Object>> findByCustomerInfoAndDate(@Param("orderNo") String orderNo,
+                                                        @Param("productType") String productType,
+                                                        @Param("customerName") String customerName,
+                                                        @Param("deliveryMode") String deliveryMode,
+                                                        @Param("consignmentDepartment") String consignmentDepartment,
+                                                        @Temporal(TemporalType.TIMESTAMP) Date startDate,
+                                                        @Temporal(TemporalType.TIMESTAMP) Date endDate);
 
 }

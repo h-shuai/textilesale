@@ -6,7 +6,8 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
 public class OrderSaveVO extends OrderInfo {
-    private List<OrderDetailInfo> orderDetailList =new ArrayList<>();
+    private List<OrderDetailInfo> orderDetailList = new ArrayList<>();
 }

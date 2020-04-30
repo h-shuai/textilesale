@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Temporal;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TemporalType;
 import java.util.Date;
@@ -34,25 +33,25 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
                           @Param("updateUser") String updateUser);
 
     @Modifying
-    @Query(value = "update t_order_info t set t.order_amount = ?2, t.update_user = ?3, t.update_date = NOW()" +
+    @Query(value = "update t_order_info t set t.order_status =?2, t.order_amount = ?3, t.update_user = ?4, t.update_date = NOW()" +
             " where t.order_no = ?1", nativeQuery = true)
-    int updateAmount(@Param("orderNo")String orderNo, @Param("amount")Double amount, String updater);
+    int updateStatusAndAmount(@Param("orderNo") String orderNo, @Param("orderStatus") String orderStatus, @Param("amount") Double amount, String updater);
 
     @Query(value = "select a.order_no orderNo,a.customer_name customerName,sum(b.product_length) productLength " +
             "from t_order_info a,t_order_detail_info b where a.order_status='1' and a.order_no=b.order_no " +
             "and IF(?1 is not null, a.order_no=?1, 1=1) and IF(?2 is not null, a.customer_name like CONCAT('%', ?2, '%'), 1=1) " +
             "group by a.order_no,a.customer_name order by a.order_date desc", nativeQuery = true)
-    List<Map<String,Object>> getWaitPackOrderList(@Param("orderNo") String OrderNo, @Param("customerName") String customerName);
+    List<Map<String, Object>> getWaitPackOrderList(@Param("orderNo") String OrderNo, @Param("customerName") String customerName);
 
     @Query(value = "select count(b.product_type) modelCount,count(c.product_type) pieceCount from t_order_info a " +
             "left outer join t_order_detail_info b on a.order_no=b.order_no " +
             "left outer join t_order_stock_detail_info c on a.order_no=c.order_no and b.product_type=c.product_type " +
-            "where a.order_no=?1 and a.order_status='1'",nativeQuery = true)
-    Map<String,Object> getTotalCount(@Param("orderNo") String orderNo);
+            "where a.order_no=?1 and a.order_status='1'", nativeQuery = true)
+    Map<String, Object> getTotalCount(@Param("orderNo") String orderNo);
 
     @Query(value = "select distinct b.url picurl,b.product_type colthModel from t_order_info a " +
             "left join t_order_detail_info b on a.order_no=b.order_no " +
             "left join t_order_stock_detail_info c on a.order_no=c.order_no and b.product_type=c.product_type " +
-            "where a.order_no=?1 and a.order_status='1'",nativeQuery = true)
-    List<Map<String,Object>> getWaitPieceList(@Param("orderNo") String orderNo);
+            "where a.order_no=?1 and a.order_status='1'", nativeQuery = true)
+    List<Map<String, Object>> getWaitPieceList(@Param("orderNo") String orderNo);
 }

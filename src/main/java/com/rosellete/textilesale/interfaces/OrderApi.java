@@ -25,21 +25,21 @@ public interface OrderApi {
     RestResponse orderRestock(@RequestParam("orderNo") String orderNo);
 
     @GetMapping(path = "/queryOrderStockDetail")
-    RestResponse getOrderStockDetailInfo(@RequestParam("orderNo") String orderNo,@RequestParam("productType") String productType);
+    RestResponse getOrderStockDetailInfo(@RequestParam("orderNo") String orderNo, @RequestParam("productType") String productType);
 
     @PostMapping(value = "/queryOrderDetailList", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getOrderDetailList(@RequestBody @Valid OrderDetailInfoVO orderDetailInfoVO);
 
-    @PostMapping(value = "/saveOrder",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/saveOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse saveOrder(@RequestBody @Valid OrderSaveVO orderSaveVO);
 
-    @PostMapping(value = "/updateOrder",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/updateOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse updateOrder(@RequestBody @Valid OrderSaveVO orderSaveVO);
 
-    @PostMapping(value = "/saveOrderStockDetail",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/saveOrderStockDetail", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse saveOrderStockDetail(@RequestBody @Valid OrderStockSaveVO orderStockSaveVO);
 
-    @PostMapping(value = "/getWaitPackOrderList",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getWaitPackOrderList", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getWaitPackOrderList(@RequestBody OrderInfo orderInfo);
 
     @RequestMapping("/getTotalCount")

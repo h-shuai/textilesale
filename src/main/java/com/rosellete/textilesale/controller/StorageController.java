@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.StorageBusiness;
 import com.rosellete.textilesale.interfaces.StorageApi;
 import com.rosellete.textilesale.util.RestResponse;
-import com.rosellete.textilesale.vo.OrderDetailInfoVO;
 import com.rosellete.textilesale.vo.PackageInventoryInfoVO;
 import com.rosellete.textilesale.vo.StoragePackageVO;
 import com.rosellete.textilesale.vo.StorageRecordVO;
@@ -23,7 +22,7 @@ public class StorageController implements StorageApi {
 
     @Override
     public RestResponse getStorageRecordList(@RequestBody StorageRecordVO storageRecordVO) {
-        PageInfo<StorageRecordVO> pageInfo=storageBusiness.getStorageRecordList(storageRecordVO);
+        PageInfo<StorageRecordVO> pageInfo = storageBusiness.getStorageRecordList(storageRecordVO);
         return new RestResponse(pageInfo);
     }
 
@@ -54,7 +53,7 @@ public class StorageController implements StorageApi {
 
     @Override
     public RestResponse getPackageInventory(String recordNo, String packageNo) {
-        PageInfo<PackageInventoryInfoVO> pageInfo = storageBusiness.getPackageInventory(recordNo,packageNo);
+        PageInfo<PackageInventoryInfoVO> pageInfo = storageBusiness.getPackageInventory(recordNo, packageNo);
         return new RestResponse(pageInfo);
     }
 }

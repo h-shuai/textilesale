@@ -15,4 +15,12 @@ public class OrderInfoVO extends OrderInfo {
     private Date endDate;
 
     private String productLength;
+
+    private Integer reserveTypeCount;
+
+    private Double reserveSumLength;
+
+    private Integer stockedTypeCount;
+
+    private Double stockedSumLength;
 }

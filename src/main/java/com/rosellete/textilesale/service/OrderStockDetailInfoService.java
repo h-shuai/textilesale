@@ -13,8 +13,8 @@ public class OrderStockDetailInfoService {
 
     private OrderStockDetailInfoDao orderStockDetailInfoDao;
 
-    public List<OrderStockDetailInfo> findOrderStockDetailInfo(String orderNo, String productType){
-        return orderStockDetailInfoDao.findAllByOrderNoAndProductType(orderNo,productType);
+    public List<OrderStockDetailInfo> findOrderStockDetailInfo(String orderNo, String productType) {
+        return orderStockDetailInfoDao.findAllByOrderNoAndProductType(orderNo, productType);
     }
 
     public void deleteOrderStockDetail(String orderNo, String productType) {
@@ -28,7 +28,11 @@ public class OrderStockDetailInfoService {
         orderStockDetailInfoDao.saveAll(orderStockDetailInfoList);
     }
 
-    public List<String> getPieceList(String orderNo,String productType){
-        return orderStockDetailInfoDao.getPieceList(orderNo,productType);
+    public List<String> getPieceList(String orderNo, String productType) {
+        return orderStockDetailInfoDao.getPieceList(orderNo, productType);
+    }
+
+    public void deleteOrderStockDetail(List<OrderStockDetailInfo> existedOrderStockList) {
+        orderStockDetailInfoDao.deleteAll(existedOrderStockList);
     }
 }

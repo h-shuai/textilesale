@@ -19,7 +19,7 @@ public class OrderDetailInfo extends Page implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, length = 30)
     private Long id;
 
@@ -38,7 +38,7 @@ public class OrderDetailInfo extends Page implements Serializable {
     @Column(name = "amount", nullable = false, scale = 16, precision = 2)
     private Double amount;
 
-    @Column(name = "extra_crafts", length = 1)
+    @Column(name = "extra_crafts", length = 200)
     private String extraCrafts;
 
     @Column(name = "url", length = 250)

@@ -31,6 +31,6 @@ public class StoragePackageInfoService {
     }
 
     public List<StoragePackageInfo> findStoragePackageByPackageNo(String recordNo, String packageNo) {
-        return storagePackageInfoDao.findByPackageNo(recordNo,packageNo);
+        return storagePackageInfoDao.findByPackageNo(recordNo, packageNo);
     }
 }
