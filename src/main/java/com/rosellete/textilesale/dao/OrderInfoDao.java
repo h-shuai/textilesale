@@ -20,11 +20,23 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
             " and IF(?3 is not null, t.customer_phone_no like CONCAT(?3, '%'), 1 = 1)" +
             " and IF(?4 is not null, t.order_status = ?4, 1 = 1) and IF(?5 is not null, t.order_date >= ?5, 1 = 1)" +
             " and IF(?6 is not null, t.order_date < ?6, 1 = 1)", nativeQuery = true)
-    List<OrderInfo> getOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName,
-                                 @Param("customerPhoneNo") String customerPhoneNo,
-                                 @Param("orderStatus") String orderStatus,
-                                 @Temporal(TemporalType.TIMESTAMP) Date startDate,
-                                 @Temporal(TemporalType.TIMESTAMP) Date endDate);
+    List<OrderInfo> findOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName,
+                                  @Param("customerPhoneNo") String customerPhoneNo,
+                                  @Param("orderStatus") String orderStatus,
+                                  @Temporal(TemporalType.TIMESTAMP) Date startDate,
+                                  @Temporal(TemporalType.TIMESTAMP) Date endDate);
+
+    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no= ?1, 1 = 1)" +
+            " and IF(?2 is not null, t.customer_name like CONCAT(?2, '%'), 1 = 1)" +
+            " and IF(?3 is not null, t.customer_phone_no like CONCAT(?3, '%'), 1 = 1)" +
+            " and IF(?4 is not null, t.order_status = ?4, 1 = 1) and IF(?5 is not null, t.order_date >= ?5, 1 = 1)" +
+            " and IF(?6 is not null, t.order_date < ?6, 1 = 1) limit ?7,?8 ", nativeQuery = true)
+    List<OrderInfo> findPagedOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName,
+                                       @Param("customerPhoneNo") String customerPhoneNo,
+                                       @Param("orderStatus") String orderStatus,
+                                       @Temporal(TemporalType.TIMESTAMP) Date startDate,
+                                       @Temporal(TemporalType.TIMESTAMP) Date endDate,
+                                       @Param("startRow") Integer startRow, @Param("size") Integer size);
 
     @Modifying
     @Query(value = "update t_order_info t set t.order_status = ?2, t.update_user = ?3, t.update_date = NOW()" +
@@ -47,7 +59,7 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
             "select count(id) from t_order_stock_detail_info where order_no=?1 union all " +
             "select count(id) from t_pack_info where order_no=?1 union all " +
             "select sum(IFNULL(stock_length,0)) from t_pack_detail_info where order_no=?1 union all " +
-            "select count(id) from t_pack_detail_info where order_no=?1",nativeQuery = true)
+            "select count(id) from t_pack_detail_info where order_no=?1", nativeQuery = true)
     List<String> getTotalCount(@Param("orderNo") String orderNo);
 
     @Query(value = "select distinct b.url picurl,b.product_type colthModel from t_order_info a " +

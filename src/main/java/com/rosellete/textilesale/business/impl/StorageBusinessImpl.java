@@ -2,7 +2,7 @@ package com.rosellete.textilesale.business.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.StorageBusiness;
 import com.rosellete.textilesale.model.PackageInventoryInfo;
@@ -40,7 +40,7 @@ public class StorageBusinessImpl implements StorageBusiness {
 
     @Override
     public PageInfo<StorageRecordVO> getStorageRecordList(StorageRecordVO storageRecordVO) {
-        PageHelper.startPage(storageRecordVO.getPageNum(), storageRecordVO.getPageSize());
+        Page page = new Page(storageRecordVO.getPageNum(), storageRecordVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(storageRecordVO);
         StorageRecord storageRecord = new StorageRecord();
         BeanUtils.copyProperties(storageRecordVO, storageRecord, nullPropertyNames);
@@ -54,15 +54,18 @@ public class StorageBusinessImpl implements StorageBusiness {
                 endDate = calendarInstance.getTime();
             }
             storageRecordList = storageRecordService.getStorageRecordList(storageRecord, startDate, endDate);
+            page.setTotal(storageRecordService.getStorageRecordListSize(storageRecord, startDate, endDate));
         } else {
             storageRecordList = storageRecordService.getStorageRecordList(storageRecord, null, null);
+            page.setTotal(storageRecordService.getStorageRecordListSize(storageRecord, null, null));
         }
         List<StorageRecordVO> collect = storageRecordList.stream().map(e -> {
             StorageRecordVO temp = new StorageRecordVO();
             BeanUtils.copyProperties(e, temp);
             return temp;
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        page.addAll(collect);
+        return new PageInfo<>(page);
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
@@ -115,7 +118,7 @@ public class StorageBusinessImpl implements StorageBusiness {
 
     @Override
     public PageInfo<StoragePackageVO> getStoragePackageList(StoragePackageVO storagePackageVO) {
-        PageHelper.startPage(storagePackageVO.getPageNum(), storagePackageVO.getPageSize());
+        Page page = new Page(storagePackageVO.getPageNum(), storagePackageVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(storagePackageVO);
         StoragePackageInfo storagePackageInfo = new StoragePackageInfo();
         BeanUtils.copyProperties(storagePackageVO, storagePackageInfo, nullPropertyNames);
@@ -128,19 +131,26 @@ public class StorageBusinessImpl implements StorageBusiness {
                 calendarInstance.add(Calendar.DATE, 1);
                 endDate = calendarInstance.getTime();
             }
-            resultSetList = storagePackageInfoService.findPackageList(storagePackageInfo.getRecordNo(), storagePackageInfo.getPackageNo(),
+            resultSetList = storagePackageInfoService.findPackageList(storagePackageInfo,
                     storagePackageVO.getStorageType(), storagePackageVO.getStorageClerkName(), storagePackageVO.getConsignorPhoneNo(),
                     storagePackageVO.getConsignor(), storagePackageVO.getConsignorType(), storagePackageVO.getIndustryType(), startDate, endDate);
+            page.setTotal(storagePackageInfoService.findPackageListSize(storagePackageInfo,
+                    storagePackageVO.getStorageType(), storagePackageVO.getStorageClerkName(), storagePackageVO.getConsignorPhoneNo(),
+                    storagePackageVO.getConsignor(), storagePackageVO.getConsignorType(), storagePackageVO.getIndustryType(), startDate, endDate));
         } else {
-            resultSetList = storagePackageInfoService.findPackageList(storagePackageInfo.getRecordNo(), storagePackageInfo.getPackageNo(),
+            resultSetList = storagePackageInfoService.findPackageList(storagePackageInfo,
                     storagePackageVO.getStorageType(), storagePackageVO.getStorageClerkName(), storagePackageVO.getConsignorPhoneNo(),
                     storagePackageVO.getConsignor(), storagePackageVO.getConsignorType(), storagePackageVO.getIndustryType(), null, null);
+            page.setTotal(storagePackageInfoService.findPackageListSize(storagePackageInfo,
+                    storagePackageVO.getStorageType(), storagePackageVO.getStorageClerkName(), storagePackageVO.getConsignorPhoneNo(),
+                    storagePackageVO.getConsignor(), storagePackageVO.getConsignorType(), storagePackageVO.getIndustryType(), null, null));
         }
         List<StoragePackageVO> collect = resultSetList.stream().map(e -> {
             String jsonString = JSON.toJSONString(e);
             return JSONObject.parseObject(jsonString, StoragePackageVO.class);
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        page.addAll(collect);
+        return new PageInfo<>(page);
 
     }
 

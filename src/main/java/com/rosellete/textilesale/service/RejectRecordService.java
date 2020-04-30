@@ -16,8 +16,14 @@ public class RejectRecordService {
     private RejectRecordDao rejectRecordDao;
 
     public List<RejectRecord> findRecordList(RejectRecord rejectRecord, Date startDate, Date endDate) {
+        return rejectRecordDao.findPageBySupplierInfo(rejectRecord.getRecordNo(), rejectRecord.getSupplierName(), rejectRecord.getSupplierType(),
+                rejectRecord.getIndustryType(), rejectRecord.getSupplierPhoneNo(), startDate, endDate,
+                (rejectRecord.getPageNum() - 1) * rejectRecord.getPageSize(), rejectRecord.getPageSize());
+    }
+
+    public long findRecordListSize(RejectRecord rejectRecord, Date startDate, Date endDate) {
         return rejectRecordDao.findBySupplierInfo(rejectRecord.getRecordNo(), rejectRecord.getSupplierName(), rejectRecord.getSupplierType(),
-                rejectRecord.getIndustryType(), rejectRecord.getSupplierPhoneNo(), startDate, endDate);
+                rejectRecord.getIndustryType(), rejectRecord.getSupplierPhoneNo(), startDate, endDate).size();
     }
 
     public void saveRejectRecord(RejectRecord rejectRecord) {

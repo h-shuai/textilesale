@@ -22,8 +22,16 @@ public class OrderInfoService {
     }
 
     public List<OrderInfo> findOrderListByCustomerInfo(OrderInfo orderInfo, Date startDate, Date endDate) {
-        return orderInfoDao.getOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(),
-                orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate);
+        return orderInfoDao.findPagedOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(),
+                orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate,
+                (orderInfo.getPageNum()-1)*orderInfo.getPageSize(),orderInfo.getPageSize());
+    }
+
+    public long findOrderListSizeByCustomerInfo(OrderInfo orderInfo, Date startDate, Date endDate) {
+        int size = orderInfoDao.findOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(),
+                orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate).size();
+        return size;
+
     }
 
     public void updateOrderStatus(String orderNo, String orderStatus) {

@@ -23,11 +23,19 @@ public class StoragePackageInfoService {
         return storagePackageInfoDao.findByRecordNo(recordNo);
     }
 
-    public List<Map<String, Object>> findPackageList(String recordNo, String packageNo, String storageType, String storageClerkName,
+    public List<Map<String, Object>> findPackageList(StoragePackageInfo storagePackageInfo, String storageType, String storageClerkName,
                                                      String consignorPhoneNo, String consignor, String consignorType,
                                                      String industryType, Date startDate, Date endDate) {
-        return storagePackageInfoDao.findByConsignorInfo(recordNo, packageNo, storageType, storageClerkName,
-                consignorPhoneNo, consignor, consignorType, industryType, startDate, endDate);
+        return storagePackageInfoDao.findPageByConsignorInfo(storagePackageInfo.getRecordNo(), storagePackageInfo.getRecordNo(),
+                storageType, storageClerkName,consignorPhoneNo, consignor, consignorType, industryType, startDate, endDate,
+                (storagePackageInfo.getPageNum()-1)*storagePackageInfo.getPageSize(),storagePackageInfo.getPageSize());
+    }
+
+    public long findPackageListSize(StoragePackageInfo storagePackageInfo, String storageType, String storageClerkName,
+                                                     String consignorPhoneNo, String consignor, String consignorType,
+                                                     String industryType, Date startDate, Date endDate) {
+        return storagePackageInfoDao.findByConsignorInfo(storagePackageInfo.getRecordNo(), storagePackageInfo.getRecordNo(),
+                storageType, storageClerkName,consignorPhoneNo, consignor, consignorType, industryType, startDate, endDate).size();
     }
 
     public List<StoragePackageInfo> findStoragePackageByPackageNo(String recordNo, String packageNo) {

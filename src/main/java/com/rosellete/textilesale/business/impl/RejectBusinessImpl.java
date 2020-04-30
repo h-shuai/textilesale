@@ -1,5 +1,6 @@
 package com.rosellete.textilesale.business.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.RejectBusiness;
@@ -31,7 +32,7 @@ public class RejectBusinessImpl implements RejectBusiness {
 
     @Override
     public PageInfo<RejectRecordVO> getRejectRecordList(RejectRecordVO rejectRecordVO) {
-        PageHelper.startPage(rejectRecordVO.getPageNum(), rejectRecordVO.getPageSize());
+        Page page = new Page(rejectRecordVO.getPageNum(), rejectRecordVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(rejectRecordVO);
         RejectRecord rejectRecord = new RejectRecord();
         BeanUtils.copyProperties(rejectRecordVO, rejectRecord, nullPropertyNames);
@@ -53,7 +54,8 @@ public class RejectBusinessImpl implements RejectBusiness {
             BeanUtils.copyProperties(e, temp);
             return temp;
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        page.addAll(collect);
+        return new PageInfo<>(page);
     }
 
     @Override

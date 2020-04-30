@@ -16,9 +16,16 @@ public class StorageRecordService {
     private StorageRecordDao storageRecordDao;
 
     public List<StorageRecord> getStorageRecordList(StorageRecord storageRecord, Date startDate, Date endDate) {
+        return storageRecordDao.findPagedByConsignorInfo(storageRecord.getRecordNo(), storageRecord.getStorageType(),
+                storageRecord.getConsignor(), storageRecord.getConsignorPhoneNo(), storageRecord.getConsignorType(),
+                storageRecord.getIndustryType(), startDate, endDate,
+                (storageRecord.getPageNum()-1)*storageRecord.getPageSize(),storageRecord.getPageSize());
+    }
+
+    public long getStorageRecordListSize(StorageRecord storageRecord, Date startDate, Date endDate) {
         return storageRecordDao.findByConsignorInfo(storageRecord.getRecordNo(), storageRecord.getStorageType(),
                 storageRecord.getConsignor(), storageRecord.getConsignorPhoneNo(), storageRecord.getConsignorType(),
-                storageRecord.getIndustryType(), startDate, endDate);
+                storageRecord.getIndustryType(), startDate, endDate).size();
     }
 
     public void saveStorageRecord(StorageRecord storageRecord) {

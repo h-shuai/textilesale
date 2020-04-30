@@ -2,6 +2,7 @@ package com.rosellete.textilesale.business.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
@@ -38,11 +39,11 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO) {
-        PageHelper.startPage(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
+        Page page=new Page(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderInfoVO);
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderInfoVO, orderInfo, nullPropertyNames);
-        List<OrderInfo> orderList;
+        List<OrderInfo> resultSetList;
         Date startDate = orderInfoVO.getStartDate(), endDate = orderInfoVO.getEndDate();
         if (!(null == startDate && null == endDate)) {
             if (null != endDate) {
@@ -51,11 +52,14 @@ public class OrderBusinessImpl implements OrderBusiness {
                 calendarInstance.add(Calendar.DATE, 1);
                 endDate = calendarInstance.getTime();
             }
-            orderList = orderInfoService.findOrderListByCustomerInfo(orderInfo, startDate, endDate);
+            resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, startDate, endDate);
+            page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo, startDate, endDate));
         } else {
-            orderList = orderInfoService.findOrderListByCustomerInfo(orderInfo, null, null);
+            resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, null, null);
+            page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo, null, null));
         }
-        List<OrderInfoVO> collect = orderList.stream().map(e -> {
+
+        List<OrderInfoVO> collect = resultSetList.stream().map(e -> {
             OrderInfoVO temp = new OrderInfoVO();
             BeanUtils.copyProperties(e, temp);
             List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(e.getOrderNo());
@@ -66,7 +70,9 @@ public class OrderBusinessImpl implements OrderBusiness {
             temp.setStockedSumLength(filteredList.stream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
             return temp;
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+
+        page.addAll(collect);
+        return new PageInfo<>(page);
     }
 
     @Override
@@ -114,7 +120,7 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public PageInfo<OrderDetailInfoVO> getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO) {
-        PageHelper.startPage(orderDetailInfoVO.getPageNum(), orderDetailInfoVO.getPageSize());
+        Page page=new Page(orderDetailInfoVO.getPageNum(), orderDetailInfoVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderDetailInfoVO);
         OrderDetailInfo orderDetailInfo = new OrderDetailInfo();
         BeanUtils.copyProperties(orderDetailInfoVO, orderDetailInfo, nullPropertyNames);
@@ -127,19 +133,26 @@ public class OrderBusinessImpl implements OrderBusiness {
                 calendarInstance.add(Calendar.DATE, 1);
                 endDate = calendarInstance.getTime();
             }
-            resultSetList = orderDetailInfoService.findOrderDetailInfo(orderDetailInfo.getOrderNo(), orderDetailInfo.getProductType(),
+            resultSetList = orderDetailInfoService.findOrderDetailInfo(orderDetailInfo,
                     orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
                     orderDetailInfoVO.getConsignmentDepartment(), startDate, endDate);
+            page.setTotal(orderDetailInfoService.findOrderDetailInfoListSize(orderDetailInfo,
+                    orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
+                    orderDetailInfoVO.getConsignmentDepartment(), startDate, endDate));
         } else {
-            resultSetList = orderDetailInfoService.findOrderDetailInfo(orderDetailInfo.getOrderNo(), orderDetailInfo.getProductType(),
+            resultSetList = orderDetailInfoService.findOrderDetailInfo(orderDetailInfo,
                     orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
                     orderDetailInfoVO.getConsignmentDepartment(), null, null);
+            page.setTotal(orderDetailInfoService.findOrderDetailInfoListSize(orderDetailInfo,
+                    orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
+                    orderDetailInfoVO.getConsignmentDepartment(), null, null));
         }
         List<OrderDetailInfoVO> collect = resultSetList.stream().map(e -> {
             String jsonString = JSON.toJSONString(e);
             return JSONObject.parseObject(jsonString, OrderDetailInfoVO.class);
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        page.addAll(collect);
+        return new PageInfo<>(page);
     }
 
     @Transactional(rollbackOn = RuntimeException.class)
