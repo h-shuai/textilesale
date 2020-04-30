@@ -27,4 +27,7 @@ public interface StorageApi {
     @GetMapping(path = "/viewPackageInventory")
     RestResponse getPackageInventory(@RequestParam("recordNo") String recordNo,
                                      @RequestParam("packageNo") String packageNo);
+
+    @PostMapping(value = "/savePackageInventory", consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse savePackageInventoryList(@RequestBody @Valid StoragePackageVO storagePackageVO);
 }

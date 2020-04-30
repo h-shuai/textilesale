@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/storage")
@@ -55,5 +57,18 @@ public class StorageController implements StorageApi {
     public RestResponse getPackageInventory(String recordNo, String packageNo) {
         PageInfo<PackageInventoryInfoVO> pageInfo = storageBusiness.getPackageInventory(recordNo, packageNo);
         return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public RestResponse savePackageInventoryList(@Valid StoragePackageVO storagePackageVO) {
+        RestResponse response = new RestResponse();
+        try {
+            storageBusiness.savePackageInventoryList(storagePackageVO);
+        } catch (Exception e) {
+            response.setCode(999);
+            response.setMsg("系统内部错误，请稍后重试");
+            log.error("保存抄包记录数据{}失败", storagePackageVO, e);
+        }
+        return response;
     }
 }

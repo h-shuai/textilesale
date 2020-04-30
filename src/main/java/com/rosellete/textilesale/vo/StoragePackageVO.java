@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rosellete.textilesale.model.StoragePackageInfo;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class StoragePackageVO extends StoragePackageInfo {
@@ -29,4 +31,6 @@ public class StoragePackageVO extends StoragePackageInfo {
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
+
+    private List<PackageInventoryInfoVO> packageInventoryList=new ArrayList<>();
 }

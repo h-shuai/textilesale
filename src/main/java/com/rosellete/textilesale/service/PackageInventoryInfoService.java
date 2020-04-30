@@ -16,4 +16,8 @@ public class PackageInventoryInfoService {
     public List<PackageInventoryInfo> findPackageInventoryByPackageNo(String packageNo) {
         return packageInventoryInfoDao.findByPackageNo(packageNo);
     }
+
+    public void savePackageInventoryList(List<PackageInventoryInfo> inventoryInfoList) {
+        packageInventoryInfoDao.saveAll(inventoryInfoList);
+    }
 }

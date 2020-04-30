@@ -169,4 +169,31 @@ public class StorageBusinessImpl implements StorageBusiness {
         }).collect(Collectors.toList());
         return new PageInfo<>(parsedList);
     }
+
+    @Transactional(rollbackOn = RuntimeException.class)
+    @Override
+    public void savePackageInventoryList(StoragePackageVO storagePackageVO) {
+        String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(storagePackageVO);
+        StoragePackageInfo storagePackageInfo = new StoragePackageInfo();
+        BeanUtils.copyProperties(storagePackageVO, storagePackageInfo, nullPropertyNames);
+        int quantity = storagePackageVO.getPackageInventoryList().size();
+        if (quantity > 0) {
+            Date now = new Date();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
+            String recordNo = LocalDateTime.now().format(dateTimeFormatter);
+            String creator = "admin";
+            List<PackageInventoryInfo> inventoryInfoList = new ArrayList<>(quantity);
+            storagePackageVO.getPackageInventoryList().stream().forEach(e->{
+                PackageInventoryInfo temp=new PackageInventoryInfo();
+                String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(e);
+                BeanUtils.copyProperties(e, temp, nullOrBlankPropertyNames);
+                temp.setCreateUser(creator);
+                temp.setCreateDate(now);
+                temp.setUpdateUser(creator);
+                temp.setUpdateDate(now);
+                inventoryInfoList.add(temp);
+            });
+            packageInventoryInfoService.savePackageInventoryList(inventoryInfoList);
+        }
+    }
 }

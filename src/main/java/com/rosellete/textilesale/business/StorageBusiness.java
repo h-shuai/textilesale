@@ -15,4 +15,6 @@ public interface StorageBusiness {
     PageInfo<StoragePackageVO> getStoragePackageList(StoragePackageVO storagePackageVO);
 
     PageInfo<PackageInventoryInfoVO> getPackageInventory(String recordNo, String packageNo);
+
+    void savePackageInventoryList(StoragePackageVO storagePackageVO);
 }
