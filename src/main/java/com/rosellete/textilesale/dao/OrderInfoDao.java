@@ -43,11 +43,12 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
             "group by a.order_no,a.customer_name order by a.order_date desc", nativeQuery = true)
     List<Map<String, Object>> getWaitPackOrderList(@Param("orderNo") String OrderNo, @Param("customerName") String customerName);
 
-    @Query(value = "select count(b.product_type) modelCount,count(c.product_type) pieceCount from t_order_info a " +
-            "left outer join t_order_detail_info b on a.order_no=b.order_no " +
-            "left outer join t_order_stock_detail_info c on a.order_no=c.order_no and b.product_type=c.product_type " +
-            "where a.order_no=?1 and a.order_status='1'", nativeQuery = true)
-    Map<String, Object> getTotalCount(@Param("orderNo") String orderNo);
+    @Query(value = "select count(id) from t_order_detail_info where order_no=?1 union all " +
+            "select count(id) from t_order_stock_detail_info where order_no=?1 union all " +
+            "select count(id) from t_pack_info where order_no=?1 union all " +
+            "select sum(IFNULL(stock_length,0)) from t_pack_detail_info where order_no=?1 union all " +
+            "select count(id) from t_pack_detail_info where order_no=?1",nativeQuery = true)
+    List<String> getTotalCount(@Param("orderNo") String orderNo);
 
     @Query(value = "select distinct b.url picurl,b.product_type colthModel from t_order_info a " +
             "left join t_order_detail_info b on a.order_no=b.order_no " +

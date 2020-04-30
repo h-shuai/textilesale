@@ -257,19 +257,15 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public Map<String, Object> getTotalCount(String orderNo) {
+    public List<String> getTotalCount(String orderNo) {
         return orderInfoService.getTotalCount(orderNo);
     }
 
     @Override
     public List<PackInfoVO> getPieceList(String orderNo) {
         List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(orderNo);
-        List<String> stockDetailInfoList = null;
-        String[] pieceArr = null;
-        for (PackInfoVO packInfoVO : returnList) {
-            stockDetailInfoList = orderStockDetailInfoService.getPieceList(orderNo, packInfoVO.getColthModel());
-            pieceArr = stockDetailInfoList.toArray(new String[stockDetailInfoList.size()]);
-            packInfoVO.setPieceOptions(pieceArr);
+        for (PackInfoVO packInfoVO : returnList){
+            packInfoVO.setPieceOptions(orderStockDetailInfoService.getPieceList(orderNo,packInfoVO.getColthModel()));
         }
         return returnList;
     }
