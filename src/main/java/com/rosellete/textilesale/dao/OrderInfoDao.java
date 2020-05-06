@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Temporal;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TemporalType;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +38,14 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
                                        @Temporal(TemporalType.TIMESTAMP) Date startDate,
                                        @Temporal(TemporalType.TIMESTAMP) Date endDate,
                                        @Param("startRow") Integer startRow, @Param("size") Integer size);
-
+    @Transactional
     @Modifying
     @Query(value = "update t_order_info t set t.order_status = ?2, t.update_user = ?3, t.update_date = NOW()" +
             " where t.order_no = ?1", nativeQuery = true)
     int updateOrderStatus(@Param("orderNo") String orderNo, @Param("orderStatus") String orderStatus,
                           @Param("updateUser") String updateUser);
 
+    @Transactional
     @Modifying
     @Query(value = "update t_order_info t set t.order_status =?2, t.order_amount = ?3, t.update_user = ?4, t.update_date = NOW()" +
             " where t.order_no = ?1", nativeQuery = true)
