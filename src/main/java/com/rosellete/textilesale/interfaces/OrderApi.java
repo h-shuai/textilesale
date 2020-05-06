@@ -18,10 +18,10 @@ public interface OrderApi {
     @GetMapping(path = "/queryOrderDetail")
     RestResponse getOrderDetailInfo(@RequestParam("orderNo") String orderNo);
 
-    @PutMapping(path = "/confirmOrderStock")
+    @GetMapping(path = "/confirmOrderStock")
     RestResponse confirmOrderStock(@RequestParam("orderNo") String orderNo);
 
-    @PutMapping(path = "/restock")
+    @GetMapping(path = "/restock")
     RestResponse orderRestock(@RequestParam("orderNo") String orderNo);
 
     @GetMapping(path = "/queryOrderStockDetail")

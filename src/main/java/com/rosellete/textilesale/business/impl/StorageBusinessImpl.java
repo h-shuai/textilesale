@@ -77,9 +77,17 @@ public class StorageBusinessImpl implements StorageBusiness {
         int quantity = storageRecord.getPackageQuantity();
         if (quantity > 0) {
             Date now = new Date();
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
-            String recordNo = LocalDateTime.now().format(dateTimeFormatter);
             String creator = "admin";
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
+            String recordNo;
+            if (StringUtils.isBlank(storageRecord.getRecordNo())) {
+                recordNo = storageRecord.getRecordNo();
+                storageRecord = storageRecordService.findByPrimaryKey(recordNo);
+            } else {
+                recordNo = LocalDateTime.now().format(dateTimeFormatter);
+                storageRecord.setCreateUser(creator);
+                storageRecord.setCreateDate(now);
+            }
             List<StoragePackageInfo> packageList = new ArrayList<>(quantity);
             StoragePackageInfo temp;
             for (int i = 0; i < quantity; i++) {
@@ -94,8 +102,6 @@ public class StorageBusinessImpl implements StorageBusiness {
             }
             storageRecord.setRecordNo(recordNo);
             storageRecord.setStorageDate(now);
-            storageRecord.setCreateUser(creator);
-            storageRecord.setCreateDate(now);
             storageRecord.setUpdateUser(creator);
             storageRecord.setUpdateDate(now);
             storagePackageInfoService.saveStoragePackageList(packageList);
@@ -183,8 +189,8 @@ public class StorageBusinessImpl implements StorageBusiness {
             String recordNo = LocalDateTime.now().format(dateTimeFormatter);
             String creator = "admin";
             List<PackageInventoryInfo> inventoryInfoList = new ArrayList<>(quantity);
-            storagePackageVO.getPackageInventoryList().stream().forEach(e->{
-                PackageInventoryInfo temp=new PackageInventoryInfo();
+            storagePackageVO.getPackageInventoryList().stream().forEach(e -> {
+                PackageInventoryInfo temp = new PackageInventoryInfo();
                 String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(e);
                 BeanUtils.copyProperties(e, temp, nullOrBlankPropertyNames);
                 temp.setCreateUser(creator);

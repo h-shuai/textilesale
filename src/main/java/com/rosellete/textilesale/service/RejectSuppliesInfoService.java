@@ -13,11 +13,17 @@ public class RejectSuppliesInfoService {
     @Autowired
     private RejectSuppliesInfoDao rejectSuppliesInfoDao;
 
-    public void saverejectSupplies(List<RejectSuppliesInfo> list) {
+    public void saveRejectSupplies(List<RejectSuppliesInfo> list) {
         rejectSuppliesInfoDao.saveAll(list);
     }
 
     public List<RejectSuppliesInfo> findRecordDetailByRecordNo(String recordNo) {
         return rejectSuppliesInfoDao.findAllByRecordNo(recordNo);
+    }
+
+    public void deleteRejectSuppliesByRecordNo(String recordNo) {
+        RejectSuppliesInfo rejectSuppliesInfo = new RejectSuppliesInfo();
+        rejectSuppliesInfo.setRecordNo(recordNo);
+        rejectSuppliesInfoDao.delete(rejectSuppliesInfo);
     }
 }
