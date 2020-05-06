@@ -110,7 +110,7 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public void confirmOrderStock(String orderNo) {
-        orderInfoService.updateOrderStatus(orderNo, "2");
+        orderInfoService.updateOrderStatus(orderNo, "3");
     }
 
     @Override
