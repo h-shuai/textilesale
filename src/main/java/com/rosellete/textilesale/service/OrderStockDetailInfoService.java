@@ -29,4 +29,8 @@ public class OrderStockDetailInfoService {
     public List<Map<String,Object>> getPieceList(String orderNo, String productType){
         return orderStockDetailInfoDao.getPieceList(orderNo,productType);
     }
+
+    public void updateStatusById(String status,String id){
+        orderStockDetailInfoDao.updateStatusById(status,id);
+    }
 }
