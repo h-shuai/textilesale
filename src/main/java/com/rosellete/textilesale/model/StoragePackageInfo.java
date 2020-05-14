@@ -24,8 +24,14 @@ public class StoragePackageInfo extends Page implements Serializable {
     @Column(name = "package_no", nullable = false, length = 40)
     private String packageNo;
 
+    @Column(name = "packed_stock_length", nullable = false, scale = 10,precision = 2)
+    private Double packedStockLength;
+
     @Column(name = "record_no", nullable = false, length = 30)
     private String recordNo;
+
+    @Column(name = "package_status", nullable = false, length = 1)
+    private String packageStatus;
 
     @Column(name = "create_user", length = 100)
     private String createUser;

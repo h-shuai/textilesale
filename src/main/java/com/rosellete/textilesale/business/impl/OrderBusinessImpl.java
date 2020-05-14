@@ -6,9 +6,11 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
+import com.rosellete.textilesale.model.CustomerInfo;
 import com.rosellete.textilesale.model.OrderDetailInfo;
 import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.model.OrderStockDetailInfo;
+import com.rosellete.textilesale.service.CustomerService;
 import com.rosellete.textilesale.service.OrderDetailInfoService;
 import com.rosellete.textilesale.service.OrderInfoService;
 import com.rosellete.textilesale.service.OrderStockDetailInfoService;
@@ -33,6 +35,8 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Autowired
     private OrderInfoService orderInfoService;
     @Autowired
+    private CustomerService customerService;
+    @Autowired
     private OrderDetailInfoService orderDetailInfoService;
     @Autowired
     private OrderStockDetailInfoService orderStockDetailInfoService;
@@ -42,29 +46,20 @@ public class OrderBusinessImpl implements OrderBusiness {
         Page page=new Page(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderInfoVO);
         OrderInfo orderInfo = new OrderInfo();
+        CustomerInfo customerInfo= new CustomerInfo();
         BeanUtils.copyProperties(orderInfoVO, orderInfo, nullPropertyNames);
-        List<OrderInfo> resultSetList;
-        Date startDate = orderInfoVO.getStartDate(), endDate = orderInfoVO.getEndDate();
-        if (!(null == startDate && null == endDate)) {
-            if (null != endDate) {
-                Calendar calendarInstance = Calendar.getInstance();
-                calendarInstance.setTime(endDate);
-                calendarInstance.add(Calendar.DATE, 1);
-                endDate = calendarInstance.getTime();
-            }
-            resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, startDate, endDate);
-            page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo, startDate, endDate));
-        } else {
-            resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, null, null);
-            page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo, null, null));
-        }
-
+        BeanUtils.copyProperties(orderInfoVO, customerInfo, nullPropertyNames);
+        List<OrderInfo> resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, customerInfo,null, null);
+        page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo,customerInfo, null, null));
         List<OrderInfoVO> collect = resultSetList.stream().map(e -> {
             OrderInfoVO temp = new OrderInfoVO();
             BeanUtils.copyProperties(e, temp);
+            CustomerInfo info = customerService.findByPrimaryKey(e.getCustomerNo());
+            temp.setCustomerName(info.getName());
+            temp.setCustomerPhoneNo(info.getPhone());
+            temp.setCustomerType(info.getType());
+            temp.setIndustryType(info.getIndustry());
             List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(e.getOrderNo());
-            temp.setReserveTypeCount(orderDetailInfoList.size());
-            temp.setReserveSumLength(orderDetailInfoList.stream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
             List<OrderDetailInfo> filteredList = orderDetailInfoList.stream().filter(detail -> StringUtils.equals("2", detail.getStockStatus())).collect(Collectors.toList());
             temp.setStockedTypeCount(filteredList.size());
             temp.setStockedSumLength(filteredList.stream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
@@ -167,7 +162,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         String creater = "admin";
         Date now = new Date();
 
-        List<OrderDetailInfo> collect = orderDetailList.stream().map(e -> {
+        List<OrderDetailInfo> collect = orderDetailList.stream().filter(e->StringUtils.isBlank(e.getProductType())).map(e -> {
             e.setOrderNo(orderNo);
             e.setCreateUser(creater);
             e.setUpdateUser(creater);
@@ -177,9 +172,13 @@ public class OrderBusinessImpl implements OrderBusiness {
             return e;
         }).collect(Collectors.toList());
         double sumAmount = orderDetailList.stream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
+        double sumLength = orderDetailList.stream().map(e -> e.getProductLength()).reduce((a, b) -> a + b).get().doubleValue();
+        long typeCount = orderDetailList.stream().map(e -> e.getProductType()).distinct().count();
         orderInfo.setOrderNo(orderNo);
         orderInfo.setOrderDate(now);
         orderInfo.setOrderAmount(sumAmount);
+        orderInfo.setReserveSumLength(sumLength);
+        orderInfo.setReserveTypeCount((int) typeCount);
         orderInfo.setClerkName(creater);
         orderInfo.setCreateUser(creater);
         orderInfo.setUpdateUser(creater);
@@ -234,15 +233,15 @@ public class OrderBusinessImpl implements OrderBusiness {
                     Double stockedLength = 0.0D;
                     for (OrderStockDetailInfo stock : orderStockingArrays) {
                         List<OrderStockDetailInfo> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(orderNo, e.getProductType());
-                        if (CollectionUtils.isEmpty(orderStockDetailInfo)) {
-                            stock.setCreateDate(now);
-                            stock.setCreateUser(updater);
-                            stock.setStatus("0");
-                            stock.setUpdateDate(now);
-                            stock.setUpdateUser(updater);
-                            stockedLength += stock.getStockLength();
-                            toBeInsertOrderStockList.add(stock);
-                        } else {
+                        stock.setOrderNo(e.getOrderNo());
+                        stock.setCreateDate(now);
+                        stock.setCreateUser(updater);
+                        stock.setStatus("0");
+                        stock.setUpdateDate(now);
+                        stock.setUpdateUser(updater);
+                        stockedLength += stock.getStockLength();
+                        toBeInsertOrderStockList.add(stock);
+                        if (!CollectionUtils.isEmpty(orderStockDetailInfo)) {
                             existedOrderStockList.addAll(orderStockDetailInfo);
                         }
                     }

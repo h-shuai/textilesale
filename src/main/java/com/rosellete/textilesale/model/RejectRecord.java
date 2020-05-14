@@ -24,17 +24,8 @@ public class RejectRecord extends Page implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date rejectedDate;
 
-    @Column(name = "supplier_phone_no", length = 15)
-    private String supplierPhoneNo;
-
-    @Column(name = "supplier_type", length = 1)
-    private String supplierType;
-
-    @Column(name = "supplier_name", length = 200)
-    private String supplierName;
-
-    @Column(name = "industry_type", length = 1)
-    private String industryType;
+    @Column(name = "supplier_no",nullable = false, length = 11)
+    private Integer supplierNo;
 
     @Column(name = "create_user", length = 100)
     private String createUser;

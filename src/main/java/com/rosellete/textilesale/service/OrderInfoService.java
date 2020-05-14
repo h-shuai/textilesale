@@ -2,6 +2,7 @@ package com.rosellete.textilesale.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrderInfoDao;
+import com.rosellete.textilesale.model.CustomerInfo;
 import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.vo.OrderInfoVO;
 import com.rosellete.textilesale.vo.PackInfoVO;
@@ -23,15 +24,15 @@ public class OrderInfoService {
         return orderInfo.orElse(null);
     }
 
-    public List<OrderInfo> findOrderListByCustomerInfo(OrderInfo orderInfo, Date startDate, Date endDate) {
-        return orderInfoDao.findPagedOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(),
-                orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate,
+    public List<OrderInfo> findOrderListByCustomerInfo(OrderInfo orderInfo, CustomerInfo customerInfo, Date startDate, Date endDate) {
+        return orderInfoDao.findPagedOrderList(orderInfo.getOrderNo(),customerInfo.getCustomerNo(), customerInfo.getName(),
+                customerInfo.getPhone(), orderInfo.getOrderStatus(), startDate, endDate,
                 (orderInfo.getPageNum()-1)*orderInfo.getPageSize(),orderInfo.getPageSize());
     }
 
-    public long findOrderListSizeByCustomerInfo(OrderInfo orderInfo, Date startDate, Date endDate) {
-        int size = orderInfoDao.findOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName(),
-                orderInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate).size();
+    public long findOrderListSizeByCustomerInfo(OrderInfo orderInfo,CustomerInfo customerInfo, Date startDate, Date endDate) {
+        int size = orderInfoDao.findOrderList(orderInfo.getOrderNo(),customerInfo.getCustomerNo(), customerInfo.getName(),
+                customerInfo.getPhone(), orderInfo.getOrderStatus(), startDate, endDate).size();
         return size;
 
     }
@@ -49,7 +50,7 @@ public class OrderInfoService {
     }
 
     public List<OrderInfoVO> getWaitPackCustomerList(OrderInfo orderInfo) {
-        List<Map<String, Object>> maps = orderInfoDao.getWaitPackCustomer(orderInfo.getCustomerName());
+        List<Map<String, Object>> maps = null ;
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
             OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
@@ -59,7 +60,7 @@ public class OrderInfoService {
     }
 
     private List<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo) {
-        List<Map<String, Object>> maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(), orderInfo.getCustomerName());
+        List<Map<String, Object>> maps = null;
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
             OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
@@ -70,7 +71,6 @@ public class OrderInfoService {
 
     public List<String> getTotalCount(String customer){
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setCustomerName(customer);
         orderInfo.setOrderNo(null);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<String> orderNos = new ArrayList<>();
@@ -82,7 +82,6 @@ public class OrderInfoService {
 
     public List<PackInfoVO> getWaitPieceList(String customer) {
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setCustomerName(customer);
         orderInfo.setOrderNo(null);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<String> orderNos = new ArrayList<>();

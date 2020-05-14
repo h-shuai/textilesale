@@ -13,7 +13,7 @@ public class StoragePackageVO extends StoragePackageInfo {
 
     private String storageType;
 
-    private String consignorPhoneNo;
+    private String consignorNo;
 
     private String consignorType;
 
@@ -32,5 +32,6 @@ public class StoragePackageVO extends StoragePackageInfo {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
 
-    private List<PackageInventoryInfoVO> packageInventoryList=new ArrayList<>();
+    private List<ProductTypeInfoVO> productTypeList=new ArrayList<>();
+
 }

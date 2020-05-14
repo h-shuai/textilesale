@@ -8,6 +8,15 @@ import java.util.Date;
 
 @Data
 public class RejectRecordVO extends RejectRecord {
+
+    private String supplierName;
+
+    private String supplierType;
+
+    private String industryType;
+
+    private String supplierPhoneNo;
+
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
 

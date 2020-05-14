@@ -1,9 +1,7 @@
 package com.rosellete.textilesale.business;
 
 import com.github.pagehelper.PageInfo;
-import com.rosellete.textilesale.vo.PackageInventoryInfoVO;
-import com.rosellete.textilesale.vo.StoragePackageVO;
-import com.rosellete.textilesale.vo.StorageRecordVO;
+import com.rosellete.textilesale.vo.*;
 
 public interface StorageBusiness {
     PageInfo<StorageRecordVO> getStorageRecordList(StorageRecordVO storageRecordVO);
@@ -12,9 +10,16 @@ public interface StorageBusiness {
 
     PageInfo<StoragePackageVO> getStoragePackage(String recordNo);
 
-    PageInfo<StoragePackageVO> getStoragePackageList(StoragePackageVO storagePackageVO);
+    PageInfo<StoragePackageVO> getStoragePackageList(ConsignorVO consignorVO);
 
     PageInfo<PackageInventoryInfoVO> getPackageInventory(String recordNo, String packageNo);
 
-    void savePackageInventoryList(StoragePackageVO storagePackageVO);
+    void savePackageInventoryList(PackageInventorySaveVO packageInventorySaveVO);
+
+    PageInfo<ConsignorVO> findAllSupplierAndCustomerWarehouseRelated();
+
+    PageInfo<ConsignorVO> findSupplierAndCustomerWarehouseRelated(ConsignorVO consignorVO);
+
+    PageInfo<ProductTypeInfoVO> findAllProductType();
+
 }

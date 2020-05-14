@@ -15,13 +15,13 @@ import java.math.BigDecimal;
 public class SupplierInfo extends Page implements Serializable{
     @Id
     @Column(name = "supplier_no", nullable = false, length = 30)
-    private String supplier_no;
+    private Integer supplierNo;
 
     @Column(name = "name", length = 200)
     private String name;
 
     @Column(name = "short_name", length = 200)
-    private String short_name;
+    private String shortName;
 
     @Column(name = "phone", length = 200)
     private String phone;

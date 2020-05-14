@@ -31,9 +31,6 @@ public class RejectSuppliesInfo extends Page implements Serializable {
     @Column(name = "product_length", nullable = false, scale = 8, precision = 2)
     private Double productLength;
 
-    @Column(name = "url", length = 250)
-    private String url;
-
     @Column(name = "create_user", length = 100)
     private String createUser;
 

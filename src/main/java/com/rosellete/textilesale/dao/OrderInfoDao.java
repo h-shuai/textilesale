@@ -16,23 +16,29 @@ import java.util.Map;
 @Repository
 public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
 
-    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no= ?1, 1 = 1)" +
-            " and IF(?2 is not null, t.customer_name like CONCAT(?2, '%'), 1 = 1)" +
-            " and IF(?3 is not null, t.customer_phone_no like CONCAT(?3, '%'), 1 = 1)" +
-            " and IF(?4 is not null, t.order_status = ?4, 1 = 1) and IF(?5 is not null, t.order_date >= ?5, 1 = 1)" +
-            " and IF(?6 is not null, t.order_date < ?6, 1 = 1)", nativeQuery = true)
-    List<OrderInfo> findOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName,
+    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no=?1, 1=1)" +
+            " and IF(?2 is not null, t.customer_no = ?2 , 1 = 1)" +
+            " and exists (select 1 from t_customer_info t1 where t.customer_no=t1.customer_no" +
+            " and IF(?3 is not null, t1.name like CONCAT(?3, '%'), 1 = 1)" +
+            " and IF(?4 is not null, t1.phone like CONCAT(?4, '%'), 1 = 1))" +
+            " and IF(?5 is not null, t.order_status = ?5, 1 = 1)" +
+            " and IF(?6 is not null, t.order_date >= ?6, 1 = 1)" +
+            " and IF(?7 is not null, t.order_date < ?7, 1 = 1)", nativeQuery = true)
+    List<OrderInfo> findOrderList(@Param("orderNo") String orderNo,@Param("customerNo") Integer customerNo, @Param("customerName") String customerName,
                                   @Param("customerPhoneNo") String customerPhoneNo,
                                   @Param("orderStatus") String orderStatus,
                                   @Temporal(TemporalType.TIMESTAMP) Date startDate,
                                   @Temporal(TemporalType.TIMESTAMP) Date endDate);
 
-    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no= ?1, 1 = 1)" +
-            " and IF(?2 is not null, t.customer_name like CONCAT(?2, '%'), 1 = 1)" +
-            " and IF(?3 is not null, t.customer_phone_no like CONCAT(?3, '%'), 1 = 1)" +
-            " and IF(?4 is not null, t.order_status = ?4, 1 = 1) and IF(?5 is not null, t.order_date >= ?5, 1 = 1)" +
-            " and IF(?6 is not null, t.order_date < ?6, 1 = 1) limit ?7,?8 ", nativeQuery = true)
-    List<OrderInfo> findPagedOrderList(@Param("orderNo") String orderNo, @Param("customerName") String customerName,
+    @Query(value = "SELECT t.* FROM t_order_info t where IF(?1 is not null, t.order_no=?1, 1=1)" +
+            " and IF(?2 is not null, t.customer_no = ?2 , 1 = 1)" +
+            " and exists (select 1 from t_customer_info t1 where t.customer_no=t1.customer_no" +
+            " and IF(?3 is not null, t1.name like CONCAT(?3, '%'), 1 = 1)" +
+            " and IF(?4 is not null, t1.phone like CONCAT(?4, '%'), 1 = 1))" +
+            " and IF(?5 is not null, t.order_status = ?5, 1 = 1)" +
+            " and IF(?6 is not null, t.order_date >= ?6, 1 = 1)" +
+            " and IF(?7 is not null, t.order_date < ?7, 1 = 1) limit ?8,?9", nativeQuery = true)
+    List<OrderInfo> findPagedOrderList(@Param("orderNo") String orderNo,@Param("customerNo") Integer customerNo, @Param("customerName") String customerName,
                                        @Param("customerPhoneNo") String customerPhoneNo,
                                        @Param("orderStatus") String orderStatus,
                                        @Temporal(TemporalType.TIMESTAMP) Date startDate,

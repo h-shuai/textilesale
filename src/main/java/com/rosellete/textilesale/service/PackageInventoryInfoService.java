@@ -3,6 +3,7 @@ package com.rosellete.textilesale.service;
 import com.rosellete.textilesale.dao.PackageInventoryInfoDao;
 import com.rosellete.textilesale.model.PackageInventoryInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,5 +20,9 @@ public class PackageInventoryInfoService {
 
     public void savePackageInventoryList(List<PackageInventoryInfo> inventoryInfoList) {
         packageInventoryInfoDao.saveAll(inventoryInfoList);
+    }
+
+    public List<String> findAllProductType() {
+      return packageInventoryInfoDao.findAllProductType();
     }
 }
