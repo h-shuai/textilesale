@@ -39,12 +39,12 @@ public interface OrderApi {
     @PostMapping(value = "/saveOrderStockDetail", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse saveOrderStockDetail(@RequestBody @Valid OrderStockSaveVO orderStockSaveVO);
 
-    @PostMapping(value = "/getWaitPackOrderList", consumes = MediaType.APPLICATION_JSON_VALUE)
-    RestResponse getWaitPackOrderList(@RequestBody OrderInfo orderInfo);
+    @PostMapping(value = "/getWaitPackCustomerList", consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse getWaitPackCustomerList(@RequestBody OrderInfo orderInfo);
 
     @RequestMapping("/getTotalCount")
-    RestResponse getTotalCount(@RequestParam("orderNo") String orderNo);
+    RestResponse getTotalCount(@RequestParam("customer") String customer);
 
     @RequestMapping("/getPieceList")
-    RestResponse getPieceList(@RequestParam("orderNo") String orderNo);
+    RestResponse getPieceList(@RequestParam("customer") String customer);
 }

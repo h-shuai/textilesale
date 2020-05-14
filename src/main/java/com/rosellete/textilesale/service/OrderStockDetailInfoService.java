@@ -33,4 +33,8 @@ public class OrderStockDetailInfoService {
     public void updateStatusById(String status,String id){
         orderStockDetailInfoDao.updateStatusById(status,id);
     }
+
+    public OrderStockDetailInfo getStockDetailById(String id){
+        return orderStockDetailInfoDao.getStockDetailById(id);
+    }
 }

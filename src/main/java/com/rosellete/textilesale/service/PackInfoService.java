@@ -1,13 +1,16 @@
 package com.rosellete.textilesale.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrderStockDetailInfoDao;
 import com.rosellete.textilesale.dao.PackDetailInfoDao;
 import com.rosellete.textilesale.dao.PackInfoDao;
 import com.rosellete.textilesale.model.PackDetailInfo;
 import com.rosellete.textilesale.model.PackInfo;
+import com.rosellete.textilesale.vo.PackInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +25,12 @@ public class PackInfoService {
     @Autowired
     private OrderStockDetailInfoDao orderStockDetailInfoDao;
 
-    public int getMaxPackNo(String orderNo){
-        return packInfoDao.getMaxPackNo(orderNo);
+    public List<PackInfo> getPackListByCustomer(String customer,String status){
+        return packInfoDao.getPackListByCustomer(customer,status);
+    }
+
+    public int getMaxPackNo(String customer){
+        return packInfoDao.getMaxPackNo(customer);
     }
 
     public int savePackInfo(PackInfo packInfo){
@@ -48,14 +55,28 @@ public class PackInfoService {
         packDetailInfoDao.deleteDetailByPackId(id);
         return packInfoDao.deletePackById(id);
     }
-    public List<Map<String,Object>> getPackDetailList(String orderNo,String packId){
-        return packDetailInfoDao.getProductMap(orderNo,packId);
+    public List<Map<String,Object>> getPackDetailList(String packId){
+        return packDetailInfoDao.getProductMap(packId);
     }
-    public List<Map<String,Object>> getPackLengthList(String packId,String productType){
-        return packDetailInfoDao.getPackDetailRices(packId,productType);
+    public List<Map<String,Object>> getPackLengthList(String packId,String productType,String orderNo){
+        return packDetailInfoDao.getPackDetailRices(packId,productType,orderNo);
     }
 
     public PackInfo getPackInfoById(String id){
         return packInfoDao.getPackInfoById(id);
+    }
+
+    public List<PackInfoVO> getWaitDeliveryList(PackInfo packInfo) {
+        List<Map<String, Object>> maps = packInfoDao.getWaitDeliveryList(packInfo.getCustomerName());
+        List<PackInfoVO> packInfoVOList = new ArrayList<>();
+        for (Map<String, Object> map : maps) {
+            PackInfoVO packInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), PackInfoVO.class);
+            packInfoVOList.add(packInfoVO);
+        }
+        return packInfoVOList;
+    }
+
+    public void updateStatusByIds(List<String> ids){
+        packInfoDao.updateStatusByIds(ids);
     }
 }

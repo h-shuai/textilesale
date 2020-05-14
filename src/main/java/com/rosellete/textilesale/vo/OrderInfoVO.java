@@ -23,4 +23,6 @@ public class OrderInfoVO extends OrderInfo {
     private Integer stockedTypeCount;
 
     private Double stockedSumLength;
+
+    private String orderCount;
 }
