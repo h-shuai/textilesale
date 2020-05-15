@@ -50,6 +50,8 @@ class OrderBusinessTest {
         System.out.println("now.format(dateTimeFormatter) = " + now.format(dateTimeFormatter));
         System.out.println("nanoTime = " + System.nanoTime());
         System.out.println("currentTimeMillis = " + System.currentTimeMillis());
+        dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMddHHmmssn");
+        System.out.println("now.format(dateTimeFormatter) = " + now.format(dateTimeFormatter)+"\t"+now.format(dateTimeFormatter).length()+"\t"+now.format(dateTimeFormatter).substring(0,17));
 
     }
 

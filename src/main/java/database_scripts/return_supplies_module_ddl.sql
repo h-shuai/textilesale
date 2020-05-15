@@ -5,6 +5,8 @@ CREATE TABLE t_reject_record
     record_no         varchar(30) NOT NULL COMMENT '退货记录编号',
     reject_date       datetime     DEFAULT NOW() COMMENT '退货时间',
     supplier_no varchar(30)  NOT NULL COMMENT '供应商编号',
+    product_type   varchar(10)  NOT NULL COMMENT '产品型号',
+    product_count   smallint  NOT NULL COMMENT '匹数',
     create_user       varchar(100) DEFAULT NULL COMMENT '创建人',
     update_user       varchar(100) DEFAULT NULL COMMENT '修改人',
     create_date       datetime     DEFAULT NOW() COMMENT '创建时间',

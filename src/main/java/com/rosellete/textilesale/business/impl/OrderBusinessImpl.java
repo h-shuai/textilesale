@@ -6,14 +6,8 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
-import com.rosellete.textilesale.model.CustomerInfo;
-import com.rosellete.textilesale.model.OrderDetailInfo;
-import com.rosellete.textilesale.model.OrderInfo;
-import com.rosellete.textilesale.model.OrderStockDetailInfo;
-import com.rosellete.textilesale.service.CustomerService;
-import com.rosellete.textilesale.service.OrderDetailInfoService;
-import com.rosellete.textilesale.service.OrderInfoService;
-import com.rosellete.textilesale.service.OrderStockDetailInfoService;
+import com.rosellete.textilesale.model.*;
+import com.rosellete.textilesale.service.*;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
 import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -41,16 +35,20 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Autowired
     private OrderStockDetailInfoService orderStockDetailInfoService;
 
+    @Autowired
+    private SysConfigService sysConfigService;
+
+
     @Override
     public PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO) {
-        Page page=new Page(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
+        Page page = new Page(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderInfoVO);
         OrderInfo orderInfo = new OrderInfo();
-        CustomerInfo customerInfo= new CustomerInfo();
+        CustomerInfo customerInfo = new CustomerInfo();
         BeanUtils.copyProperties(orderInfoVO, orderInfo, nullPropertyNames);
         BeanUtils.copyProperties(orderInfoVO, customerInfo, nullPropertyNames);
-        List<OrderInfo> resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, customerInfo,null, null);
-        page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo,customerInfo, null, null));
+        List<OrderInfo> resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, customerInfo, null, null);
+        page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo, customerInfo, null, null));
         List<OrderInfoVO> collect = resultSetList.stream().map(e -> {
             OrderInfoVO temp = new OrderInfoVO();
             BeanUtils.copyProperties(e, temp);
@@ -105,7 +103,20 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public void confirmOrderStock(String orderNo) {
-        orderInfoService.updateOrderStatus(orderNo, "3");
+        OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
+        SysConfig orderConfirmThreshold = sysConfigService.findByCodeName("OrderConfirmThreshold");
+        if (null != orderConfirmThreshold) {
+            double threshold = Double.parseDouble(orderConfirmThreshold.getCodeValue());
+            List<OrderStockDetailInfo> list = orderStockDetailInfoService.findAllByOrderNo(orderNo);
+            double stocked = list.stream().map(e -> e.getStockLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue();
+            double reserve = orderInfo.getReserveSumLength().doubleValue();
+            if (Math.abs(100.0 * (stocked - reserve) / reserve) > threshold) {
+                throw new IllegalStateException("配货误差不能大于" + threshold);
+            }
+        }
+        orderInfo.setOrderStatus("3");
+        orderInfo.setUpdateDate(new Date());
+        orderInfoService.saveOrderInfo(orderInfo);
     }
 
     @Override
@@ -115,7 +126,7 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public PageInfo<OrderDetailInfoVO> getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO) {
-        Page page=new Page(orderDetailInfoVO.getPageNum(), orderDetailInfoVO.getPageSize());
+        Page page = new Page(orderDetailInfoVO.getPageNum(), orderDetailInfoVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderDetailInfoVO);
         OrderDetailInfo orderDetailInfo = new OrderDetailInfo();
         BeanUtils.copyProperties(orderDetailInfoVO, orderDetailInfo, nullPropertyNames);
@@ -156,24 +167,26 @@ public class OrderBusinessImpl implements OrderBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
-        String orderNo = LocalDateTime.now().format(dateTimeFormatter);
+        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isBlank(e.getProductType())).collect(Collectors.toList());
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String orderNo = new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1), 6, "0")).toString();
         String creater = "admin";
         Date now = new Date();
-
-        List<OrderDetailInfo> collect = orderDetailList.stream().filter(e->StringUtils.isBlank(e.getProductType())).map(e -> {
-            e.setOrderNo(orderNo);
-            e.setCreateUser(creater);
-            e.setUpdateUser(creater);
-            e.setCreateDate(now);
-            e.setUpdateDate(now);
-            e.setStockStatus("0");
-            return e;
-        }).collect(Collectors.toList());
-        double sumAmount = orderDetailList.stream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
-        double sumLength = orderDetailList.stream().map(e -> e.getProductLength()).reduce((a, b) -> a + b).get().doubleValue();
+        OrderDetailInfo tmp;
+        double sumAmount = 0.0;
+        double sumLength = 0.0;
         long typeCount = orderDetailList.stream().map(e -> e.getProductType()).distinct().count();
+        for (int i = 0; i < orderDetailList.size(); i++) {
+            tmp = orderDetailList.get(i);
+            tmp.setOrderNo(orderNo);
+            tmp.setCreateUser(creater);
+            tmp.setUpdateUser(creater);
+            tmp.setCreateDate(now);
+            tmp.setUpdateDate(now);
+            tmp.setStockStatus("0");
+            sumAmount += tmp.getAmount();
+            sumLength += tmp.getProductLength();
+        }
         orderInfo.setOrderNo(orderNo);
         orderInfo.setOrderDate(now);
         orderInfo.setOrderAmount(sumAmount);
@@ -185,7 +198,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderInfo.setCreateDate(now);
         orderInfo.setUpdateDate(now);
         orderInfoService.saveOrderInfo(orderInfo);
-        orderDetailInfoService.saveOrderDetailInfo(collect);
+        orderDetailInfoService.saveOrderDetailInfo(orderDetailList);
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -276,9 +289,9 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Override
     public List<PackInfoVO> getPieceList(String customer) {
         List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer);
-        for (PackInfoVO packInfoVO : returnList){
-            for (PackSubInfoVO packSubInfoVO : packInfoVO.getPackSubInfoVOS()){
-                packSubInfoVO.setPieceOptions(orderStockDetailInfoService.getPieceList(packInfoVO.getOrderNo(),packSubInfoVO.getColthModel()));
+        for (PackInfoVO packInfoVO : returnList) {
+            for (PackSubInfoVO packSubInfoVO : packInfoVO.getPackSubInfoVOS()) {
+                packSubInfoVO.setPieceOptions(orderStockDetailInfoService.getPieceList(packInfoVO.getOrderNo(), packSubInfoVO.getColthModel()));
             }
         }
         return returnList;

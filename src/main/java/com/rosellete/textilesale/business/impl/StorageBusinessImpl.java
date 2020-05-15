@@ -79,8 +79,8 @@ public class StorageBusinessImpl implements StorageBusiness {
         if (!CollectionUtils.isEmpty(packageList)) {
             Date now = new Date();
             String creator = "admin";
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
-            String recordNo = LocalDateTime.now().format(dateTimeFormatter);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            String recordNo =new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1),6,"0")).toString();
             storageRecord.setCreateUser(creator);
             storageRecord.setCreateDate(now);
             StoragePackageInfo temp;
@@ -223,6 +223,17 @@ public class StorageBusinessImpl implements StorageBusiness {
         List<ProductTypeInfoVO> collect = list.stream().map(e -> {
             ProductTypeInfoVO temp = new ProductTypeInfoVO();
             temp.setProductType(e);
+            return temp;
+        }).collect(Collectors.toList());
+        return new PageInfo<>(collect);
+    }
+
+    @Override
+    public PageInfo<PackageInventoryInfoVO> findStoredInventory(Integer supplierNo) {
+        List<PackageInventoryInfo> list= packageInventoryInfoService.findStoredInventoryBySupplierNo(supplierNo);
+        List<PackageInventoryInfoVO> collect = list.stream().map(e -> {
+            PackageInventoryInfoVO temp = new PackageInventoryInfoVO();
+            BeanUtils.copyProperties(e, temp);
             return temp;
         }).collect(Collectors.toList());
         return new PageInfo<>(collect);
