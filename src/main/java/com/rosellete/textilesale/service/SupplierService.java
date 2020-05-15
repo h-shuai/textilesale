@@ -17,6 +17,6 @@ public class SupplierService {
     }
 
     public List<SupplierInfo> getAllByVip(){
-        return supplierDao.findAllByOrOrderByVip();
+        return supplierDao.findAllByOrderByVipDesc();
     }
 }

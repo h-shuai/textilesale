@@ -5,7 +5,11 @@ import com.rosellete.textilesale.model.SupplierInfo;
 import java.util.List;
 
 public interface SupplierDao extends BaseRepository<SupplierInfo, Integer> {
-    List<SupplierInfo> getAllByVip();
+    List<SupplierInfo> getAllByVip(String vip);
 
-    List<SupplierInfo> findAllByOrOrderByVip();
+    List<SupplierInfo> findAllByOrderByVipDesc();
+
+    List<SupplierInfo> findAllByOrderByVipAsc();
+
+
 }
