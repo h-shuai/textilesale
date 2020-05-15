@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "t_pack_info")
 @Data
-public class PackInfo implements Serializable {
+public class PackInfo extends Page implements Serializable {
     private static final long serialVersionUID = -20884321245660816L;
     /**
     * 主键ID
@@ -25,10 +25,15 @@ public class PackInfo implements Serializable {
     @Column(name = "id",unique = true,nullable = false)
     private String id;
     /**
-    * 订单号
+    * 客户名称
     */
-    @Column(name = "order_no")
-    private String orderNo;
+    @Column(name = "customer_name")
+    private String customerName;
+    /**
+     * 客户编号
+     */
+    @Column(name = "customer_id")
+    private String customerId;
     /**
     * 包号
     */
@@ -50,7 +55,7 @@ public class PackInfo implements Serializable {
     @Column(name = "rice_count")
     private Double riceCount;
     /**
-    * 状态：0-待确认，1-确认通过，2-确认不通过
+    * 状态：0-待确认，1-确认通过，2-已发货
     */
     @Column(name = "status")
     private Integer status;

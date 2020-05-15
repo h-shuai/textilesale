@@ -41,9 +41,6 @@ public class OrderDetailInfo extends Page implements Serializable {
     @Column(name = "extra_crafts", length = 200)
     private String extraCrafts;
 
-    @Column(name = "url", length = 250)
-    private String url;
-
     @Column(name = "stock_status", length = 1)
     private String stockStatus;
 

@@ -1,8 +1,7 @@
 package com.rosellete.textilesale.interfaces;
 
 import com.rosellete.textilesale.util.RestResponse;
-import com.rosellete.textilesale.vo.StoragePackageVO;
-import com.rosellete.textilesale.vo.StorageRecordVO;
+import com.rosellete.textilesale.vo.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +21,35 @@ public interface StorageApi {
     RestResponse getStoragePackage(@RequestParam("recordNo") String recordNo);
 
     @PostMapping(value = "/queryStoragePackageList", consumes = MediaType.APPLICATION_JSON_VALUE)
-    RestResponse getStoragePackageList(@RequestBody @Valid StoragePackageVO storagePackageVO);
+    RestResponse getStoragePackageList(@RequestBody @Valid ConsignorVO consignorVO);
 
     @GetMapping(path = "/viewPackageInventory")
     RestResponse getPackageInventory(@RequestParam("recordNo") String recordNo,
                                      @RequestParam("packageNo") String packageNo);
 
     @PostMapping(value = "/savePackageInventory", consumes = MediaType.APPLICATION_JSON_VALUE)
-    RestResponse savePackageInventoryList(@RequestBody @Valid StoragePackageVO storagePackageVO);
+    RestResponse savePackageInventoryList(@RequestBody @Valid PackageInventorySaveVO packageInventorySaveVO);
+
+
+    @GetMapping(path = "/getAllSupplierAndCustomer")
+    RestResponse getAllSupplierAndCustomer();
+
+    @GetMapping(path = "/getAllSupplier")
+    RestResponse getAllSupplier();
+
+    @GetMapping(path = "/getAllCustomer")
+    RestResponse getAllCustomer();
+
+    @PostMapping(value = "/getCustomer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse getCustomer(@RequestBody @Valid CustomerInfoVO customerInfoVO);
+
+    @PostMapping(value = "/getSupplier", consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse getSupplier(@RequestBody @Valid SupplierInfoVO supplierInfoVO);
+
+    @PostMapping(value = "/getSupplierAndCustomer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse getSupplierAndCustomer(@RequestBody @Valid ConsignorVO consignorVO);
+
+    @GetMapping(path = "/getAllProductType")
+    RestResponse getAllProductType();
+
 }

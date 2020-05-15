@@ -25,4 +25,7 @@ public interface OrderStockDetailInfoDao extends BaseRepository<OrderStockDetail
     @Modifying
     @Query(value = "update t_order_stock_detail_info set status= ?1 where id = ?2",nativeQuery = true)
     int updateStatusById(@Param("status") String status,@Param("id") String id);
+
+    @Query(value = "select * from t_order_stock_detail_info where id = ?1",nativeQuery = true)
+    OrderStockDetailInfo getStockDetailById(@Param("id") String id);
 }

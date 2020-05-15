@@ -24,8 +24,8 @@ public class PackageInventoryInfo extends Page implements Serializable {
     @Column(name = "package_no", nullable = false, length = 40)
     private String packageNo;
 
-    @Column(name = "storage_no", nullable = false)
-    private Integer storageNo;
+    @Column(name = "stock_no", nullable = false)
+    private Integer stockNo;
 
     @Column(name = "product_type", nullable = false, length = 10)
     private String productType;

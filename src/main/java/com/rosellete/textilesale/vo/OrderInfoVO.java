@@ -14,13 +14,17 @@ public class OrderInfoVO extends OrderInfo {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
 
-    private String productLength;
-
-    private Integer reserveTypeCount;
-
-    private Double reserveSumLength;
-
     private Integer stockedTypeCount;
 
     private Double stockedSumLength;
+
+    private String orderCount;
+
+    private String customerName;
+
+    private String customerType;
+
+    private String customerPhoneNo;
+
+    private String industryType;
 }

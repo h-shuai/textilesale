@@ -1,12 +1,12 @@
 package com.rosellete.textilesale.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.rosellete.textilesale.business.CustomerBusiness;
 import com.rosellete.textilesale.business.StorageBusiness;
+import com.rosellete.textilesale.business.SupplierBusiness;
 import com.rosellete.textilesale.interfaces.StorageApi;
 import com.rosellete.textilesale.util.RestResponse;
-import com.rosellete.textilesale.vo.PackageInventoryInfoVO;
-import com.rosellete.textilesale.vo.StoragePackageVO;
-import com.rosellete.textilesale.vo.StorageRecordVO;
+import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +21,12 @@ import javax.validation.Valid;
 public class StorageController implements StorageApi {
     @Autowired
     private StorageBusiness storageBusiness;
+
+    @Autowired
+    private SupplierBusiness supplierBusiness;
+
+    @Autowired
+    private CustomerBusiness customerBusiness;
 
     @Override
     public RestResponse getStorageRecordList(@RequestBody StorageRecordVO storageRecordVO) {
@@ -48,8 +54,8 @@ public class StorageController implements StorageApi {
     }
 
     @Override
-    public RestResponse getStoragePackageList(@RequestBody StoragePackageVO storagePackageVO) {
-        PageInfo<StoragePackageVO> pageInfo = storageBusiness.getStoragePackageList(storagePackageVO);
+    public RestResponse getStoragePackageList(@RequestBody @Valid ConsignorVO consignorVO) {
+        PageInfo<StoragePackageVO> pageInfo = storageBusiness.getStoragePackageList(consignorVO);
         return new RestResponse(pageInfo);
     }
 
@@ -60,15 +66,58 @@ public class StorageController implements StorageApi {
     }
 
     @Override
-    public RestResponse savePackageInventoryList(@Valid StoragePackageVO storagePackageVO) {
+    public RestResponse savePackageInventoryList(@Valid PackageInventorySaveVO packageInventorySaveVO) {
         RestResponse response = new RestResponse();
         try {
-            storageBusiness.savePackageInventoryList(storagePackageVO);
+            storageBusiness.savePackageInventoryList(packageInventorySaveVO);
         } catch (Exception e) {
             response.setCode(999);
             response.setMsg("系统内部错误，请稍后重试");
-            log.error("保存抄包记录数据{}失败", storagePackageVO, e);
+            log.error("保存抄包记录数据{}失败", packageInventorySaveVO, e);
         }
         return response;
+    }
+
+    @Override
+    public RestResponse getAllSupplierAndCustomer() {
+        PageInfo<ConsignorVO> pageInfo = storageBusiness.findAllSupplierAndCustomerWarehouseRelated();
+        return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public  RestResponse getAllCustomer() {
+        PageInfo<CustomerInfoVO> pageInfo = customerBusiness.findAllCustomerWarehouseRelated();
+        return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public RestResponse getAllSupplier() {
+        PageInfo<SupplierInfoVO> pageInfo = supplierBusiness.findAllSupplierWarehouseRelated();
+        return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public RestResponse getSupplier(@Valid SupplierInfoVO supplierInfoVO) {
+        PageInfo<SupplierInfoVO> pageInfo = supplierBusiness.findSupplierListWarehouseRelated(supplierInfoVO);
+        return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public RestResponse getCustomer(@Valid CustomerInfoVO customerInfoVO) {
+        PageInfo<CustomerInfoVO> pageInfo = customerBusiness.findCustomerListWarehouseRelated(customerInfoVO);
+        return new RestResponse(pageInfo);
+    }
+
+    @Override
+    public RestResponse getSupplierAndCustomer(@Valid ConsignorVO consignorVO) {
+        PageInfo<ConsignorVO> pageInfo = storageBusiness.findSupplierAndCustomerWarehouseRelated(consignorVO);
+        return new RestResponse(pageInfo);
+    }
+
+
+    @Override
+    public RestResponse getAllProductType() {
+        PageInfo<ProductTypeInfoVO> pageInfo = storageBusiness.findAllProductType();
+        return new RestResponse(pageInfo);
     }
 }

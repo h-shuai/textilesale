@@ -20,11 +20,8 @@ public class OrderInfo extends Page implements Serializable {
     @Column(name = "order_no", nullable = false, length = 30)
     private String orderNo;
 
-    @Column(name = "customer_name", length = 200)
-    private String customerName;
-
-    @Column(name = "customer_phone_no", length = 15)
-    private String customerPhoneNo;
+    @Column(name = "customer_no", nullable = false, length = 11)
+    private Integer customerNo;
 
     @Column(name = "order_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -34,26 +31,32 @@ public class OrderInfo extends Page implements Serializable {
     @Column(name = "order_amount", scale = 16, precision = 2)
     private Double orderAmount;
 
+    @Column(name = "product_type_count", nullable = false, length = 11)
+    private Integer reserveTypeCount;
+
+    @Column(name = "product_length_sum",nullable = false, scale = 16, precision = 2)
+    private Double reserveSumLength;
+
     @Column(name = "delivery_mode", length = 1)
     private String deliveryMode;
 
     @Column(name = "delivery_address", length = 200)
     private String deliveryAddress;
 
-    @Column(name = "contact", length = 50)
-    private String contact;
+    @Column(name = "liaison", length = 50)
+    private String liaison;
 
-    @Column(name = "contact_phone_no", length = 15)
-    private String contactPhoneNo;
+    @Column(name = "contact", length = 15)
+    private String contact;
 
     @Column(name = "consignment_department", length = 1)
     private String consignmentDepartment;
 
-    @Column(name = "customer_address", length = 200)
-    private String customerAddress;
-
     @Column(name = "order_status", length = 1)
     private String orderStatus;
+
+    @Column(name = "settle_status", length = 1)
+    private String settleStatus;
 
     @Column(name = "clerk_name", length = 50)
     private String clerkName;

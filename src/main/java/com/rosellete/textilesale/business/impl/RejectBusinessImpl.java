@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.RejectBusiness;
 import com.rosellete.textilesale.model.RejectRecord;
 import com.rosellete.textilesale.model.RejectSuppliesInfo;
+import com.rosellete.textilesale.model.SupplierInfo;
 import com.rosellete.textilesale.service.RejectRecordService;
 import com.rosellete.textilesale.service.RejectSuppliesInfoService;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,20 +36,10 @@ public class RejectBusinessImpl implements RejectBusiness {
         Page page = new Page(rejectRecordVO.getPageNum(), rejectRecordVO.getPageSize());
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(rejectRecordVO);
         RejectRecord rejectRecord = new RejectRecord();
+        SupplierInfo supplierInfo =new SupplierInfo();
         BeanUtils.copyProperties(rejectRecordVO, rejectRecord, nullPropertyNames);
-        List<RejectRecord> storageRecordList;
-        Date startDate = rejectRecordVO.getStartDate(), endDate = rejectRecordVO.getEndDate();
-        if (!(null == startDate && null == endDate)) {
-            if (null != endDate) {
-                Calendar calendarInstance = Calendar.getInstance();
-                calendarInstance.setTime(endDate);
-                calendarInstance.add(Calendar.DATE, 1);
-                endDate = calendarInstance.getTime();
-            }
-            storageRecordList = rejectRecordService.findRecordList(rejectRecord, startDate, endDate);
-        } else {
-            storageRecordList = rejectRecordService.findRecordList(rejectRecord, null, null);
-        }
+        BeanUtils.copyProperties(rejectRecordVO, supplierInfo, nullPropertyNames);
+        List<RejectRecord> storageRecordList = rejectRecordService.findRecordList(rejectRecord, supplierInfo);
         List<RejectRecordVO> collect = storageRecordList.stream().map(e -> {
             RejectRecordVO temp = new RejectRecordVO();
             BeanUtils.copyProperties(e, temp);
@@ -74,7 +64,7 @@ public class RejectBusinessImpl implements RejectBusiness {
             recordNo = LocalDateTime.now().format(dateTimeFormatter);
             rejectRecord.setCreateUser(creater);
             rejectRecord.setCreateDate(now);
-
+            rejectRecord.setRecordNo(recordNo);
         } else {
             recordNo = rejectRecord.getRecordNo();
             rejectRecord = rejectRecordService.findByPrimaryKey(recordNo);

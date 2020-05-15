@@ -26,7 +26,7 @@ public interface OrderBusiness {
 
     void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO);
 
-    PageInfo<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo);
+    PageInfo<OrderInfoVO> getWaitPackCustomerList(OrderInfo orderInfo);
 
     List<String> getTotalCount(String orderNo);
 

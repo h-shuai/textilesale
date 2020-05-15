@@ -10,4 +10,7 @@ import java.util.List;
 public interface PackageInventoryInfoDao extends BaseRepository<PackageInventoryInfo, Long> {
     @Query(value = "SELECT t.* FROM t_package_inventory_info t where t.package_no= ?1", nativeQuery = true)
     List<PackageInventoryInfo> findByPackageNo(String packageNo);
+
+    @Query(value = "SELECT distinct t.product_type FROM t_package_inventory_info t ", nativeQuery = true)
+    List<String> findAllProductType();
 }

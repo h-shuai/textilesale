@@ -1,15 +1,17 @@
 package com.rosellete.textilesale.vo;
 
+import com.rosellete.textilesale.model.PackInfo;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
-public class PackInfoVO {
-    private String picurl;
+public class PackInfoVO extends PackInfo {
+    private String orderNo;
 
-    private String colthModel;
+    private List<PackSubInfoVO> packSubInfoVOS;
 
-    private List<Map<String,Object>> pieceOptions;
+    private Integer packNum;
+
+    private String consignDep;
 }
