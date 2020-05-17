@@ -75,7 +75,7 @@ public class StorageBusinessImpl implements StorageBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(storageRecordVO);
         StorageRecord storageRecord = new StorageRecord();
         BeanUtils.copyProperties(storageRecordVO, storageRecord, nullPropertyNames);
-        List<StoragePackageInfo> packageList = storageRecordVO.getPackageList();
+        List<StoragePackageInfo> packageList = storageRecordVO.getPackageList().stream().filter(e -> null!=e.getPackedStockLength()).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(packageList)) {
             Date now = new Date();
             String creator = "admin";
@@ -149,7 +149,7 @@ public class StorageBusinessImpl implements StorageBusiness {
     @Transactional(rollbackOn = RuntimeException.class)
     @Override
     public void savePackageInventoryList(PackageInventorySaveVO packageInventorySaveVO) {
-        List<StoragePackageVO> packageList = packageInventorySaveVO.getPackageList();
+        List<StoragePackageVO> packageList = packageInventorySaveVO.getPackageList().stream().filter(e -> null!=e.getPackedStockLength()).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(packageList)){
             StoragePackageVO temp;
             StoragePackageInfo packageInfo;
@@ -161,11 +161,11 @@ public class StorageBusinessImpl implements StorageBusiness {
             for (int i = 0; i <packageList.size() ; i++) {
                 temp=packageList.get(i);
                 packageInfo= storagePackageInfoService.findFirstStoragePackage(temp.getRecordNo(), temp.getPackageNo());
-                List<ProductTypeInfoVO> productTypeList = temp.getProductTypeList();
+                List<ProductTypeInfoVO> productTypeList = temp.getProductTypeList().stream().filter(e->null!=e.getProductLength()).collect(Collectors.toList());
                 if (!CollectionUtils.isEmpty(productTypeList)){
                     for (int j = 0; j <productTypeList.size() ; j++) {
                         productTypeInfoVO = productTypeList.get(j);
-                        List<PackageInventoryInfo> packetedStockArrays = productTypeInfoVO.getPacketedStockArrays();
+                        List<PackageInventoryInfo> packetedStockArrays = productTypeInfoVO.getPacketedStockArrays().stream().filter(e->null!=e.getStockLength()).collect(Collectors.toList());
                         PackageInventoryInfo stock;
                         for (int k = 0; k <packetedStockArrays.size() ; k++) {
                             stock= packetedStockArrays.get(k);

@@ -23,6 +23,7 @@ CREATE TABLE t_storage_package_info
     package_no  varchar(40) NOT NULL COMMENT '包裹编号',
     record_no   varchar(30) NOT NULL COMMENT '入库记录编号',
     package_status varchar(1) COMMENT '包裹状态 0-待拆包 1-已拆包',
+    packed_stock_length double(10, 2) NOT NULL COMMENT '长度(米)',
     create_user varchar(100) DEFAULT NULL COMMENT '创建人',
     update_user varchar(100) DEFAULT NULL COMMENT '修改人',
     create_date datetime     DEFAULT NOW() COMMENT '创建时间',

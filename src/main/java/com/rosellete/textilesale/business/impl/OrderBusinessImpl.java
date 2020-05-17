@@ -168,7 +168,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isBlank(e.getProductType())).collect(Collectors.toList());
+        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String orderNo = new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1), 6, "0")).toString();
         String creater = "admin";
@@ -209,7 +209,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList();
+        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
         String creater = "admin";
         Date now = new Date();
         List<OrderDetailInfo> collect = orderDetailList.stream().map(e -> {
@@ -232,7 +232,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderStockSaveVO);
         BeanUtils.copyProperties(orderStockSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailInfoVO> orderDetailList = orderStockSaveVO.getOrderDetailList();
+        List<OrderDetailInfoVO> orderDetailList = orderStockSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
         List<OrderDetailInfo> orderDetailInfos = new ArrayList<>(orderDetailList.size());
         List<OrderStockDetailInfo> existedOrderStockList = new ArrayList<>(10);
         List<OrderStockDetailInfo> toBeInsertOrderStockList = new ArrayList<>(10);

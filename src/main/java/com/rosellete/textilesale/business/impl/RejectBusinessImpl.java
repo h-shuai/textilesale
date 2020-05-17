@@ -63,7 +63,7 @@ public class RejectBusinessImpl implements RejectBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(rejectRecordSaveVO);
         RejectRecord rejectRecord = new RejectRecord();
         BeanUtils.copyProperties(rejectRecordSaveVO, rejectRecord, nullPropertyNames);
-        final List<RejectSuppliesInfo> list = rejectRecordSaveVO.getStockDetailList().stream().filter(e->StringUtils.isNoneBlank(e.getProductType())).collect(Collectors.toList());
+        final List<RejectSuppliesInfo> list = rejectRecordSaveVO.getStockDetailList().stream().filter(e->StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String creater = "admin";
         Date now = new Date();
