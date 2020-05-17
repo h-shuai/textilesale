@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RejectRecordService {
@@ -25,12 +24,16 @@ public class RejectRecordService {
                 supplierInfo.getIndustry(), supplierInfo.getPhone()).size();
     }
 
-    public void saveRejectRecord(RejectRecord rejectRecord) {
-        rejectRecordDao.save(rejectRecord);
+    public void saveRejectRecord(List<RejectRecord> rejectRecordList) {
+        rejectRecordDao.saveAll(rejectRecordList);
     }
 
     public RejectRecord findByPrimaryKey(String recordNo) {
-        Optional<RejectRecord> optional = rejectRecordDao.findById(recordNo);
-        return optional.orElse(null);
+        return rejectRecordDao.findById(recordNo).orElse(null);
+    }
+
+    public Integer findSupplierNo(String recordNo) {
+        RejectRecord optional = rejectRecordDao.findById(recordNo).orElse(null);
+        return optional == null ? null : optional.getSupplierNo();
     }
 }

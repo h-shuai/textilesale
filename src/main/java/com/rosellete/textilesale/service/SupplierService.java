@@ -33,7 +33,10 @@ public class SupplierService {
 
     public List<SupplierInfo> findSupplierList(SupplierInfo supplierInfo) {
         Example<SupplierInfo> example = Example.of(supplierInfo);
-        return supplierDao.findAll(example,Sort.by("vip"));
+        return supplierDao.findAll(example, Sort.by("vip"));
     }
 
+    public SupplierInfo findByPrimaryKey(Integer supplierNo) {
+        return supplierDao.findById(supplierNo).orElse(null);
+    }
 }

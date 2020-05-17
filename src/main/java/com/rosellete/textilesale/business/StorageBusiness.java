@@ -22,4 +22,6 @@ public interface StorageBusiness {
 
     PageInfo<ProductTypeInfoVO> findAllProductType();
 
+    PageInfo<PackageInventoryInfoVO> findStoredInventory(Integer supplierNo);
+
 }
