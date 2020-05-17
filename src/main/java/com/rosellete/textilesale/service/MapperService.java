@@ -3,6 +3,7 @@ package com.rosellete.textilesale.service;
 import com.rosellete.textilesale.dao.CosignMapperDao;
 import com.rosellete.textilesale.dao.DriverMapperDao;
 import com.rosellete.textilesale.dao.LicenseMapperDao;
+import com.rosellete.textilesale.dao.PaymethodMapperDao;
 import com.rosellete.textilesale.model.DriverMapper;
 import com.rosellete.textilesale.model.LicenseMapper;
 import com.rosellete.textilesale.vo.MapperVO;
@@ -20,12 +21,15 @@ public class MapperService {
     private LicenseMapperDao licenseMapperDao;
     @Autowired
     private CosignMapperDao cosignMapperDao;
+    @Autowired
+    private PaymethodMapperDao paymethodMapperDao;
 
     public MapperVO getAllMapperData(){
         MapperVO mapperVO = new MapperVO();
         mapperVO.setDriverMappers(driverMapperDao.getAllDriver());
         mapperVO.setLicenseMappers(licenseMapperDao.getAllLicense());
         mapperVO.setCosignMappers(cosignMapperDao.getAllCosign());
+        mapperVO.setPaymethodMappers(paymethodMapperDao.getAllPaymethod());
         return mapperVO;
     }
 

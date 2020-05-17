@@ -33,7 +33,7 @@ public class DeliveryInfoBusinessImpl implements DeliveryInfoBusiness {
         int departNum = deliveryInfoService.getTodayDepartNum() + 1;
         List<DeliveryInfo> deliveryInfos = new ArrayList<>();
         for (Map<String,Object> map : deliveryInfoVO.getSelectedRows()){
-            List<PackInfo> packInfos = packInfoService.getPackListByCustomer((String)map.get("customerName"),"1");
+            List<PackInfo> packInfos = packInfoService.getPackListByCustomer((String)map.get("customerId"),"1");
             for (PackInfo packInfo : packInfos){
                 DeliveryInfo deliveryInfo = new DeliveryInfo();
                 deliveryInfo.setId(UUID.randomUUID().toString().replaceAll("-", ""));

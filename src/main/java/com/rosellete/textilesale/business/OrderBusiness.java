@@ -2,6 +2,7 @@ package com.rosellete.textilesale.business;
 
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.model.OrderInfo;
+import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.*;
 
 import java.util.List;
@@ -26,9 +27,11 @@ public interface OrderBusiness {
 
     void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO);
 
-    PageInfo<OrderInfoVO> getWaitPackCustomerList(OrderInfo orderInfo);
+    PageInfo<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO);
 
-    List<String> getTotalCount(String orderNo);
+    List<String> getTotalCount(Integer orderNo);
 
-    List<PackInfoVO> getPieceList(String orderNo);
+    List<PackInfoVO> getPieceList(Integer orderNo);
+
+    RestResponse getWaitSettleList(OrderInfoVO orderInfoVO);
 }

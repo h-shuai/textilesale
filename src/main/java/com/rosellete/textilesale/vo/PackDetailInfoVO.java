@@ -9,7 +9,9 @@ import java.util.Map;
 public class PackDetailInfoVO {
     private String orderNo;
 
-    private String customer;
+    private String customerNo;
+
+    private String customerName;
 
     private int productCount;
 

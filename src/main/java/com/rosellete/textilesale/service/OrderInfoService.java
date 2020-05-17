@@ -49,18 +49,18 @@ public class OrderInfoService {
         orderInfoDao.updateStatusAndAmount(orderNo, orderStatus, sumAmount, updater);
     }
 
-    public List<OrderInfoVO> getWaitPackCustomerList(OrderInfo orderInfo) {
-        List<Map<String, Object>> maps = null ;
+    public List<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO) {
+        List<Map<String, Object>> maps = orderInfoDao.getWaitPackCustomer(orderInfoVO.getCustomerName()) ;
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
-            OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
-            orderInfoVOList.add(orderInfoVO);
+            OrderInfoVO newInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
+            orderInfoVOList.add(newInfoVO);
         }
         return orderInfoVOList;
     }
 
     private List<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo) {
-        List<Map<String, Object>> maps = null;
+        List<Map<String, Object>> maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(),orderInfo.getCustomerNo());
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
             OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
@@ -69,19 +69,21 @@ public class OrderInfoService {
         return orderInfoVOList;
     }
 
-    public List<String> getTotalCount(String customer){
+    public List<String> getTotalCount(Integer customer){
         OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setCustomerNo(customer);
         orderInfo.setOrderNo(null);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<String> orderNos = new ArrayList<>();
         for (OrderInfoVO orderInfoVO : orderInfoVOList){
             orderNos.add(orderInfoVO.getOrderNo());
         }
-        return orderInfoDao.getTotalCount(orderNos,customer);
+        return orderInfoDao.getTotalCount(orderNos,String.valueOf(customer));
     }
 
-    public List<PackInfoVO> getWaitPieceList(String customer) {
+    public List<PackInfoVO> getWaitPieceList(Integer customer) {
         OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setCustomerNo(customer);
         orderInfo.setOrderNo(null);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<String> orderNos = new ArrayList<>();
@@ -106,5 +108,9 @@ public class OrderInfoService {
             returnList.add(packInfoVO);
         }
         return returnList;
+    }
+
+    public List<OrderInfoVO> getWaitSettleList(OrderInfoVO orderInfoVO){
+        return orderInfoDao.getWaitSettleList(orderInfoVO.getOrderNo(),orderInfoVO.getCustomerName());
     }
 }

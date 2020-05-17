@@ -15,6 +15,7 @@ import com.rosellete.textilesale.service.OrderDetailInfoService;
 import com.rosellete.textilesale.service.OrderInfoService;
 import com.rosellete.textilesale.service.OrderStockDetailInfoService;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
+import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -263,18 +264,18 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public PageInfo<OrderInfoVO> getWaitPackCustomerList(OrderInfo orderInfo) {
-        PageHelper.startPage(orderInfo.getPageNum(), orderInfo.getPageSize());
-        return new PageInfo<>(orderInfoService.getWaitPackCustomerList(orderInfo));
+    public PageInfo<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO) {
+        PageHelper.startPage(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
+        return new PageInfo<>(orderInfoService.getWaitPackCustomerList(orderInfoVO));
     }
 
     @Override
-    public List<String> getTotalCount(String customer) {
+    public List<String> getTotalCount(Integer customer) {
         return orderInfoService.getTotalCount(customer);
     }
 
     @Override
-    public List<PackInfoVO> getPieceList(String customer) {
+    public List<PackInfoVO> getPieceList(Integer customer) {
         List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer);
         for (PackInfoVO packInfoVO : returnList){
             for (PackSubInfoVO packSubInfoVO : packInfoVO.getPackSubInfoVOS()){
@@ -282,5 +283,11 @@ public class OrderBusinessImpl implements OrderBusiness {
             }
         }
         return returnList;
+    }
+
+    @Override
+    public RestResponse getWaitSettleList(OrderInfoVO orderInfoVO) {
+        PageHelper.startPage(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
+        return new RestResponse(new PageInfo<>(orderInfoService.getWaitSettleList(orderInfoVO)));
     }
 }

@@ -3,6 +3,7 @@ package com.rosellete.textilesale.vo;
 import com.rosellete.textilesale.model.CosignMapper;
 import com.rosellete.textilesale.model.DriverMapper;
 import com.rosellete.textilesale.model.LicenseMapper;
+import com.rosellete.textilesale.model.PaymethodMapper;
 import lombok.Data;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public class MapperVO {
     private List<LicenseMapper> licenseMappers;
 
     private List<CosignMapper> cosignMappers;
+
+    private List<PaymethodMapper> paymethodMappers;
 }

@@ -114,17 +114,22 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse getWaitPackCustomerList(OrderInfo orderInfo) {
-        return new RestResponse(orderBusiness.getWaitPackCustomerList(orderInfo));
+    public RestResponse getWaitPackCustomerList(OrderInfoVO orderInfoVO) {
+        return new RestResponse(orderBusiness.getWaitPackCustomerList(orderInfoVO));
     }
 
     @Override
-    public RestResponse getTotalCount(String customer) {
+    public RestResponse getTotalCount(Integer customer) {
         return new RestResponse(orderBusiness.getTotalCount(customer));
     }
 
     @Override
-    public RestResponse getPieceList(String customer) {
+    public RestResponse getPieceList(Integer customer) {
         return new RestResponse(orderBusiness.getPieceList(customer));
+    }
+
+    @Override
+    public RestResponse getWaitSettleList(OrderInfoVO orderInfoVO) {
+        return orderBusiness.getWaitSettleList(orderInfoVO);
     }
 }

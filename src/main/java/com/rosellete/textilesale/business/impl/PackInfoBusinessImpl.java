@@ -77,8 +77,8 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
     public RestResponse savePackInfo(PackDetailInfoVO packDetailInfoVO) {
         PackInfo packInfo = new PackInfo();
         packInfo.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        packInfo.setCustomerName(packDetailInfoVO.getCustomer());
-        packInfo.setCustomerId(packDetailInfoVO.getCustomer());
+        packInfo.setCustomerName(packDetailInfoVO.getCustomerName());
+        packInfo.setCustomerId(packDetailInfoVO.getCustomerNo());
         packInfo.setProductCount(packDetailInfoVO.getProductCount());
         packInfo.setPieceCount(packDetailInfoVO.getPieceCount());
         packInfo.setRiceCount(packDetailInfoVO.getRiceCount());
