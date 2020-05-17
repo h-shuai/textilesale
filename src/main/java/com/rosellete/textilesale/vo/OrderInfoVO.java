@@ -5,6 +5,8 @@ import com.rosellete.textilesale.model.OrderInfo;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class OrderInfoVO extends OrderInfo {
@@ -27,4 +29,6 @@ public class OrderInfoVO extends OrderInfo {
     private String customerPhoneNo;
 
     private String industryType;
+
+    private List<Map<String,Object>> selectedRows;
 }

@@ -80,6 +80,12 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
             "where a.order_no in ?1 and a.order_status='3' and b.stock_status='2' and c.status='0'", nativeQuery = true)
     List<Map<String, Object>> getWaitPieceList(@Param("orderNo") List<String> orderNo);
 
-    @Query(value = "select a.order_no orderNo,a.customer_no customerNo,b.name customerName,a.order_date orderDate,a.order_amount orderAmount from t_order_info a,t_customer_info b where IF(?1 is not null, a.order_no=?1, 1 = 1) and IF(?2 is not null,b.name like CONCAT('%', ?2, '%'), 1=1) and a.settle_status='0' and a.customer_no=b.customer_no order by a.order_date desc", nativeQuery = true)
-    List<OrderInfoVO> getWaitSettleList(@Param("orderNo") String orderNo, @Param("customerName") String customerName);
+    @Query(value = "select a.order_no orderNo,a.customer_no customerNo,b.name customerName,a.order_date orderDate,a.order_amount orderAmount from t_order_info a,t_customer_info b where IF(?1 is not null, a.order_no=?1, 1 = 1) and IF(?2 is not null,b.name like CONCAT('%', ?2, '%'), 1=1) and IFNULL(a.settle_status,'0')='0' and a.customer_no=b.customer_no order by a.order_date desc", nativeQuery = true)
+    List<Map<String,Object>> getWaitSettleList(@Param("orderNo") String orderNo, @Param("customerName") String customerName);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update t_order_info t set t.settle_status = 1 " +
+            " where t.order_no in ?1", nativeQuery = true)
+    int updateSettleStatus(@Param("orderNo") List<String> orderNo);
 }

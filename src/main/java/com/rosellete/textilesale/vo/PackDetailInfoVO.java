@@ -29,5 +29,7 @@ public class PackDetailInfoVO {
 
     private Integer packNo;
 
+    private String remark;
+
     private List<PackInfoVO> packInfoVOS;
 }

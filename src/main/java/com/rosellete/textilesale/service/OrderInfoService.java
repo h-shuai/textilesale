@@ -111,6 +111,17 @@ public class OrderInfoService {
     }
 
     public List<OrderInfoVO> getWaitSettleList(OrderInfoVO orderInfoVO){
-        return orderInfoDao.getWaitSettleList(orderInfoVO.getOrderNo(),orderInfoVO.getCustomerName());
+        List<Map<String,Object>> list = orderInfoDao.getWaitSettleList(orderInfoVO.getOrderNo(),orderInfoVO.getCustomerName());
+        List<OrderInfoVO> returnList = new ArrayList<>();
+        for (Map<String,Object> map : list){
+            OrderInfoVO infoVO = new OrderInfoVO();
+            infoVO.setOrderNo((String)map.get("orderNo"));
+            infoVO.setCustomerNo((Integer)map.get("customerNo"));
+            infoVO.setCustomerName((String)map.get("customerName"));
+            infoVO.setOrderDate((Date)map.get("orderDate"));
+            infoVO.setOrderAmount((Double)map.get("orderAmount"));
+            returnList.add(infoVO);
+        }
+        return null;
     }
 }

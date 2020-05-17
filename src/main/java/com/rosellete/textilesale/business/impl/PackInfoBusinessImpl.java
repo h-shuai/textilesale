@@ -112,6 +112,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         if (packInfo != null){
             packInfo.setStatus(packDetailInfoVO.getStatus()!=null?packDetailInfoVO.getStatus():packInfo.getStatus());
             packInfo.setPackPic(StringUtils.isNotBlank(packDetailInfoVO.getPackPic())?packDetailInfoVO.getPackPic():packInfo.getPackPic());
+            packInfo.setRemark(packDetailInfoVO.getRemark());
             packInfoService.updatePackInfo(packInfo);
         }
         return new RestResponse();

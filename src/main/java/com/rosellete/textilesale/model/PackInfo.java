@@ -88,4 +88,9 @@ public class PackInfo extends Page implements Serializable {
      */
     @Column(name = "pack_pic")
     private String packPic;
+    /**
+     * 备注
+     */
+    @Column(name = "remark")
+    private String remark;
 }
