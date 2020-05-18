@@ -149,7 +149,8 @@ public class StorageBusinessImpl implements StorageBusiness {
     @Transactional(rollbackOn = RuntimeException.class)
     @Override
     public void savePackageInventoryList(PackageInventorySaveVO packageInventorySaveVO) {
-        List<StoragePackageVO> packageList = packageInventorySaveVO.getPackageList().stream().filter(e -> null!=e.getPackedStockLength()).collect(Collectors.toList());
+        List<StoragePackageVO> packageList = packageInventorySaveVO.getPackageList().stream().
+                filter(e -> null!=e.getPackedStockLength()&&0.0!=e.getPackedStockLength()).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(packageList)){
             StoragePackageVO temp;
             StoragePackageInfo packageInfo;
@@ -161,11 +162,13 @@ public class StorageBusinessImpl implements StorageBusiness {
             for (int i = 0; i <packageList.size() ; i++) {
                 temp=packageList.get(i);
                 packageInfo= storagePackageInfoService.findFirstStoragePackage(temp.getRecordNo(), temp.getPackageNo());
-                List<ProductTypeInfoVO> productTypeList = temp.getProductTypeList().stream().filter(e->null!=e.getProductLength()).collect(Collectors.toList());
+                List<ProductTypeInfoVO> productTypeList = temp.getProductTypeList().stream().
+                        filter(e->null!=e.getProductLength()&&0.0!=e.getProductLength()).collect(Collectors.toList());
                 if (!CollectionUtils.isEmpty(productTypeList)){
                     for (int j = 0; j <productTypeList.size() ; j++) {
                         productTypeInfoVO = productTypeList.get(j);
-                        List<PackageInventoryInfo> packetedStockArrays = productTypeInfoVO.getPacketedStockArrays().stream().filter(e->null!=e.getStockLength()).collect(Collectors.toList());
+                        List<PackageInventoryInfo> packetedStockArrays = productTypeInfoVO.getPacketedStockArrays().stream().
+                                filter(e->null!=e.getStockLength()&&0.0!=e.getStockLength()).collect(Collectors.toList());
                         PackageInventoryInfo stock;
                         for (int k = 0; k <packetedStockArrays.size() ; k++) {
                             stock= packetedStockArrays.get(k);
@@ -179,11 +182,12 @@ public class StorageBusinessImpl implements StorageBusiness {
                             toBeInsertedInventoryInfoList.add(stock);
                         }
                     }
+                    packageInfo.setPackageStatus("1");
+                    packageInfo.setUpdateUser(updator);
+                    packageInfo.setUpdateDate(now);
+                    toBeUpdatePackageInfoList.add(packageInfo);
                 }
-                packageInfo.setPackageStatus("1");
-                packageInfo.setUpdateUser(updator);
-                packageInfo.setUpdateDate(now);
-                toBeUpdatePackageInfoList.add(packageInfo);
+
             }
             storagePackageInfoService.saveStoragePackageList(toBeUpdatePackageInfoList);
             packageInventoryInfoService.savePackageInventoryList(toBeInsertedInventoryInfoList);
