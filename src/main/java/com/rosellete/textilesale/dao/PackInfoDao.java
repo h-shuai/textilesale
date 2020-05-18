@@ -23,10 +23,10 @@ public interface PackInfoDao extends BaseRepository<PackInfo,String> {
     @Query(value = "select * from t_pack_info where id = ?1",nativeQuery = true)
     PackInfo getPackInfoById(@Param("id") String id);
 
-    @Query(value = "select * from t_pack_info where customer_id = ?1 and IF(?2 is not null,status = ?2,1=1)",nativeQuery = true)
+    @Query(value = "select * from t_pack_info where customer_id = ?1 and IF(?2 is not null,status = ?2,1=1) order by pack_no",nativeQuery = true)
     List<PackInfo> getPackListByCustomer(@Param("customer") String customer,@Param("status") String status);
 
-    @Query(value = "select customer_name customerName,count(1) packNum,'托运部1' consignDep from t_pack_info where IF(?1 is not null,customer_name = ?1,1=1) and status=1 group by customer_name",nativeQuery = true)
+    @Query(value = "select customer_id customerId,customer_name customerName,count(1) packNum,'托运部1' consignDep from t_pack_info where IF(?1 is not null,customer_name like CONCAT('%', ?1, '%'),1=1) and status=1 group by customer_id,customer_name",nativeQuery = true)
     List<Map<String,Object>> getWaitDeliveryList(@Param("customer") String customer);
 
     @Transactional

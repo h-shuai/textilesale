@@ -16,10 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +43,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packDetailInfoVO.setRiceCount(packInfo.getRiceCount());
         packDetailInfoVO.setPackNo(packInfo.getPackNo());
         packDetailInfoVO.setStatus(packInfo.getStatus());
+        packDetailInfoVO.setRemark(packInfo.getRemark());
         List<Map<String,Object>> prodMaps = packInfoService.getPackDetailList(packInfo.getId());
         List<String> oldOrderNos = new ArrayList<>();
         for (Map<String,Object> map : prodMaps){
@@ -83,6 +81,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packInfo.setPieceCount(packDetailInfoVO.getPieceCount());
         packInfo.setRiceCount(packDetailInfoVO.getRiceCount());
         packInfo.setStatus(0);
+        packInfo.setCreateTime(new Date());
         packInfo.setCreateUser("");
         int maxNo = packInfoService.getMaxPackNo(packInfo.getCustomerId());
         packInfo.setPackNo(maxNo+1);
@@ -98,6 +97,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             packDetailInfo.setStockLength(Double.valueOf((Integer)map.get("stockLength")));
             packDetailInfo.setStockDetailId(String.valueOf(map.get("id")));
             packDetailInfo.setStatus(0);
+            packDetailInfo.setCreateTime(new Date());
             packDetailInfo.setCreateUser("");
             detailList.add(packDetailInfo);
             orderStockDetailInfoService.updateStatusById("1",packDetailInfo.getStockDetailId());
@@ -113,6 +113,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             packInfo.setStatus(packDetailInfoVO.getStatus()!=null?packDetailInfoVO.getStatus():packInfo.getStatus());
             packInfo.setPackPic(StringUtils.isNotBlank(packDetailInfoVO.getPackPic())?packDetailInfoVO.getPackPic():packInfo.getPackPic());
             packInfo.setRemark(packDetailInfoVO.getRemark());
+            packInfo.setUpdateTime(new Date());
             packInfoService.updatePackInfo(packInfo);
         }
         return new RestResponse();

@@ -60,4 +60,7 @@ public class OrderDetailInfo extends Page implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
+
+    @Column(name = "image_name")
+    private String imageName;
 }

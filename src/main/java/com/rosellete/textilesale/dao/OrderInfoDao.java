@@ -63,24 +63,24 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
 
     @Query(value = "select a.order_no orderNo,a.customer_no customerNo,c.name customerName,sum(b.product_length) productLength " +
             "from t_order_info a,t_order_detail_info b,t_customer_info c where a.order_status='3' and a.order_no=b.order_no " +
-            "and IF(?1 is not null, a.order_no=?1, 1=1) and IF(?2 is not null, a.customer_no =?2, 1=1) and a.customer_no=c,customer_no" +
+            "and IF(?1 is not null, a.order_no=?1, 1=1) and IF(?2 is not null, a.customer_no =?2, 1=1) and a.customer_no=c.customer_no " +
             "group by a.order_no,a.customer_no order by a.order_date desc", nativeQuery = true)
     List<Map<String, Object>> getWaitPackOrderList(@Param("orderNo") String OrderNo, @Param("customerNo") Integer customerNo);
 
     @Query(value = "select count(id) from t_order_detail_info where order_no in ?1 union all " +
             "select count(id) from t_order_stock_detail_info where order_no in ?1 union all " +
-            "select count(id) from t_pack_info where customer_name = ?2 union all " +
+            "select count(id) from t_pack_info where customer_id = ?2 union all " +
             "select coalesce(sum(IFNULL(stock_length,0)),0) from t_pack_detail_info where order_no in ?1 union all " +
             "select count(id) from t_pack_detail_info where order_no in ?1", nativeQuery = true)
     List<String> getTotalCount(@Param("orderNo") List<String> orderNo,@Param("customer") String customer);
 
-    @Query(value = "select distinct a.order_no orderNo,b.url picurl,b.product_type colthModel from t_order_info a " +
+    @Query(value = "select distinct a.order_no orderNo,b.image_name picurl,b.product_type colthModel from t_order_info a " +
             "left join t_order_detail_info b on a.order_no=b.order_no " +
             "left join t_order_stock_detail_info c on a.order_no=c.order_no and b.product_type=c.product_type " +
             "where a.order_no in ?1 and a.order_status='3' and b.stock_status='2' and c.status='0'", nativeQuery = true)
     List<Map<String, Object>> getWaitPieceList(@Param("orderNo") List<String> orderNo);
 
-    @Query(value = "select a.order_no orderNo,a.customer_no customerNo,b.name customerName,a.order_date orderDate,a.order_amount orderAmount from t_order_info a,t_customer_info b where IF(?1 is not null, a.order_no=?1, 1 = 1) and IF(?2 is not null,b.name like CONCAT('%', ?2, '%'), 1=1) and IFNULL(a.settle_status,'0')='0' and a.customer_no=b.customer_no order by a.order_date desc", nativeQuery = true)
+    @Query(value = "select a.order_no orderNo,a.customer_no customerNo,b.name customerName,a.order_date orderDate,a.order_amount orderAmount from t_order_info a,t_customer_info b where IF(IFNULL(?1,false) and ?1!='', a.order_no=?1, 1 = 1) and IF(?2 is not null,b.name like CONCAT('%', ?2, '%'), 1=1) and IFNULL(a.settle_status,'0')='0' and a.customer_no=b.customer_no order by a.order_date desc", nativeQuery = true)
     List<Map<String,Object>> getWaitSettleList(@Param("orderNo") String orderNo, @Param("customerName") String customerName);
 
     @Transactional

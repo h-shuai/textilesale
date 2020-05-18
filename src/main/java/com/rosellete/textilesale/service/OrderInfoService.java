@@ -122,6 +122,6 @@ public class OrderInfoService {
             infoVO.setOrderAmount((Double)map.get("orderAmount"));
             returnList.add(infoVO);
         }
-        return null;
+        return returnList;
     }
 }

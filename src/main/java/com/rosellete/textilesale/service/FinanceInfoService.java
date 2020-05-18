@@ -28,8 +28,8 @@ public class FinanceInfoService {
         for (Map<String,Object> map : financeInfoVO.getAccountList()){
             FinanceDetailInfo financeDetailInfo = new FinanceDetailInfo();
             financeDetailInfo.setBatchNo(batchNo);
-            financeDetailInfo.setPaymethodId((Long)map.get("paymentMethod"));
-            financeDetailInfo.setPayAmount((Double)map.get("payAmount"));
+            financeDetailInfo.setPaymethodId(Long.valueOf(String.valueOf(map.get("paymentMethod"))));
+            financeDetailInfo.setPayAmount(Double.valueOf((String)map.get("payAmount")));
             financeDetailInfo.setStatus("1");
             detailInfos.add(financeDetailInfo);
         }
