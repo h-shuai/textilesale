@@ -4,7 +4,7 @@ drop table if exists t_order_stock_detail_info;
 CREATE TABLE t_order_info
 (
     order_no               varchar(30) NOT NULL COMMENT '订单编号',
-    customer_no               varchar(30) NOT NULL COMMENT '客户编号',
+    customer_no               int NOT NULL COMMENT '客户编号',
     order_date             datetime COMMENT '下单时间',
     order_amount           double(16, 2) COMMENT '订单金额',
     product_type_count     smallint     NOT NULL DEFAULT 1 COMMENT '型号个数',
