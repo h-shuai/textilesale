@@ -38,6 +38,7 @@ CREATE TABLE t_package_inventory_info
     package_no   varchar(40)  NOT NULL COMMENT '包裹编号',
     stock_no   int          not null COMMENT '物品编号',
     product_type varchar(10)  DEFAULT NULL COMMENT '产品型号',
+    image_name varchar(200)  DEFAULT NULL COMMENT '样品图名称',
     stock_length double(8, 2) NOT NULL COMMENT '长度(米)',
     create_user  varchar(100) DEFAULT NULL COMMENT '创建人',
     update_user  varchar(100) DEFAULT NULL COMMENT '修改人',

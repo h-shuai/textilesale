@@ -41,7 +41,7 @@ public class StorageController implements StorageApi {
             storageBusiness.saveStorageRecord(storageRecordVO);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("保存抄包记录数据{}失败", storageRecordVO, e);
         }
         return response;
@@ -79,7 +79,7 @@ public class StorageController implements StorageApi {
             storageBusiness.savePackageInventoryList(packageInventorySaveVO);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("保存抄包记录数据{}失败", packageInventorySaveVO, e);
         }
         return response;

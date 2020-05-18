@@ -1,18 +1,20 @@
 package com.rosellete.textilesale.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.business.ImageUploadAndDownloadService;
 import com.rosellete.textilesale.interfaces.ImageUploadAndDownloadApi;
 import com.rosellete.textilesale.util.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -22,19 +24,26 @@ public class ImageUploadAndDownloadController implements ImageUploadAndDownloadA
 
     @Override
     @PostMapping(value = "/upload")
-    public RestResponse uploadImage(MultipartFile file) {
+    public RestResponse uploadImage(MultipartFile file, Map map) {
+        String fileName;
         try {
-            imageUploadAndDownloadService.saveImage(file);
+            fileName=imageUploadAndDownloadService.saveImage(file);
         } catch (IOException e) {
+            fileName=null;
             e.printStackTrace();
         }
-        return null;
+        map.put("fileName",fileName);
+        return new RestResponse(JSON.toJSONString(map));
     }
 
     @Override
     @GetMapping("download/{id}")
-    public RestResponse downloadImage(String id, HttpServletRequest request, HttpServletResponse response) {
+    public void downloadImage(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
         imageUploadAndDownloadService.readImage(id,request,response);
-        return null;
+    }
+
+    @Override
+    public void deleteImage(String id) {
+        imageUploadAndDownloadService.deleteImage(id);
     }
 }

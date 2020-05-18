@@ -36,6 +36,7 @@ CREATE TABLE t_order_detail_info
     product_type   varchar(10)  NOT NULL COMMENT '产品型号',
     unit_price     double       NOT NULL COMMENT '单价(元/米)',
     product_length double(8, 2) NOT NULL COMMENT '预订数量(米)',
+    image_name varchar(200)  DEFAULT NULL COMMENT '样品图名称',
     amount         double(16, 2) COMMENT '金额',
     extra_crafts   varchar(200) DEFAULT NULL COMMENT '额外工艺',
     stock_status   varchar(1)   DEFAULT '0' COMMENT '备货状态 备货状态 0-待备货 1-备货中 2-备货完成',

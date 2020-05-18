@@ -164,6 +164,7 @@ public class StorageBusinessImpl implements StorageBusiness {
                 packageInfo= storagePackageInfoService.findFirstStoragePackage(temp.getRecordNo(), temp.getPackageNo());
                 List<ProductTypeInfoVO> productTypeList = temp.getProductTypeList().stream().
                         filter(e->null!=e.getProductLength()&&0.0!=e.getProductLength()).collect(Collectors.toList());
+                double stockLength=0.0;
                 if (!CollectionUtils.isEmpty(productTypeList)){
                     for (int j = 0; j <productTypeList.size() ; j++) {
                         productTypeInfoVO = productTypeList.get(j);
@@ -174,13 +175,18 @@ public class StorageBusinessImpl implements StorageBusiness {
                             stock= packetedStockArrays.get(k);
                             stock.setPackageNo(temp.getPackageNo());
                             stock.setProductType(productTypeInfoVO.getProductType());
+                            stock.setImageName(productTypeInfoVO.getImageName());
                             stock.setStockNo(k+1);
                             stock.setCreateDate(now);
                             stock.setCreateUser(updator);
                             stock.setUpdateDate(now);
                             stock.setUpdateUser(updator);
+                            stockLength+=stock.getStockLength();
                             toBeInsertedInventoryInfoList.add(stock);
                         }
+                    }
+                    if (stockLength!=packageInfo.getPackedStockLength()){
+                        throw new IllegalArgumentException("包裹物品总长度与拆包明细合计长度不等，请检查");
                     }
                     packageInfo.setPackageStatus("1");
                     packageInfo.setUpdateUser(updator);

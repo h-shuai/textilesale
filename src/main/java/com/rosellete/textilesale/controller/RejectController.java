@@ -33,7 +33,7 @@ public class RejectController implements RejectApi {
             rejectBusiness.saveRejectRecord(rejectRecordSaveVO);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("保存退货记录数据{}失败", rejectRecordSaveVO, e);
         }
         return response;

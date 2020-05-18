@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 public class ProductTypeInfoVO implements Serializable {
     private String productType;
+    private String imageName;
     private Double productLength;
-    List<PackageInventoryInfo> packetedStockArrays =new ArrayList<>();
+    private List<PackageInventoryInfo> packetedStockArrays =new ArrayList<>();
 }

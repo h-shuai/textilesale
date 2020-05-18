@@ -43,7 +43,7 @@ public class OrderController implements OrderApi {
             orderBusiness.confirmOrderStock(orderNo);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("订单{}备货完成确认失败", orderNo, e);
         }
         return response;
@@ -56,7 +56,7 @@ public class OrderController implements OrderApi {
             orderBusiness.orderRestock(orderNo);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("订单{}提交重新备货失败", orderNo, e);
         }
         return response;
@@ -82,7 +82,7 @@ public class OrderController implements OrderApi {
             orderBusiness.saveOrder(orderSaveVO);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("保存订单数据{}失败", orderSaveVO, e);
         }
         return response;
@@ -95,7 +95,7 @@ public class OrderController implements OrderApi {
             orderBusiness.updateOrder(orderSaveVO);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("更新订单数据{}失败", orderSaveVO, e);
         }
         return response;
@@ -108,7 +108,7 @@ public class OrderController implements OrderApi {
             orderBusiness.saveOrderStockDetail(orderStockSaveVO);
         } catch (Exception e) {
             response.setCode(999);
-            response.setMsg("系统内部错误，请稍后重试");
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
             log.error("保存订单备货数据{}失败", orderStockSaveVO, e);
         }
         return response;
