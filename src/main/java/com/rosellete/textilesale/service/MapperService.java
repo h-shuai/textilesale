@@ -37,20 +37,20 @@ public class MapperService {
         String type = (String)param.get("type");
         int count = 0;
         if (type.equals("1")) {
-            count = driverMapperDao.countByDriverName((String)param.get("value"));
+            count = driverMapperDao.countByDriverName(String.valueOf(param.get("value")));
             if (count == 0) {
                 DriverMapper driverMapper = new DriverMapper();
-                driverMapper.setDriverName((String)param.get("value"));
+                driverMapper.setDriverName(String.valueOf(param.get("value")));
                 driverMapper.setDriverPhone(null);
                 driverMapper.setStatus(1);
                 DriverMapper result = driverMapperDao.save(driverMapper);
                 return result.getId();
             }
         } else {
-            count = licenseMapperDao.countByLicenseNo((String)param.get("value"));
+            count = licenseMapperDao.countByLicenseNo(String.valueOf(param.get("value")));
             if (count == 0) {
                 LicenseMapper licenseMapper = new LicenseMapper();
-                licenseMapper.setLicenseNo((String)param.get("value"));
+                licenseMapper.setLicenseNo(String.valueOf(param.get("value")));
                 licenseMapper.setIfRestriction(0);
                 licenseMapper.setStatus(1);
                 LicenseMapper result = licenseMapperDao.save(licenseMapper);
