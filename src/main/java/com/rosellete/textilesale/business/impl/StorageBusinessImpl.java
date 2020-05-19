@@ -239,13 +239,18 @@ public class StorageBusinessImpl implements StorageBusiness {
     }
 
     @Override
-    public PageInfo<PackageInventoryInfoVO> findStoredInventory(Integer supplierNo) {
+    public PageInfo<ProductTypeInfoVO> findStoredInventory(Integer supplierNo) {
         List<PackageInventoryInfo> list= packageInventoryInfoService.findStoredInventoryBySupplierNo(supplierNo);
-        List<PackageInventoryInfoVO> collect = list.stream().map(e -> {
-            PackageInventoryInfoVO temp = new PackageInventoryInfoVO();
-            BeanUtils.copyProperties(e, temp);
-            return temp;
-        }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        Map<String, List<PackageInventoryInfo>> map = list.stream().collect(Collectors.groupingBy(PackageInventoryInfo::getProductType));
+        Iterator<Map.Entry<String, List<PackageInventoryInfo>>> iterator = map.entrySet().iterator();
+        List<ProductTypeInfoVO> productTypeList=new ArrayList<>(10);
+        while (iterator.hasNext()){
+            Map.Entry<String, List<PackageInventoryInfo>> next = iterator.next();
+            ProductTypeInfoVO temp = new ProductTypeInfoVO();
+            temp.setProductType(next.getKey());
+            temp.setPacketedStockArrays(next.getValue());
+            productTypeList.add(temp);
+        }
+        return new PageInfo<>(productTypeList);
     }
 }

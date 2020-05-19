@@ -10,5 +10,5 @@ import java.util.List;
 @Data
 public class RejectRecordSaveVO extends RejectRecord {
 
-    private List<RejectSuppliesInfo> stockDetailList = new ArrayList<>();
+    private List<ProductTypeInfoVO> productTypeList = new ArrayList<>();
 }

@@ -2,6 +2,7 @@ package com.rosellete.textilesale.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "t_package_inventory_info")
 @Data
+@NoArgsConstructor
 public class PackageInventoryInfo extends Page implements Serializable {
     private static final long serialVersionUID = 1L;
 

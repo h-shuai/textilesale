@@ -1,8 +1,8 @@
 package com.rosellete.textilesale.business.impl;
 
 import com.rosellete.textilesale.business.ImageUploadAndDownloadService;
-import com.rosellete.textilesale.model.SysConfig;
 import com.rosellete.textilesale.service.SysConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,27 +13,16 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 @Service("imageUploadAndDownloadService")
 public class ImageUploadAndDownloadServiceImpl implements ImageUploadAndDownloadService {
 
     @Autowired
     private SysConfigService sysConfigService;
 
-
-    private String getImagePath() {
-        String folder;
-        SysConfig imagePath = sysConfigService.findByCodeName("imagePath");
-        if (null != imagePath) {
-            folder = imagePath.getCodeValue();
-        } else {
-            folder = "/Users/shadow/upload";
-        }
-        return folder;
-    }
-
     @Override
     public String saveImage(MultipartFile file) throws IOException {
-        String folder = getImagePath();
+        String folder = sysConfigService.getImagePath();
         File folderFile = new File(folder);
         if (!folderFile.exists()) {
             folderFile.mkdirs();
@@ -71,26 +60,53 @@ public class ImageUploadAndDownloadServiceImpl implements ImageUploadAndDownload
     }
 
     @Override
-    public void readImage(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String folder = getImagePath();
-        try (InputStream inputStream = new FileInputStream(new File(folder, id)); OutputStream outputStream = response.getOutputStream();) {
-            response.setContentType("application/x-download");
-            response.addHeader("Content-Disposition", "attachment;filename=" + id);
+    public void readImage(String id, HttpServletRequest request, HttpServletResponse response) {
+        String folder = sysConfigService.getImagePath();
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        File localFile;
+        try {
+            localFile = new File(folder, id);
+            if (!localFile.exists()) {
+                localFile = new File(folder, "notfound.jpg");
+                log.warn("图片{}未找到", id);
+            }
+            inputStream = new FileInputStream(localFile);
+            outputStream = response.getOutputStream();
             byte[] buffer = new byte[8 * 1024];
             int len;
             while ((len = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, len);
             }
             outputStream.flush();
-        }
+        } catch (Exception e) {
+            log.error("图片{}读取失败", id, e);
+        } finally {
+            if (null != inputStream) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    log.error("关闭InputStream出错", e);
+                }
+            }
+            if (null != outputStream) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    log.error("关闭OutputStream出错", e);
+                }
+            }
 
+        }
+        response.setContentType("application/x-download");
+        response.addHeader("Content-Disposition", "attachment;filename=" + id);
     }
 
     @Override
     public void deleteImage(String id) {
-        String folder = getImagePath();
+        String folder = sysConfigService.getImagePath();
         File localFile = new File(folder, id);
-        if (!localFile.exists()&&localFile.isFile()) {
+        if (!localFile.exists() && localFile.isFile()) {
             localFile.delete();
         }
     }

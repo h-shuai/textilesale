@@ -68,7 +68,7 @@ public class StorageController implements StorageApi {
 
     @Override
     public RestResponse getStoredInventory(Integer supplierNo) {
-        PageInfo<PackageInventoryInfoVO> pageInfo = storageBusiness.findStoredInventory(supplierNo);
+        PageInfo<ProductTypeInfoVO> pageInfo = storageBusiness.findStoredInventory(supplierNo);
         return new RestResponse(pageInfo);
     }
 

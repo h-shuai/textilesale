@@ -35,6 +35,8 @@ public class OrderDetailInfoVO extends OrderDetailInfo {
 
     private Integer stockedFabricCount;
 
+    private String url;
+
     private List<OrderStockDetailInfo> orderStockingArrays = new ArrayList<>();
 
 }

@@ -39,6 +39,9 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Autowired
     private SysConfigService sysConfigService;
 
+    @Autowired
+    private PackageInventoryInfoService packageInventoryInfoService;
+
 
     @Override
     public PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO) {
@@ -77,6 +80,13 @@ public class OrderBusinessImpl implements OrderBusiness {
             OrderDetailInfoVO temp = new OrderDetailInfoVO();
             BeanUtils.copyProperties(orderInfo, temp);
             BeanUtils.copyProperties(e, temp);
+            String imageUrl;
+            if (StringUtils.isBlank(temp.getImageName())) {
+                imageUrl = "api/download/notfound.jpg";
+            } else {
+                imageUrl = new StringBuffer("api/download").append("/").append(temp.getImageName()).toString();
+            }
+            temp.setUrl(imageUrl);
             List<OrderStockDetailInfo> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(e.getOrderNo(), e.getProductType());
             temp.setOrderStockingArrays(orderStockDetailInfo);
             temp.setStockedFabricCount(orderStockDetailInfo.size());
@@ -180,6 +190,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         for (int i = 0; i < orderDetailList.size(); i++) {
             tmp = orderDetailList.get(i);
             tmp.setOrderNo(orderNo);
+            tmp.setImageName(packageInventoryInfoService.findLatestImageNameByProductType(tmp.getProductType()));
             tmp.setCreateUser(creater);
             tmp.setUpdateUser(creater);
             tmp.setCreateDate(now);
