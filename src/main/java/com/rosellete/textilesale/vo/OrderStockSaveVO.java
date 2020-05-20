@@ -17,6 +17,6 @@ public class OrderStockSaveVO extends OrderInfo {
 
     private Double stockedSumLength;
 
-    private List<OrderDetailInfoVO> orderDetailList = new ArrayList<>();
+    private List<OrderDetailVO> orderDetailList = new ArrayList<>();
 
 }

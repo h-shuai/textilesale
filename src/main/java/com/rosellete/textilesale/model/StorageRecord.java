@@ -28,8 +28,8 @@ public class StorageRecord extends Page implements Serializable {
     @Column(name = "storage_type", nullable = false, length = 1)
     private String storageType;
 
-    @Column(name = "consignor_no",nullable = false, length = 30)
-    private String consignorNo;
+    @Column(name = "consignor_no",nullable = false, length = 11)
+    private Integer consignorNo;
 
     @Column(name = "package_quantity", length = 8)
     private Integer packageQuantity;

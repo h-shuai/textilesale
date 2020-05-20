@@ -75,7 +75,7 @@ public class StorageBusinessImpl implements StorageBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(storageRecordVO);
         StorageRecord storageRecord = new StorageRecord();
         BeanUtils.copyProperties(storageRecordVO, storageRecord, nullPropertyNames);
-        List<StoragePackageInfo> packageList = storageRecordVO.getPackageList().stream().filter(e -> null!=e.getPackedStockLength()).collect(Collectors.toList());
+        List<StoragePackage> packageList = storageRecordVO.getPackageList().stream().filter(e -> null!=e.getPackedStockLength()).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(packageList)) {
             Date now = new Date();
             String creator = "admin";
@@ -83,7 +83,7 @@ public class StorageBusinessImpl implements StorageBusiness {
             String recordNo =new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1),6,"0")).toString();
             storageRecord.setCreateUser(creator);
             storageRecord.setCreateDate(now);
-            StoragePackageInfo temp;
+            StoragePackage temp;
             int i;
             for (i = 0; i < packageList.size(); i++) {
                 temp = packageList.get(i);
@@ -109,7 +109,7 @@ public class StorageBusinessImpl implements StorageBusiness {
     @Override
     public PageInfo<StoragePackageVO> getStoragePackage(String recordNo) {
         StorageRecord storageRecord = storageRecordService.findByPrimaryKey(recordNo);
-        List<StoragePackageInfo> packageList = storagePackageInfoService.findAllByRecordNo(recordNo);
+        List<StoragePackage> packageList = storagePackageInfoService.findAllByRecordNo(recordNo);
         List<StoragePackageVO> parsedList = packageList.stream().map(e -> {
             StoragePackageVO temp = new StoragePackageVO();
             BeanUtils.copyProperties(storageRecord, temp);
@@ -131,13 +131,13 @@ public class StorageBusinessImpl implements StorageBusiness {
     }
 
     @Override
-    public PageInfo<PackageInventoryInfoVO> getPackageInventory(String recordNo, String packageNo) {
+    public PageInfo<PackageInventoryVO> getPackageInventory(String recordNo, String packageNo) {
         StorageRecord storageRecord = storageRecordService.findByPrimaryKey(recordNo);
-        List<StoragePackageInfo> packageList = storagePackageInfoService.findStoragePackageByPackageNo(recordNo, packageNo);
-        StoragePackageInfo storagePackageInfo = packageList.stream().findFirst().orElse(null);
-        List<PackageInventoryInfo> inventoryInfoList = packageInventoryInfoService.findPackageInventoryByPackageNo(packageNo);
-        List<PackageInventoryInfoVO> parsedList = inventoryInfoList.stream().map(e -> {
-            PackageInventoryInfoVO temp = new PackageInventoryInfoVO();
+        List<StoragePackage> packageList = storagePackageInfoService.findStoragePackageByPackageNo(recordNo, packageNo);
+        StoragePackage storagePackageInfo = packageList.stream().findFirst().orElse(null);
+        List<PackageInventory> inventoryInfoList = packageInventoryInfoService.findPackageInventoryByPackageNo(packageNo);
+        List<PackageInventoryVO> parsedList = inventoryInfoList.stream().map(e -> {
+            PackageInventoryVO temp = new PackageInventoryVO();
             BeanUtils.copyProperties(storageRecord, temp);
             BeanUtils.copyProperties(storagePackageInfo, temp);
             BeanUtils.copyProperties(e, temp);
@@ -153,24 +153,24 @@ public class StorageBusinessImpl implements StorageBusiness {
                 filter(e -> null!=e.getPackedStockLength()&&0.0!=e.getPackedStockLength()).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(packageList)){
             StoragePackageVO temp;
-            StoragePackageInfo packageInfo;
-            ProductTypeInfoVO productTypeInfoVO;
+            StoragePackage packageInfo;
+            ProductTypeVO productTypeInfoVO;
             String updator="admin";
             Date now=new Date();
-            List<StoragePackageInfo> toBeUpdatePackageInfoList=new ArrayList<>(packageList.size());
-            List<PackageInventoryInfo> toBeInsertedInventoryInfoList=new ArrayList<>();
+            List<StoragePackage> toBeUpdatePackageInfoList=new ArrayList<>(packageList.size());
+            List<PackageInventory> toBeInsertedInventoryInfoList=new ArrayList<>();
             for (int i = 0; i <packageList.size() ; i++) {
                 temp=packageList.get(i);
                 packageInfo= storagePackageInfoService.findFirstStoragePackage(temp.getRecordNo(), temp.getPackageNo());
-                List<ProductTypeInfoVO> productTypeList = temp.getProductTypeList().stream().
+                List<ProductTypeVO> productTypeList = temp.getProductTypeList().stream().
                         filter(e->null!=e.getProductLength()&&0.0!=e.getProductLength()).collect(Collectors.toList());
                 double stockLength=0.0;
                 if (!CollectionUtils.isEmpty(productTypeList)){
                     for (int j = 0; j <productTypeList.size() ; j++) {
                         productTypeInfoVO = productTypeList.get(j);
-                        List<PackageInventoryInfo> packetedStockArrays = productTypeInfoVO.getPacketedStockArrays().stream().
+                        List<PackageInventory> packetedStockArrays = productTypeInfoVO.getPacketedStockArrays().stream().
                                 filter(e->null!=e.getStockLength()&&0.0!=e.getStockLength()).collect(Collectors.toList());
-                        PackageInventoryInfo stock;
+                        PackageInventory stock;
                         for (int k = 0; k <packetedStockArrays.size() ; k++) {
                             stock= packetedStockArrays.get(k);
                             stock.setPackageNo(temp.getPackageNo());
@@ -228,10 +228,10 @@ public class StorageBusinessImpl implements StorageBusiness {
     }
 
     @Override
-    public PageInfo<ProductTypeInfoVO> findAllProductType() {
+    public PageInfo<ProductTypeVO> findAllProductType() {
         List<String>  list=packageInventoryInfoService.findAllProductType();
-        List<ProductTypeInfoVO> collect = list.stream().map(e -> {
-            ProductTypeInfoVO temp = new ProductTypeInfoVO();
+        List<ProductTypeVO> collect = list.stream().map(e -> {
+            ProductTypeVO temp = new ProductTypeVO();
             temp.setProductType(e);
             return temp;
         }).collect(Collectors.toList());
@@ -239,14 +239,14 @@ public class StorageBusinessImpl implements StorageBusiness {
     }
 
     @Override
-    public PageInfo<ProductTypeInfoVO> findStoredInventory(Integer supplierNo) {
-        List<PackageInventoryInfo> list= packageInventoryInfoService.findStoredInventoryBySupplierNo(supplierNo);
-        Map<String, List<PackageInventoryInfo>> map = list.stream().collect(Collectors.groupingBy(PackageInventoryInfo::getProductType));
-        Iterator<Map.Entry<String, List<PackageInventoryInfo>>> iterator = map.entrySet().iterator();
-        List<ProductTypeInfoVO> productTypeList=new ArrayList<>(10);
+    public PageInfo<ProductTypeVO> findStoredInventory(Integer supplierNo) {
+        List<PackageInventory> list= packageInventoryInfoService.findStoredInventoryBySupplierNo(supplierNo);
+        Map<String, List<PackageInventory>> map = list.stream().collect(Collectors.groupingBy(PackageInventory::getProductType));
+        Iterator<Map.Entry<String, List<PackageInventory>>> iterator = map.entrySet().iterator();
+        List<ProductTypeVO> productTypeList=new ArrayList<>(10);
         while (iterator.hasNext()){
-            Map.Entry<String, List<PackageInventoryInfo>> next = iterator.next();
-            ProductTypeInfoVO temp = new ProductTypeInfoVO();
+            Map.Entry<String, List<PackageInventory>> next = iterator.next();
+            ProductTypeVO temp = new ProductTypeVO();
             temp.setProductType(next.getKey());
             temp.setPacketedStockArrays(next.getValue());
             productTypeList.add(temp);

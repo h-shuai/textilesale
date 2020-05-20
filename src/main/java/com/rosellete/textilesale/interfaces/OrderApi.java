@@ -1,8 +1,7 @@
 package com.rosellete.textilesale.interfaces;
 
-import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.util.RestResponse;
-import com.rosellete.textilesale.vo.OrderDetailInfoVO;
+import com.rosellete.textilesale.vo.OrderDetailVO;
 import com.rosellete.textilesale.vo.OrderInfoVO;
 import com.rosellete.textilesale.vo.OrderSaveVO;
 import com.rosellete.textilesale.vo.OrderStockSaveVO;
@@ -24,11 +23,14 @@ public interface OrderApi {
     @GetMapping(path = "/restock")
     RestResponse orderRestock(@RequestParam("orderNo") String orderNo);
 
+    @GetMapping(path = "/copyAndCreateOrder")
+    RestResponse copyAndCreateOrder(@RequestParam("orderNo") String orderNo);
+
     @GetMapping(path = "/queryOrderStockDetail")
     RestResponse getOrderStockDetailInfo(@RequestParam("orderNo") String orderNo, @RequestParam("productType") String productType);
 
     @PostMapping(value = "/queryOrderDetailList", consumes = MediaType.APPLICATION_JSON_VALUE)
-    RestResponse getOrderDetailList(@RequestBody @Valid OrderDetailInfoVO orderDetailInfoVO);
+    RestResponse getOrderDetailList(@RequestBody @Valid OrderDetailVO orderDetailInfoVO);
 
     @PostMapping(value = "/saveOrder", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse saveOrder(@RequestBody @Valid OrderSaveVO orderSaveVO);

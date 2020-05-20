@@ -1,6 +1,6 @@
 package com.rosellete.textilesale.dao;
 
-import com.rosellete.textilesale.model.StoragePackageInfo;
+import com.rosellete.textilesale.model.StoragePackage;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Temporal;
@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface StoragePackageInfoDao extends BaseRepository<StoragePackageInfo, Long> {
+public interface StoragePackageInfoDao extends BaseRepository<StoragePackage, Long> {
 
     @Query(value = "SELECT t.* FROM t_storage_package_info t where t.record_no= ?1 ", nativeQuery = true)
-    List<StoragePackageInfo> findByRecordNo(String recordNo);
+    List<StoragePackage> findByRecordNo(String recordNo);
 
     @Query(value = "SELECT t0.* FROM t_storage_record t, t_storage_package_info t0 where t0.record_no = t.record_no" +
             " and IF(?1 is not null, t.record_no= ?1, 1 = 1)" +
@@ -62,7 +62,7 @@ public interface StoragePackageInfoDao extends BaseRepository<StoragePackageInfo
 
 
     @Query(value = "SELECT t.* FROM t_storage_package_info t where t.record_no= ?1 and t.package_no = ?2 ", nativeQuery = true)
-    List<StoragePackageInfo> findByPackageNo(String recordNo, String packageNo);
+    List<StoragePackage> findByPackageNo(String recordNo, String packageNo);
 
     @Query(value = "SELECT b.consignor_no,a.* FROM t_storage_package_info a,t_storage_record b where a.record_no =b.record_no and a.package_status='0' and b.storage_type=?1 and b.consignor_no =?2 ", nativeQuery = true)
     List<Map<String, Object>> findPackageList(String storageType, Integer conszignorNo);

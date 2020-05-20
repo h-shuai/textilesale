@@ -1,25 +1,23 @@
 package com.rosellete.textilesale.business;
 
 import com.github.pagehelper.PageInfo;
-import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.*;
 
 import java.util.List;
-import java.util.Map;
 
 public interface OrderBusiness {
     PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO);
 
-    PageInfo<OrderDetailInfoVO> getOrderStockDetailInfo(String orderNo);
+    PageInfo<OrderDetailVO> getOrderStockDetailInfo(String orderNo);
 
-    PageInfo<OrderStockDetailInfoVO> getOrderStockDetailInfo(String orderNo, String productType);
+    PageInfo<OrderStockDetailVO> getOrderStockDetailInfo(String orderNo, String productType);
 
     void confirmOrderStock(String orderNo);
 
     void orderRestock(String orderNo);
 
-    PageInfo<OrderDetailInfoVO> getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO);
+    PageInfo<OrderDetailVO> getOrderDetailList(OrderDetailVO orderDetailInfoVO);
 
     void saveOrder(OrderSaveVO orderSaveVO);
 
@@ -34,4 +32,6 @@ public interface OrderBusiness {
     List<PackInfoVO> getPieceList(Integer orderNo);
 
     RestResponse getWaitSettleList(OrderInfoVO orderInfoVO);
+
+    String copyAndCreateOrder(String orderNo);
 }

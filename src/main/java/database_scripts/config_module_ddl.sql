@@ -8,5 +8,5 @@ CREATE TABLE t_sys_config
     create_user       varchar(100) DEFAULT NULL COMMENT '创建人',
     create_date       datetime     DEFAULT NOW() COMMENT '创建时间',
     PRIMARY KEY (id)
-) ENGINE = InnoDB
+) ENGINE = InnoDB AUTO_INCREMENT=10000
   DEFAULT CHARSET = utf8 comment ='系统配置';

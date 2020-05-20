@@ -27,11 +27,11 @@ public class RejectRecord extends Page implements Serializable {
     @Column(name = "supplier_no",nullable = false, length = 11)
     private Integer supplierNo;
 
-    @Column(name = "product_type", nullable = false, length = 10)
-    private String productType;
+    @Column(name = "product_type_count", nullable = false, length = 11)
+    private Integer productTypeCount;
 
-    @Column(name = "product_count",nullable = false, length = 11)
-    private Integer productCount;
+    @Column(name = "product_length_sum",nullable = false, scale = 16, precision = 2)
+    private Double rejectSumLength;
 
     @Column(name = "create_user", length = 100)
     private String createUser;

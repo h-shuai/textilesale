@@ -3,18 +3,15 @@ package com.rosellete.textilesale.business.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.RejectBusiness;
-import com.rosellete.textilesale.model.PackageInventoryInfo;
-import com.rosellete.textilesale.model.RejectRecord;
-import com.rosellete.textilesale.model.RejectSuppliesInfo;
-import com.rosellete.textilesale.model.SupplierInfo;
+import com.rosellete.textilesale.model.*;
 import com.rosellete.textilesale.service.RejectRecordService;
 import com.rosellete.textilesale.service.RejectSuppliesInfoService;
+import com.rosellete.textilesale.service.RejectSuppliesStockDetailService;
 import com.rosellete.textilesale.service.SupplierService;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
-import com.rosellete.textilesale.vo.ProductTypeInfoVO;
+import com.rosellete.textilesale.vo.ProductTypeVO;
 import com.rosellete.textilesale.vo.RejectRecordSaveVO;
 import com.rosellete.textilesale.vo.RejectRecordVO;
-import com.rosellete.textilesale.vo.RejectSuppliesInfoVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service("rejectBusiness")
 public class RejectBusinessImpl implements RejectBusiness {
@@ -36,6 +32,8 @@ public class RejectBusinessImpl implements RejectBusiness {
     private RejectRecordService rejectRecordService;
     @Autowired
     private RejectSuppliesInfoService rejectSuppliesInfoService;
+    @Autowired
+    private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
     @Autowired
     private SupplierService supplierService;
 
@@ -69,87 +67,129 @@ public class RejectBusinessImpl implements RejectBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(rejectRecordSaveVO);
         RejectRecord rejectRecord = new RejectRecord();
         BeanUtils.copyProperties(rejectRecordSaveVO, rejectRecord, nullPropertyNames);
-        final List<ProductTypeInfoVO> list = rejectRecordSaveVO.getProductTypeList().stream().
+        final List<ProductTypeVO> list = rejectRecordSaveVO.getProductTypeList().stream().
                 filter(e -> !CollectionUtils.isEmpty(e.getPacketedStockArrays())).collect(Collectors.toList());
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String creater = "admin";
         Date now = new Date();
         List<RejectRecord> toBeSavedRejectRecordList = new ArrayList<>();
-        List<RejectSuppliesInfo> toBeInsertRejectSuppliesList = new ArrayList<>();
-        if (StringUtils.isBlank(rejectRecord.getRecordNo())) {
-            for (int i = 0; i < list.size(); i++) {
-                String recordNo = new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1+i), 6, "0")).toString();
-                ProductTypeInfoVO productTypeInfo = list.get(i);
-                List<PackageInventoryInfo> stockList = productTypeInfo.getPacketedStockArrays().stream().
-                        filter(e -> null != e.getStockLength() && 0.0D != e.getStockLength()).collect(Collectors.toList());
-                RejectRecord tmp = new RejectRecord();
+        List<RejectSupplies> toBeInsertRejectSuppliesList = new ArrayList<>();
+        List<RejectSuppliesStockDetail> toBeInsertStockDetailList = new ArrayList<>();
+        if (StringUtils.isBlank(rejectRecord.getRecordNo()) && !CollectionUtils.isEmpty(list)) {
+            String recordNo = new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1), 6, "0")).toString();
+            list.stream().forEach(e -> {
+                final List<PackageInventory> stockList = e.getPacketedStockArrays().stream().
+                        filter(stock -> !CollectionUtils.isEmpty(e.getPacketedStockArrays())).collect(Collectors.toList());
+                double productLength=0.0D;
+                for (int i = 0; i < stockList.size(); i++) {
+                    final PackageInventory packageInventory = stockList.get(i);
+                    RejectSuppliesStockDetail stockDetail = new RejectSuppliesStockDetail();
+                    stockDetail.setRecordNo(recordNo);
+                    stockDetail.setStockNo(i + 1);
+                    stockDetail.setStockLength(packageInventory.getStockLength());
+                    stockDetail.setProductType(e.getProductType());
+                    stockDetail.setStatus("0");
+                    stockDetail.setCreateUser(creater);
+                    stockDetail.setUpdateUser(creater);
+                    stockDetail.setCreateDate(now);
+                    stockDetail.setUpdateDate(now);
+                    toBeInsertStockDetailList.add(stockDetail);
+                    productLength+=packageInventory.getStockLength();
+                }
+                RejectSupplies tmp = new RejectSupplies();
                 tmp.setRecordNo(recordNo);
-                tmp.setProductCount(stockList.size());
-                tmp.setRejectedDate(now);
-                tmp.setSupplierNo(rejectRecordSaveVO.getSupplierNo());
-                tmp.setProductType(productTypeInfo.getProductType());
+                tmp.setProductType(e.getProductType());
+                tmp.setProductLength(productLength);
                 tmp.setCreateUser(creater);
                 tmp.setUpdateUser(creater);
                 tmp.setCreateDate(now);
                 tmp.setUpdateDate(now);
-                stockList.stream().forEach(e -> {
-                    RejectSuppliesInfo info = new RejectSuppliesInfo();
-                    info.setProductType(productTypeInfo.getProductType());
-                    info.setRecordNo(recordNo);
-                    info.setProductLength(e.getStockLength());
-                    info.setCreateUser(creater);
-                    info.setUpdateUser(creater);
-                    info.setCreateDate(now);
-                    info.setUpdateDate(now);
-                    toBeInsertRejectSuppliesList.add(info);
-                });
-                toBeSavedRejectRecordList.add(tmp);
-            }
-        } else {
+                toBeInsertRejectSuppliesList.add(tmp);
+            });
+            RejectRecord tmp = new RejectRecord();
+            tmp.setRecordNo(recordNo);
+            tmp.setProductTypeCount(list.size());
+            tmp.setRejectedDate(now);
+            tmp.setSupplierNo(rejectRecordSaveVO.getSupplierNo());
+            tmp.setRejectSumLength(list.stream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.stream()).map(e -> e.getStockLength()).reduce((a, b) -> a + b).get());
+            tmp.setCreateUser(creater);
+            tmp.setUpdateUser(creater);
+            tmp.setCreateDate(now);
+            tmp.setUpdateDate(now);
+            toBeSavedRejectRecordList.add(tmp);
+        } else if (!CollectionUtils.isEmpty(list)) {
+
             String recordNo = rejectRecord.getRecordNo();
             rejectRecord = rejectRecordService.findByPrimaryKey(recordNo);
-            Stream<String> distinct = list.stream().map(e -> e.getProductType()).distinct();
-            long count = distinct.count();
-            if (count > 1) {
-                throw new IllegalArgumentException("修改时不能新增产品型号!");
-            }
-            String type = distinct.findAny().orElse(null);
-            if (StringUtils.equals(rejectRecord.getProductType(), type)) {
-                throw new IllegalArgumentException("不能修改产品型号!");
-            }
-            List<PackageInventoryInfo> stockList = list.stream().filter(e -> StringUtils.isNoneBlank(e.getProductType())).findFirst().orElse(new ProductTypeInfoVO()).
-                    getPacketedStockArrays().stream().filter(e -> null != e.getStockLength() && 0.0D != e.getStockLength()).collect(Collectors.toList());
-            stockList.forEach(e -> {
-                RejectSuppliesInfo info = new RejectSuppliesInfo();
-                info.setProductType(e.getProductType());
-                info.setRecordNo(recordNo);
-                info.setProductLength(e.getStockLength());
-                info.setCreateUser(creater);
-                info.setUpdateUser(creater);
-                info.setCreateDate(now);
-                info.setUpdateDate(now);
-                toBeInsertRejectSuppliesList.add(info);
+            List<RejectSupplies> existedRejectSuppliesList = rejectSuppliesInfoService.findRecordDetailByRecordNo(recordNo);
+            List<RejectSuppliesStockDetail> existedStockDetailList=rejectSuppliesStockDetailService.findAllByRecordNo(recordNo);
+
+            list.stream().forEach(e -> {
+                final List<PackageInventory> stockList = e.getPacketedStockArrays().stream().
+                        filter(stock -> !CollectionUtils.isEmpty(e.getPacketedStockArrays())).collect(Collectors.toList());
+                for (int i = 0; i < stockList.size(); i++) {
+                    final PackageInventory packageInventory = stockList.get(i);
+                    RejectSuppliesStockDetail stockDetail = new RejectSuppliesStockDetail();
+                    stockDetail.setStockNo(i + 1);
+                    stockDetail.setRecordNo(recordNo);
+                    stockDetail.setStockLength(packageInventory.getStockLength());
+                    stockDetail.setProductType(e.getProductType());
+                    stockDetail.setStatus("0");
+                    stockDetail.setCreateUser(creater);
+                    stockDetail.setUpdateUser(creater);
+                    stockDetail.setCreateDate(now);
+                    stockDetail.setUpdateDate(now);
+                    toBeInsertStockDetailList.add(stockDetail);
+                }
+                RejectSupplies tmp = new RejectSupplies();
+                tmp.setRecordNo(recordNo);
+                tmp.setProductType(e.getProductType());
+                tmp.setProductLength(stockList.stream().map(s -> s.getStockLength()).reduce((a, b) -> a + b).get().doubleValue());
+                tmp.setCreateUser(creater);
+                tmp.setUpdateUser(creater);
+                tmp.setCreateDate(now);
+                tmp.setUpdateDate(now);
+                toBeInsertRejectSuppliesList.add(tmp);
+
+
             });
-            rejectRecord.setProductCount(stockList.size());
+            rejectRecord.setProductTypeCount(list.size());
+            rejectRecord.setRejectedDate(now);
+            rejectRecord.setSupplierNo(rejectRecordSaveVO.getSupplierNo());
+            rejectRecord.setRejectSumLength(list.stream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.stream()).map(e -> e.getStockLength()).reduce((a, b) -> a + b).get());
             rejectRecord.setUpdateUser(creater);
             rejectRecord.setUpdateDate(now);
             toBeSavedRejectRecordList.add(rejectRecord);
+            rejectSuppliesStockDetailService.deleteAll(existedStockDetailList);
+            rejectSuppliesInfoService.deleteAll(existedRejectSuppliesList);
         }
 
+        rejectSuppliesStockDetailService.saveAll(toBeInsertStockDetailList);
         rejectSuppliesInfoService.saveRejectSupplies(toBeInsertRejectSuppliesList);
         rejectRecordService.saveRejectRecord(toBeSavedRejectRecordList);
     }
 
     @Override
-    public PageInfo<RejectSuppliesInfoVO> getRejectRecordDetail(String recordNo) {
+    public RejectRecordSaveVO getRejectRecordDetail(String recordNo) {
         RejectRecord record = rejectRecordService.findByPrimaryKey(recordNo);
-        List<RejectSuppliesInfo> list = rejectSuppliesInfoService.findRecordDetailByRecordNo(recordNo);
-        List<RejectSuppliesInfoVO> collect = list.stream().map(e -> {
-            RejectSuppliesInfoVO temp = new RejectSuppliesInfoVO();
-            BeanUtils.copyProperties(record, temp);
-            BeanUtils.copyProperties(e, temp);
+        List<RejectSupplies> list = rejectSuppliesInfoService.findRecordDetailByRecordNo(recordNo);
+        List<ProductTypeVO> collect = list.stream().map(e -> {
+            ProductTypeVO temp = new ProductTypeVO();
+            temp.setProductType(e.getProductType());
+            final List<RejectSuppliesStockDetail> allByRecordNo = rejectSuppliesStockDetailService.findAllByRecordNoAndType(e.getRecordNo(),e.getProductType());
+            final List<PackageInventory> inventoryList = allByRecordNo.stream().map(stock -> {
+                PackageInventory inventory = new PackageInventory();
+                inventory.setProductType(stock.getProductType());
+                inventory.setStockLength(stock.getStockLength());
+                return inventory;
+            }).collect(Collectors.toList());
+            temp.setPacketedStockArrays(inventoryList);
+            temp.setProductLength(e.getProductLength());
             return temp;
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        RejectRecordSaveVO recordSaveVO=new RejectRecordSaveVO();
+        BeanUtils.copyProperties(record,recordSaveVO);
+        recordSaveVO.setProductTypeList(collect);
+        return recordSaveVO;
     }
 }

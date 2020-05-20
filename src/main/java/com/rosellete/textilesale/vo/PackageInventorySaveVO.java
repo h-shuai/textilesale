@@ -1,7 +1,5 @@
 package com.rosellete.textilesale.vo;
 
-import com.rosellete.textilesale.model.PackageInventoryInfo;
-import com.rosellete.textilesale.model.StoragePackageInfo;
 import lombok.Data;
 
 import java.io.Serializable;
