@@ -2,7 +2,7 @@ package com.rosellete.textilesale.service;
 
 import com.rosellete.textilesale.dao.StoragePackageInfoDao;
 import com.rosellete.textilesale.model.CustomerInfo;
-import com.rosellete.textilesale.model.StoragePackageInfo;
+import com.rosellete.textilesale.model.StoragePackage;
 import com.rosellete.textilesale.model.SupplierInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,11 @@ public class StoragePackageInfoService {
     @Autowired
     private StoragePackageInfoDao storagePackageInfoDao;
 
-    public void saveStoragePackageList(List<StoragePackageInfo> packageList) {
+    public void saveStoragePackageList(List<StoragePackage> packageList) {
         storagePackageInfoDao.saveAll(packageList);
     }
 
-    public List<StoragePackageInfo> findAllByRecordNo(String recordNo) {
+    public List<StoragePackage> findAllByRecordNo(String recordNo) {
         return storagePackageInfoDao.findByRecordNo(recordNo);
     }
 
@@ -30,7 +30,7 @@ public class StoragePackageInfoService {
         return storagePackageInfoDao.findPackageList(storageType,conszignorNo);
     }
 
-    public long findPackageListSize(StoragePackageInfo storagePackageInfo, String storageType,
+    public long findPackageListSize(StoragePackage storagePackageInfo, String storageType,
                                     SupplierInfo supplierInfo, CustomerInfo customerInfo, Date startDate, Date endDate) {
         String consignor=null;
         String consignorPhone=null;
@@ -54,11 +54,11 @@ public class StoragePackageInfoService {
                 storageType, conszignorNo,consignor, consignorPhone, consignorType,industryType, startDate, endDate).size();
     }
 
-    public List<StoragePackageInfo> findStoragePackageByPackageNo(String recordNo, String packageNo) {
+    public List<StoragePackage> findStoragePackageByPackageNo(String recordNo, String packageNo) {
         return storagePackageInfoDao.findByPackageNo(recordNo, packageNo);
     }
 
-    public StoragePackageInfo findFirstStoragePackage(String recordNo, String packageNo) {
+    public StoragePackage findFirstStoragePackage(String recordNo, String packageNo) {
         return storagePackageInfoDao.findByPackageNo(recordNo, packageNo).stream().findFirst().orElse(null);
     }
 }

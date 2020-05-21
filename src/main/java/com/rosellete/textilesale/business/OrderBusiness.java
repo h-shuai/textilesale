@@ -6,20 +6,19 @@ import com.rosellete.textilesale.vo.*;
 import org.springframework.beans.support.PagedListHolder;
 
 import java.util.List;
-import java.util.Map;
 
 public interface OrderBusiness {
     PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO);
 
-    PageInfo<OrderDetailInfoVO> getOrderStockDetailInfo(String orderNo);
+    PageInfo<OrderDetailVO> getOrderStockDetailInfo(String orderNo);
 
-    PageInfo<OrderStockDetailInfoVO> getOrderStockDetailInfo(String orderNo, String productType);
+    PageInfo<OrderStockDetailVO> getOrderStockDetailInfo(String orderNo, String productType);
 
     void confirmOrderStock(String orderNo);
 
     void orderRestock(String orderNo);
 
-    PageInfo<OrderDetailInfoVO> getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO);
+    PageInfo<OrderDetailVO> getOrderDetailList(OrderDetailVO orderDetailInfoVO);
 
     void saveOrder(OrderSaveVO orderSaveVO);
 
@@ -34,4 +33,6 @@ public interface OrderBusiness {
     List<PackInfoVO> getPieceList(Integer orderNo);
 
     RestResponse getWaitSettleList(OrderInfoVO orderInfoVO);
+
+    String copyAndCreateOrder(String orderNo);
 }

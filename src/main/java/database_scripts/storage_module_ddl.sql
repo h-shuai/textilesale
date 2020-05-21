@@ -6,7 +6,7 @@ CREATE TABLE t_storage_record
     record_no          varchar(30) NOT NULL COMMENT '入库记录编号',
     storage_date       datetime     DEFAULT NOW() COMMENT '入库时间',
     storage_type       varchar(1)   DEFAULT '1' COMMENT '入库类型 1-供应商发货 2-客户退货',
-    consignor_no varchar(30)  NOT NULL COMMENT '供应商编号/客户编号',
+    consignor_no int  NOT NULL COMMENT '供应商编号/客户编号',
     package_quantity   smallint    not null COMMENT '包裹数量',
     storage_clerk_name varchar(50)  DEFAULT NULL COMMENT '抄包员',
     create_user        varchar(100) DEFAULT NULL COMMENT '创建人',
@@ -29,7 +29,7 @@ CREATE TABLE t_storage_package_info
     create_date datetime     DEFAULT NOW() COMMENT '创建时间',
     update_date datetime     DEFAULT NOW() COMMENT '修改时间',
     PRIMARY KEY (id)
-) ENGINE = InnoDB
+) ENGINE = InnoDB AUTO_INCREMENT=10000
   DEFAULT CHARSET = utf8 comment ='入库包裹信息';
 
 CREATE TABLE t_package_inventory_info
@@ -45,5 +45,5 @@ CREATE TABLE t_package_inventory_info
     create_date  datetime     DEFAULT NOW() COMMENT '创建时间',
     update_date  datetime     DEFAULT NOW() COMMENT '修改时间',
     PRIMARY KEY (id)
-) ENGINE = InnoDB
+) ENGINE = InnoDB AUTO_INCREMENT=10000
   DEFAULT CHARSET = utf8 comment ='入库物品信息';

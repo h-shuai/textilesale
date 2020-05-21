@@ -2,7 +2,7 @@ package com.rosellete.textilesale.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rosellete.textilesale.model.OrderDetailInfo;
-import com.rosellete.textilesale.model.OrderStockDetailInfo;
+import com.rosellete.textilesale.model.OrderStockDetail;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class OrderDetailInfoVO extends OrderDetailInfo {
+public class OrderDetailVO extends OrderDetailInfo {
     private String customerName;
 
     private String customerPhoneNo;
@@ -35,6 +35,8 @@ public class OrderDetailInfoVO extends OrderDetailInfo {
 
     private Integer stockedFabricCount;
 
-    private List<OrderStockDetailInfo> orderStockingArrays = new ArrayList<>();
+    private String url;
+
+    private List<OrderStockDetail> orderStockingArrays = new ArrayList<>();
 
 }

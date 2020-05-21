@@ -17,4 +17,15 @@ public class SysConfigService {
         Example<SysConfig> example = Example.of(config);
         return sysConfigDao.findOne(example).orElse(null);
     }
+
+    public String getImagePath() {
+        String folder;
+        SysConfig imagePath = this.findByCodeName("imagePath");
+        if (null != imagePath) {
+            folder = imagePath.getCodeValue();
+        } else {
+            folder = "/Users/shadow/upload";
+        }
+        return folder;
+    }
 }

@@ -12,7 +12,7 @@ public interface StorageBusiness {
 
     PageInfo<StoragePackageVO> getStoragePackageList(ConsignorVO consignorVO);
 
-    PageInfo<PackageInventoryInfoVO> getPackageInventory(String recordNo, String packageNo);
+    PageInfo<PackageInventoryVO> getPackageInventory(String recordNo, String packageNo);
 
     void savePackageInventoryList(PackageInventorySaveVO packageInventorySaveVO);
 
@@ -20,8 +20,8 @@ public interface StorageBusiness {
 
     PageInfo<ConsignorVO> findSupplierAndCustomerWarehouseRelated(ConsignorVO consignorVO);
 
-    PageInfo<ProductTypeInfoVO> findAllProductType();
+    PageInfo<ProductTypeVO> findAllProductType();
 
-    PageInfo<PackageInventoryInfoVO> findStoredInventory(Integer supplierNo);
+    PageInfo<ProductTypeVO> findStoredInventory(Integer supplierNo);
 
 }

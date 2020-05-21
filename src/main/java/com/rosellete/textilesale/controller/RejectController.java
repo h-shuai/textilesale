@@ -1,12 +1,13 @@
 package com.rosellete.textilesale.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.RejectBusiness;
 import com.rosellete.textilesale.interfaces.RejectApi;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.RejectRecordSaveVO;
 import com.rosellete.textilesale.vo.RejectRecordVO;
-import com.rosellete.textilesale.vo.RejectSuppliesInfoVO;
+import com.rosellete.textilesale.vo.RejectSuppliesVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +42,7 @@ public class RejectController implements RejectApi {
 
     @Override
     public RestResponse getRejectRecordDetail(String recordNo) {
-        PageInfo<RejectSuppliesInfoVO> pageInfo = rejectBusiness.getRejectRecordDetail(recordNo);
-        return new RestResponse(pageInfo);
+        RejectRecordSaveVO rejectRecordDetail = rejectBusiness.getRejectRecordDetail(recordNo);
+        return new RestResponse(JSON.toJSONString(rejectRecordDetail));
     }
 }

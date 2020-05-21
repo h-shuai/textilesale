@@ -1,10 +1,10 @@
 package com.rosellete.textilesale.vo;
 
-import com.rosellete.textilesale.model.PackageInventoryInfo;
+import com.rosellete.textilesale.model.PackageInventory;
 import lombok.Data;
 
 @Data
-public class PackageInventoryInfoVO extends PackageInventoryInfo {
+public class PackageInventoryVO extends PackageInventory {
 
     private String recordNo;
 
