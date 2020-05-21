@@ -11,15 +11,20 @@ import java.util.List;
 
 @Data
 public class OrderDetailVO extends OrderDetailInfo {
+    private Integer customeNo;
     private String customerName;
 
     private String customerPhoneNo;
+    private String customerAddress;
+
+    private String customerType;
+    private String industryType;
 
     private String deliveryMode;
 
-    private String contact;
+    private String liaison;
 
-    private String contactPhoneNo;
+    private String contact;
 
     private String deliveryAddress;
 

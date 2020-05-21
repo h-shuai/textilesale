@@ -75,11 +75,18 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Override
     public PageInfo<OrderDetailVO> getOrderStockDetailInfo(String orderNo) {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
+        CustomerInfo customerInfo = customerService.findByPrimaryKey(orderInfo.getCustomerNo());
         List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(orderNo);
         List<OrderDetailVO> parsedList = orderDetailInfoList.stream().map(e -> {
             OrderDetailVO temp = new OrderDetailVO();
             BeanUtils.copyProperties(orderInfo, temp);
             BeanUtils.copyProperties(e, temp);
+            temp.setCustomeNo(customerInfo.getCustomerNo());
+            temp.setCustomerName(customerInfo.getName());
+            temp.setCustomerPhoneNo(customerInfo.getPhone());
+            temp.setCustomerType(customerInfo.getType());
+            temp.setIndustryType(customerInfo.getIndustry());
+            temp.setCustomerAddress(customerInfo.getAddress());
             String imageUrl;
             if (StringUtils.isBlank(temp.getImageName())) {
                 imageUrl = "api/download/notfound.jpg";
