@@ -3,7 +3,6 @@ package com.rosellete.textilesale.business.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
 import com.rosellete.textilesale.model.*;
@@ -15,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -277,9 +277,11 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public PageInfo<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO) {
-        PageHelper.startPage(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
-        return new PageInfo<>(orderInfoService.getWaitPackCustomerList(orderInfoVO));
+    public PagedListHolder<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO) {
+        PagedListHolder<OrderInfoVO> pagedListHolder = new PagedListHolder<>(orderInfoService.getWaitPackCustomerList(orderInfoVO));
+        pagedListHolder.setPage(orderInfoVO.getPageNum() - 1);
+        pagedListHolder.setPageSize(orderInfoVO.getPageSize());
+        return pagedListHolder;
     }
 
     @Override
@@ -300,7 +302,6 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Override
     public RestResponse getWaitSettleList(OrderInfoVO orderInfoVO) {
-        PageHelper.startPage(orderInfoVO.getPageNum(), orderInfoVO.getPageSize());
-        return new RestResponse(new PageInfo<>(orderInfoService.getWaitSettleList(orderInfoVO)));
+        return new RestResponse(orderInfoService.getWaitSettleList(orderInfoVO));
     }
 }

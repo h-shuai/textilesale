@@ -1,7 +1,5 @@
 package com.rosellete.textilesale.business.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.PackInfoBusiness;
 import com.rosellete.textilesale.model.PackDetailInfo;
 import com.rosellete.textilesale.model.PackInfo;
@@ -14,6 +12,7 @@ import com.rosellete.textilesale.vo.PackSubInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -126,8 +125,10 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
     }
 
     @Override
-    public PageInfo<PackInfoVO> getWaitDeliveryList(PackInfo packInfo) {
-        PageHelper.startPage(packInfo.getPageNum(), packInfo.getPageSize());
-        return new PageInfo<>(packInfoService.getWaitDeliveryList(packInfo));
+    public PagedListHolder<PackInfoVO> getWaitDeliveryList(PackInfo packInfo) {
+        PagedListHolder<PackInfoVO> pagedListHolder = new PagedListHolder<>(packInfoService.getWaitDeliveryList(packInfo));
+        pagedListHolder.setPage(packInfo.getPageNum() - 1);
+        pagedListHolder.setPageSize(packInfo.getPageSize());
+        return pagedListHolder;
     }
 }

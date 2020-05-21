@@ -1,9 +1,9 @@
 package com.rosellete.textilesale.business;
 
 import com.github.pagehelper.PageInfo;
-import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.*;
+import org.springframework.beans.support.PagedListHolder;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public interface OrderBusiness {
 
     void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO);
 
-    PageInfo<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO);
+    PagedListHolder<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO);
 
     List<String> getTotalCount(Integer orderNo);
 

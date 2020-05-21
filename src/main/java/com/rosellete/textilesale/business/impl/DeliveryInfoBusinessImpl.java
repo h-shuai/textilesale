@@ -45,6 +45,7 @@ public class DeliveryInfoBusinessImpl implements DeliveryInfoBusiness {
                 deliveryInfo.setType(deliveryInfoVO.getType());
                 deliveryInfo.setCreateTime(new Date());
                 deliveryInfo.setTodayDepartNum(departNum);
+                deliveryInfo.setRecerveFileUrl((String)map.get("fileName"));
                 deliveryInfos.add(deliveryInfo);
                 ids.add(packInfo.getId());
             }

@@ -73,4 +73,9 @@ public class DeliveryInfo implements Serializable {
     */
     @Column(name = "today_depart_num")
     private Integer todayDepartNum;
+    /**
+     * 接收单文件名称
+     */
+    @Column(name = "receive_file_url")
+    private String recerveFileUrl;
 }

@@ -8,6 +8,7 @@ import com.rosellete.textilesale.vo.OrderInfoVO;
 import com.rosellete.textilesale.vo.PackInfoVO;
 import com.rosellete.textilesale.vo.PackSubInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -110,7 +111,7 @@ public class OrderInfoService {
         return returnList;
     }
 
-    public List<OrderInfoVO> getWaitSettleList(OrderInfoVO orderInfoVO){
+    public PagedListHolder<OrderInfoVO> getWaitSettleList(OrderInfoVO orderInfoVO){
         List<Map<String,Object>> list = orderInfoDao.getWaitSettleList(orderInfoVO.getOrderNo(),orderInfoVO.getCustomerName());
         List<OrderInfoVO> returnList = new ArrayList<>();
         for (Map<String,Object> map : list){
@@ -122,6 +123,9 @@ public class OrderInfoService {
             infoVO.setOrderAmount((Double)map.get("orderAmount"));
             returnList.add(infoVO);
         }
-        return returnList;
+        PagedListHolder<OrderInfoVO> pagedListHolder = new PagedListHolder<>(returnList);
+        pagedListHolder.setPage(orderInfoVO.getPageNum() - 1);
+        pagedListHolder.setPageSize(orderInfoVO.getPageSize());
+        return pagedListHolder;
     }
 }

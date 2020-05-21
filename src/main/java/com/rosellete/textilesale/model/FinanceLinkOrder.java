@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "t_finance_link_order")
 @Data
-public class FinanceLinkOrder implements Serializable {
+public class FinanceLinkOrder extends Page implements Serializable {
     private static final long serialVersionUID = 160481768598209536L;
     /**
     * 主键ID
@@ -30,6 +30,11 @@ public class FinanceLinkOrder implements Serializable {
     */
     @Column(name = "order_no")
     private String orderNo;
+    /**
+     * 订单金额
+     */
+    @Column(name = "order_amount")
+    private Double orderAmount;
     /**
     * 批次号
     */
