@@ -22,4 +22,5 @@ public class RejectSuppliesVO extends RejectSupplies {
 
     private String industryType;
 
+    private String url;
 }

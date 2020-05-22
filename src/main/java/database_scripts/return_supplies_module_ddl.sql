@@ -21,6 +21,7 @@ CREATE TABLE t_reject_supplies_info
     id             bigint       NOT NULL auto_increment COMMENT '主键',
     record_no      varchar(30)  NOT NULL COMMENT '退货记录编号',
     product_type   varchar(10)  NOT NULL COMMENT '产品型号',
+    image_name varchar(200)  DEFAULT NULL COMMENT '样品图名称',
     product_length double(8, 2) NOT NULL COMMENT '长度(米)',
     create_user    varchar(100) DEFAULT NULL COMMENT '创建人',
     update_user    varchar(100) DEFAULT NULL COMMENT '修改人',

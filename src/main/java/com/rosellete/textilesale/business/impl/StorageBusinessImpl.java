@@ -64,7 +64,7 @@ public class StorageBusinessImpl implements StorageBusiness {
             StorageRecordVO temp = new StorageRecordVO();
             BeanUtils.copyProperties(e, temp);
             return temp;
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(StorageRecordVO::getStartDate).reversed()).collect(Collectors.toList());
         page.addAll(collect);
         return new PageInfo<>(page);
     }

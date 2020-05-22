@@ -106,7 +106,7 @@ public class ImageUploadAndDownloadServiceImpl implements ImageUploadAndDownload
     public void deleteImage(String id) {
         String folder = sysConfigService.getImagePath();
         File localFile = new File(folder, id);
-        if (!localFile.exists() && localFile.isFile()) {
+        if (localFile.exists() && localFile.isFile()) {
             localFile.delete();
         }
     }

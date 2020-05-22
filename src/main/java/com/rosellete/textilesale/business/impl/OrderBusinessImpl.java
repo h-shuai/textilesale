@@ -68,7 +68,7 @@ public class OrderBusinessImpl implements OrderBusiness {
             temp.setStockedTypeCount(filteredList.size());
             temp.setStockedSumLength(filteredList.stream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
             return temp;
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(OrderInfoVO::getOrderDate).reversed()).collect(Collectors.toList());
 
         page.addAll(collect);
         return new PageInfo<>(page);
