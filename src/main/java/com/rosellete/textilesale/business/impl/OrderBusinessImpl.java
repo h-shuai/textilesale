@@ -35,6 +35,8 @@ public class OrderBusinessImpl implements OrderBusiness {
     private OrderDetailInfoService orderDetailInfoService;
     @Autowired
     private OrderStockDetailInfoService orderStockDetailInfoService;
+    @Autowired
+    private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
 
     @Autowired
     private SysConfigService sysConfigService;
@@ -303,16 +305,20 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public List<String> getTotalCount(Integer customer) {
-        return orderInfoService.getTotalCount(customer);
+    public List<String> getTotalCount(Integer customer,String businessType) {
+        return orderInfoService.getTotalCount(customer,businessType);
     }
 
     @Override
-    public List<PackInfoVO> getPieceList(Integer customer) {
-        List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer);
+    public List<PackInfoVO> getPieceList(Integer customer,String businessType) {
+        List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer,businessType);
         for (PackInfoVO packInfoVO : returnList) {
             for (PackSubInfoVO packSubInfoVO : packInfoVO.getPackSubInfoVOS()) {
-                packSubInfoVO.setPieceOptions(orderStockDetailInfoService.getPieceList(packInfoVO.getOrderNo(), packSubInfoVO.getColthModel()));
+                if (businessType.equals("0")) {
+                    packSubInfoVO.setPieceOptions(orderStockDetailInfoService.getPieceList(packInfoVO.getOrderNo(), packSubInfoVO.getColthModel()));
+                }else {
+                    packSubInfoVO.setPieceOptions(rejectSuppliesStockDetailService.getPieceList(packInfoVO.getOrderNo(), packSubInfoVO.getColthModel()));
+                }
             }
         }
         return returnList;

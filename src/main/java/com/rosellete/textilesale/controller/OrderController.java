@@ -135,13 +135,13 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse getTotalCount(Integer customer) {
-        return new RestResponse(orderBusiness.getTotalCount(customer));
+    public RestResponse getTotalCount(Integer customer,String businessType) {
+        return new RestResponse(orderBusiness.getTotalCount(customer,businessType));
     }
 
     @Override
-    public RestResponse getPieceList(Integer customer) {
-        return new RestResponse(orderBusiness.getPieceList(customer));
+    public RestResponse getPieceList(Integer customer,String businessType) {
+        return new RestResponse(orderBusiness.getPieceList(customer,businessType));
     }
 
     @Override

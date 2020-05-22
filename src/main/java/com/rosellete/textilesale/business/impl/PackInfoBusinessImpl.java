@@ -5,6 +5,7 @@ import com.rosellete.textilesale.model.PackDetailInfo;
 import com.rosellete.textilesale.model.PackInfo;
 import com.rosellete.textilesale.service.OrderStockDetailInfoService;
 import com.rosellete.textilesale.service.PackInfoService;
+import com.rosellete.textilesale.service.RejectSuppliesStockDetailService;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.PackDetailInfoVO;
 import com.rosellete.textilesale.vo.PackInfoVO;
@@ -27,6 +28,9 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
 
     @Autowired
     private OrderStockDetailInfoService orderStockDetailInfoService;
+
+    @Autowired
+    private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
 
     @Override
     public RestResponse getPackListByCustomer(String customer) {
@@ -76,6 +80,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packInfo.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         packInfo.setCustomerName(packDetailInfoVO.getCustomerName());
         packInfo.setCustomerId(packDetailInfoVO.getCustomerNo());
+        packInfo.setBusinessType(packDetailInfoVO.getBusinessType());
         packInfo.setProductCount(packDetailInfoVO.getProductCount());
         packInfo.setPieceCount(packDetailInfoVO.getPieceCount());
         packInfo.setRiceCount(packDetailInfoVO.getRiceCount());
@@ -86,10 +91,15 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packInfo.setPackNo(maxNo+1);
         packInfoService.savePackInfo(packInfo);
         List<PackDetailInfo> detailList = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
         for (Map<String,Object> map : packDetailInfoVO.getProductInfoList()){
             PackDetailInfo packDetailInfo = new PackDetailInfo();
             packDetailInfo.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-            packDetailInfo.setOrderNo(orderStockDetailInfoService.getStockDetailById(String.valueOf(map.get("id"))).getOrderNo());
+            if (packDetailInfoVO.getBusinessType().equals("0")) {
+                packDetailInfo.setOrderNo(orderStockDetailInfoService.getStockDetailById(String.valueOf(map.get("id"))).getOrderNo());
+            } else {
+                packDetailInfo.setOrderNo(rejectSuppliesStockDetailService.getById(String.valueOf(map.get("id"))).getRecordNo());
+            }
             packDetailInfo.setPackId(packInfo.getId());
             packDetailInfo.setProductType((String)map.get("productType"));
             packDetailInfo.setProdPic((String)map.get("picurl"));
@@ -99,7 +109,12 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             packDetailInfo.setCreateTime(new Date());
             packDetailInfo.setCreateUser("");
             detailList.add(packDetailInfo);
-            orderStockDetailInfoService.updateStatusById("1",packDetailInfo.getStockDetailId());
+            ids.add(packDetailInfo.getStockDetailId());
+        }
+        if (packDetailInfoVO.getBusinessType().equals("0")) {
+            orderStockDetailInfoService.updateStatusByIds("1",ids);
+        } else {
+            rejectSuppliesStockDetailService.updateStatusByIds("1",ids);
         }
         packInfoService.savePackDetailInfo(detailList);
         return new RestResponse(packInfo);

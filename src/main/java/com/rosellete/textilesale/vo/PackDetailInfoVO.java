@@ -31,5 +31,7 @@ public class PackDetailInfoVO {
 
     private String remark;
 
+    private String businessType;
+
     private List<PackInfoVO> packInfoVOS;
 }

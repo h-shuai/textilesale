@@ -2,6 +2,7 @@ package com.rosellete.textilesale.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrderInfoDao;
+import com.rosellete.textilesale.dao.RejectRecordDao;
 import com.rosellete.textilesale.model.CustomerInfo;
 import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.vo.OrderInfoVO;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class OrderInfoService {
     @Autowired
     private OrderInfoDao orderInfoDao;
+    @Autowired
+    private RejectRecordDao rejectRecordDao;
 
 
     public OrderInfo findByPrimaryKey(String orderNo) {
@@ -52,16 +55,29 @@ public class OrderInfoService {
 
     public List<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO) {
         List<Map<String, Object>> maps = orderInfoDao.getWaitPackCustomer(orderInfoVO.getCustomerName()) ;
+        List<Map<String, Object>> supplierMaps = rejectRecordDao.getWaitPackSupplier(orderInfoVO.getCustomerName());
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
             OrderInfoVO newInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
+            newInfoVO.setBusinessType("0");
+            orderInfoVOList.add(newInfoVO);
+        }
+        for (Map<String, Object> map : supplierMaps) {
+            OrderInfoVO newInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
+            newInfoVO.setBusinessType("1");
+            newInfoVO.setOrderAmount(null);
             orderInfoVOList.add(newInfoVO);
         }
         return orderInfoVOList;
     }
 
-    private List<OrderInfoVO> getWaitPackOrderList(OrderInfo orderInfo) {
-        List<Map<String, Object>> maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(),orderInfo.getCustomerNo());
+    private List<OrderInfoVO> getWaitPackOrderList(OrderInfoVO orderInfo) {
+        List<Map<String, Object>> maps;
+        if (orderInfo.getBusinessType().equals("0")) {
+            maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(),orderInfo.getCustomerNo());
+        } else {
+            maps = rejectRecordDao.getWaitPackRejectList(orderInfo.getOrderNo(),orderInfo.getCustomerNo());
+        }
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
             OrderInfoVO orderInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
@@ -70,29 +86,40 @@ public class OrderInfoService {
         return orderInfoVOList;
     }
 
-    public List<String> getTotalCount(Integer customer){
-        OrderInfo orderInfo = new OrderInfo();
+    public List<String> getTotalCount(Integer customer,String businessType){
+        OrderInfoVO orderInfo = new OrderInfoVO();
         orderInfo.setCustomerNo(customer);
         orderInfo.setOrderNo(null);
+        orderInfo.setBusinessType(businessType);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<String> orderNos = new ArrayList<>();
         for (OrderInfoVO orderInfoVO : orderInfoVOList){
             orderNos.add(orderInfoVO.getOrderNo());
         }
-        return orderInfoDao.getTotalCount(orderNos,String.valueOf(customer));
+        if (businessType.equals("0")) {
+            return orderInfoDao.getTotalCount(orderNos,String.valueOf(customer));
+        } else {
+            return rejectRecordDao.getRejectTotalCount(orderNos,String.valueOf(customer));
+        }
     }
 
-    public List<PackInfoVO> getWaitPieceList(Integer customer) {
-        OrderInfo orderInfo = new OrderInfo();
+    public List<PackInfoVO> getWaitPieceList(Integer customer,String businessType) {
+        OrderInfoVO orderInfo = new OrderInfoVO();
         orderInfo.setCustomerNo(customer);
         orderInfo.setOrderNo(null);
+        orderInfo.setBusinessType(businessType);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<String> orderNos = new ArrayList<>();
         for (OrderInfoVO orderInfoVO : orderInfoVOList){
             orderNos.add(orderInfoVO.getOrderNo());
         }
         List<PackInfoVO> returnList = new ArrayList<>();
-        List<Map<String, Object>> pieceList = orderInfoDao.getWaitPieceList(orderNos);
+        List<Map<String, Object>> pieceList;
+        if (businessType.equals("0")) {
+            pieceList = orderInfoDao.getWaitPieceList(orderNos);
+        } else {
+            pieceList = rejectRecordDao.getRejectWaitPieceList(orderNos);
+        }
         for (String orderNo : orderNos){
             List<PackSubInfoVO> packSubInfoVOS = new ArrayList<>();
             PackInfoVO packInfoVO = new PackInfoVO();

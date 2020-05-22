@@ -28,9 +28,9 @@ public interface OrderBusiness {
 
     PagedListHolder<OrderInfoVO> getWaitPackCustomerList(OrderInfoVO orderInfoVO);
 
-    List<String> getTotalCount(Integer orderNo);
+    List<String> getTotalCount(Integer orderNo,String businessType);
 
-    List<PackInfoVO> getPieceList(Integer orderNo);
+    List<PackInfoVO> getPieceList(Integer orderNo,String businessType);
 
     RestResponse getWaitSettleList(OrderInfoVO orderInfoVO);
 

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RejectSuppliesStockDetailService {
@@ -34,5 +35,17 @@ public class RejectSuppliesStockDetailService {
 
     public void deleteAll(List<RejectSuppliesStockDetail> existedStockDetailList) {
         rejectSuppliesStockDetailDao.deleteAll(existedStockDetailList);
+    }
+
+    public List<Map<String, Object>> getPieceList(String recordNo, String productType) {
+        return rejectSuppliesStockDetailDao.getPieceList(recordNo, productType);
+    }
+
+    public RejectSuppliesStockDetail getById(String id){
+        return rejectSuppliesStockDetailDao.getById(id);
+    }
+
+    public void updateStatusByIds(String status, List<String> ids) {
+        rejectSuppliesStockDetailDao.updateStatusByIds(status, ids);
     }
 }

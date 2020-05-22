@@ -45,10 +45,10 @@ public interface OrderApi {
     RestResponse getWaitPackCustomerList(@RequestBody OrderInfoVO orderInfoVO);
 
     @RequestMapping("/getTotalCount")
-    RestResponse getTotalCount(@RequestParam("customer") Integer customer);
+    RestResponse getTotalCount(@RequestParam("customer") Integer customer,@RequestParam("businessType") String businessType);
 
     @RequestMapping("/getPieceList")
-    RestResponse getPieceList(@RequestParam("customer") Integer customer);
+    RestResponse getPieceList(@RequestParam("customer") Integer customer,@RequestParam("businessType") String businessType);
 
     @PostMapping(value = "/getWaitSettleList",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getWaitSettleList(@RequestBody OrderInfoVO orderInfoVO);

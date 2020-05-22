@@ -25,6 +25,9 @@ public class PackInfoService {
     @Autowired
     private OrderStockDetailInfoDao orderStockDetailInfoDao;
 
+    @Autowired
+    private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
+
     public List<PackInfo> getPackListByCustomer(String customer,String status){
         return packInfoDao.getPackListByCustomer(customer,status);
     }
@@ -48,9 +51,16 @@ public class PackInfoService {
     }
 
     public int deletePackInfoById(String id){
+        PackInfo packInfo = packInfoDao.getPackInfoById(id);
         List<PackDetailInfo> detailInfos = packDetailInfoDao.getPackDetailsByPackId(id);
+        List<String> ids = new ArrayList<>();
         for (PackDetailInfo packDetailInfo : detailInfos){
-            orderStockDetailInfoDao.updateStatusById("0",packDetailInfo.getStockDetailId());
+            ids.add(packDetailInfo.getStockDetailId());
+        }
+        if (packInfo.getBusinessType().equals("0")) {
+            orderStockDetailInfoDao.updateStatusByIds("0",ids);
+        } else {
+            rejectSuppliesStockDetailService.updateStatusByIds("0",ids);
         }
         packDetailInfoDao.deleteDetailByPackId(id);
         return packInfoDao.deletePackById(id);

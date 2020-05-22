@@ -31,8 +31,8 @@ public class OrderStockDetailInfoService {
         return orderStockDetailInfoDao.getPieceList(orderNo, productType);
     }
 
-    public void updateStatusById(String status, String id) {
-        orderStockDetailInfoDao.updateStatusById(status, id);
+    public void updateStatusByIds(String status, List<String> ids) {
+        orderStockDetailInfoDao.updateStatusByIds(status, ids);
     }
 
     public OrderStockDetail getStockDetailById(String id) {
