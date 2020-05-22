@@ -38,12 +38,22 @@ public class ImageUploadAndDownloadController implements ImageUploadAndDownloadA
 
     @Override
     @GetMapping("download/{id}")
-    public void downloadImage(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void downloadImage(@PathVariable("id") String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
         imageUploadAndDownloadService.readImage(id,request,response);
     }
 
     @Override
-    public void deleteImage(String id) {
-        imageUploadAndDownloadService.deleteImage(id);
+    @GetMapping("delete")
+    public RestResponse deleteImage(@RequestParam("id") String id) {
+        RestResponse response= new RestResponse();
+
+        try {
+            imageUploadAndDownloadService.deleteImage(id);
+        }catch (Exception e){
+            response.setCode(999);
+            response.setMsg("删除文件失败");
+        }
+        return response;
+
     }
 }

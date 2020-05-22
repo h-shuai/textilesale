@@ -28,6 +28,9 @@ public class RejectSupplies extends Page implements Serializable {
     @Column(name = "product_type", nullable = false, length = 10)
     private String productType;
 
+    @Column(name = "image_name", length = 200)
+    private String imageName;
+
     @Column(name = "product_length", nullable = false, scale = 8, precision = 2)
     private Double productLength;
 

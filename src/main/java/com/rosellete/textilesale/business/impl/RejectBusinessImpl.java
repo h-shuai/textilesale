@@ -4,10 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.RejectBusiness;
 import com.rosellete.textilesale.model.*;
-import com.rosellete.textilesale.service.RejectRecordService;
-import com.rosellete.textilesale.service.RejectSuppliesInfoService;
-import com.rosellete.textilesale.service.RejectSuppliesStockDetailService;
-import com.rosellete.textilesale.service.SupplierService;
+import com.rosellete.textilesale.service.*;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
 import com.rosellete.textilesale.vo.ProductTypeVO;
 import com.rosellete.textilesale.vo.RejectRecordSaveVO;
@@ -22,6 +19,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +34,9 @@ public class RejectBusinessImpl implements RejectBusiness {
     private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
     @Autowired
     private SupplierService supplierService;
+
+    @Autowired
+    private PackageInventoryInfoService packageInventoryInfoService;
 
     @Override
     public PageInfo<RejectRecordVO> getRejectRecordList(RejectRecordVO rejectRecordVO) {
@@ -55,7 +56,7 @@ public class RejectBusinessImpl implements RejectBusiness {
             temp.setSupplierPhoneNo(info.getPhone());
             temp.setSupplierType(info.getType());
             return temp;
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(RejectRecordVO::getRejectedDate).reversed()).collect(Collectors.toList());
         page.addAll(collect);
         page.setTotal(rejectRecordService.findRecordListSize(rejectRecord, supplierInfo));
         return new PageInfo<>(page);
@@ -99,6 +100,7 @@ public class RejectBusinessImpl implements RejectBusiness {
                 RejectSupplies tmp = new RejectSupplies();
                 tmp.setRecordNo(recordNo);
                 tmp.setProductType(e.getProductType());
+                tmp.setImageName(packageInventoryInfoService.findLatestImageNameByProductType(tmp.getProductType()));
                 tmp.setProductLength(productLength);
                 tmp.setCreateUser(creater);
                 tmp.setUpdateUser(creater);
@@ -144,6 +146,7 @@ public class RejectBusinessImpl implements RejectBusiness {
                 RejectSupplies tmp = new RejectSupplies();
                 tmp.setRecordNo(recordNo);
                 tmp.setProductType(e.getProductType());
+                tmp.setImageName(packageInventoryInfoService.findLatestImageNameByProductType(tmp.getProductType()));
                 tmp.setProductLength(stockList.stream().map(s -> s.getStockLength()).reduce((a, b) -> a + b).get().doubleValue());
                 tmp.setCreateUser(creater);
                 tmp.setUpdateUser(creater);
