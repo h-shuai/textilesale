@@ -10,7 +10,7 @@ import javax.validation.Valid;
 
 public interface PackInfoApi {
     @GetMapping(value = "/getPackListByCustomer")
-    RestResponse getPackListByCustomer(@RequestParam("customer") String customer);
+    RestResponse getPackListByCustomer(@RequestParam("customer") String customer,@RequestParam("businessType") String businessType);
 
     @GetMapping(value = "/getPackDetails")
     RestResponse getPackDetails(@RequestParam("id") String id);

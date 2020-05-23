@@ -28,8 +28,8 @@ public class PackInfoService {
     @Autowired
     private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
 
-    public List<PackInfo> getPackListByCustomer(String customer,String status){
-        return packInfoDao.getPackListByCustomer(customer,status);
+    public List<PackInfo> getPackListByCustomer(String customer,String status,String businessType){
+        return packInfoDao.getPackListByCustomer(customer,status,businessType);
     }
 
     public int getMaxPackNo(String customer){

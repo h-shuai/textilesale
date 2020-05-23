@@ -33,8 +33,8 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
     private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
 
     @Override
-    public RestResponse getPackListByCustomer(String customer) {
-        return new RestResponse(packInfoService.getPackListByCustomer(customer,"1"));
+    public RestResponse getPackListByCustomer(String customer,String businessType) {
+        return new RestResponse(packInfoService.getPackListByCustomer(customer,"1",businessType));
     }
 
     @Override
@@ -61,7 +61,13 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             for (Map<String,Object> map : prodMaps){
                 if (orderNo.equals(map.get("orderNo"))){
                     PackSubInfoVO packSubInfoVO = new PackSubInfoVO();
-                    packSubInfoVO.setPicurl((String)map.get("prodPic"));
+                    String imageUrl;
+                    if (StringUtils.isBlank((String)map.get("prodPic"))) {
+                        imageUrl = "api/download/notfound.jpg";
+                    } else {
+                        imageUrl = new StringBuffer("api/download").append("/").append((String)map.get("prodPic")).toString();
+                    }
+                    packSubInfoVO.setPicurl(imageUrl);
                     packSubInfoVO.setColthModel((String)map.get("productType"));
                     packSubInfoVO.setPieceOptions(packInfoService.getPackLengthList(packInfo.getId(),packSubInfoVO.getColthModel(),packInfoVO.getOrderNo()));
                     packSubInfoVOS.add(packSubInfoVO);

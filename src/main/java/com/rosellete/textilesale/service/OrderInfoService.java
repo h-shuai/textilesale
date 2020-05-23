@@ -8,6 +8,7 @@ import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.vo.OrderInfoVO;
 import com.rosellete.textilesale.vo.PackInfoVO;
 import com.rosellete.textilesale.vo.PackSubInfoVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Service;
@@ -128,7 +129,13 @@ public class OrderInfoService {
                 if (orderNo.equals(map.get("orderNo"))){
                     PackSubInfoVO packSubInfoVO = new PackSubInfoVO();
                     packSubInfoVO.setColthModel((String)map.get("colthModel"));
-                    packSubInfoVO.setPicurl((String)map.get("picurl"));
+                    String imageUrl;
+                    if (StringUtils.isBlank((String)map.get("picurl"))) {
+                        imageUrl = "api/download/notfound.jpg";
+                    } else {
+                        imageUrl = new StringBuffer("api/download").append("/").append((String)map.get("picurl")).toString();
+                    }
+                    packSubInfoVO.setPicurl(imageUrl);
                     packSubInfoVOS.add(packSubInfoVO);
                 }
             }

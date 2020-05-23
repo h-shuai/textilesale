@@ -20,8 +20,8 @@ public class PackInfoController implements PackInfoApi {
     private PackInfoBusiness packInfoBusiness;
 
     @Override
-    public RestResponse getPackListByCustomer(String customer) {
-        return packInfoBusiness.getPackListByCustomer(customer);
+    public RestResponse getPackListByCustomer(String customer,String businessType) {
+        return packInfoBusiness.getPackListByCustomer(customer,businessType);
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.rosellete.textilesale.vo.PackInfoVO;
 import org.springframework.beans.support.PagedListHolder;
 
 public interface PackInfoBusiness {
-    RestResponse getPackListByCustomer(String customer);
+    RestResponse getPackListByCustomer(String customer,String businessType);
 
     RestResponse getPackDetails(String id);
 
