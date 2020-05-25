@@ -18,7 +18,7 @@ public interface SupplierDao extends PagingAndSortingRepository<SupplierInfo, In
     List<SupplierInfo> findAllByOrderByVipAsc(Pageable pageable);
 
     @Query(value = "SELECT a.supplier_no AS supplierNo,a.NAME AS supplierName, a.phone AS supplierPhoneNo, '1' AS storageType, a.type AS supplierType," +
-                   " a.industry AS industryType, a.address AS supplierAddress, a.vip AS priority " +
+                   " a.industry AS industryType, a.address AS supplierAddress, a.vip AS vip " +
                    "FROM  t_supplier_info a ORDER BY a.vip", nativeQuery = true)
     List<Map<String, String>> findAllOrderByVip();
 

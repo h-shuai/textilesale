@@ -6,9 +6,9 @@ import com.rosellete.textilesale.vo.CustomerInfoVO;
 import org.springframework.data.domain.Page;
 
 public interface CustomerBusiness {
-    PageInfo<CustomerInfo> findAllCustomerWarehouseRelated();
+    PageInfo<CustomerInfoVO> findAllCustomerWarehouseRelated();
 
-    PageInfo<CustomerInfo> findCustomerListWarehouseRelated(CustomerInfoVO customerInfoVO);
+    PageInfo<CustomerInfoVO> findCustomerListWarehouseRelated(CustomerInfoVO customerInfoVO);
 
     void save(CustomerInfoVO customerInfo);
 
