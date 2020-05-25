@@ -105,12 +105,12 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             if (packDetailInfoVO.getBusinessType().equals("0")) {
                 packDetailInfo.setOrderNo(orderStockDetailInfoService.getStockDetailById(String.valueOf(map.get("id"))).getOrderNo());
             } else {
-                packDetailInfo.setOrderNo(rejectSuppliesStockDetailService.getById(String.valueOf(map.get("id"))).getRecordNo());
+                packDetailInfo.setOrderNo(rejectSuppliesStockDetailService.getById(Long.valueOf(String.valueOf(map.get("id")))).getRecordNo());
             }
             packDetailInfo.setPackId(packInfo.getId());
             packDetailInfo.setProductType((String)map.get("productType"));
             packDetailInfo.setProdPic((String)map.get("picurl"));
-            packDetailInfo.setStockLength(Double.valueOf((Integer)map.get("stockLength")));
+            packDetailInfo.setStockLength(Double.valueOf(String.valueOf(map.get("stockLength"))));
             packDetailInfo.setStockDetailId(String.valueOf(map.get("id")));
             packDetailInfo.setStatus(0);
             packDetailInfo.setCreateTime(new Date());

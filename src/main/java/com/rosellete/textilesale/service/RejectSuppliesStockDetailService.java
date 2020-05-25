@@ -41,7 +41,7 @@ public class RejectSuppliesStockDetailService {
         return rejectSuppliesStockDetailDao.getPieceList(recordNo, productType);
     }
 
-    public RejectSuppliesStockDetail getById(String id){
+    public RejectSuppliesStockDetail getById(Long id){
         return rejectSuppliesStockDetailDao.getById(id);
     }
 

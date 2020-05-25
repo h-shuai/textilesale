@@ -33,7 +33,7 @@ public class FinanceInfoService {
             FinanceDetailInfo financeDetailInfo = new FinanceDetailInfo();
             financeDetailInfo.setBatchNo(batchNo);
             financeDetailInfo.setPaymethodId(Long.valueOf(String.valueOf(map.get("paymentMethod"))));
-            financeDetailInfo.setPayAmount(Double.valueOf((String)map.get("payAmount")));
+            financeDetailInfo.setPayAmount(Double.valueOf(String.valueOf(map.get("payAmount"))));
             financeDetailInfo.setStatus("1");
             detailInfos.add(financeDetailInfo);
         }
@@ -41,7 +41,7 @@ public class FinanceInfoService {
             FinanceLinkOrder financeLinkOrder = new FinanceLinkOrder();
             financeLinkOrder.setBatchNo(batchNo);
             financeLinkOrder.setOrderNo((String)map.get("orderNo"));
-            financeLinkOrder.setOrderAmount(Double.valueOf((String)map.get("orderAmount")));
+            financeLinkOrder.setOrderAmount(Double.valueOf(String.valueOf(map.get("orderAmount"))));
             financeLinkOrder.setCreateDate(new Date());
             financeLinkOrder.setStatus("1");
             financeLinkOrders.add(financeLinkOrder);
