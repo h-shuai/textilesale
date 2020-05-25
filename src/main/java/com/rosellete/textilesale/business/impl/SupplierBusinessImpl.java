@@ -7,7 +7,6 @@ import com.rosellete.textilesale.business.SupplierBusiness;
 import com.rosellete.textilesale.model.SupplierInfo;
 import com.rosellete.textilesale.service.SupplierService;
 import com.rosellete.textilesale.util.NullPropertiesUtil;
-import com.rosellete.textilesale.util.SupplierAndCustomerConvertorUtil;
 import com.rosellete.textilesale.vo.SupplierInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +35,13 @@ public class SupplierBusinessImpl implements SupplierBusiness {
 
     @Override
     public PageInfo<SupplierInfoVO> findSupplierListWarehouseRelated(SupplierInfoVO supplierInfoVO) {
+        String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(supplierInfoVO);
         SupplierInfo supplierInfo = new SupplierInfo();
-//        SupplierAndCustomerConvertorUtil.convertSupplierVO2Info(supplierInfoVO, supplierInfo);
+        BeanUtils.copyProperties(supplierInfoVO, supplierInfo, nullOrBlankPropertyNames);
         Page<SupplierInfo> supplierList = supplierService.findSupplierList(supplierInfo);
         List<SupplierInfoVO> collect = supplierList.stream().map(e -> {
             SupplierInfoVO temp = new SupplierInfoVO();
-//            SupplierAndCustomerConvertorUtil.convertSupplierInfo2VO(e, temp);
+            BeanUtils.copyProperties(e, temp);
             return temp;
         }).collect(Collectors.toList());
         return new PageInfo<>(collect);
@@ -49,11 +49,10 @@ public class SupplierBusinessImpl implements SupplierBusiness {
 
     @Override
     public PageInfo<SupplierInfoVO> findAllSupplier() {
-        List<SupplierInfoVO> collect = supplierService.findAllOrdered().stream().
+        List<SupplierInfoVO> collect = supplierService.findAllOrderByVip().stream().
                 map(e -> {
-                            SupplierInfoVO temp = new SupplierInfoVO();
-//                            SupplierAndCustomerConvertorUtil.convertSupplierInfo2VO(e, temp);
-                            return temp;
+                            String jsonString = JSON.toJSONString(e);
+                            return JSONObject.parseObject(jsonString, SupplierInfoVO.class);
                         }
                 ).collect(Collectors.toList());
         List<SupplierInfoVO> sorted = collect.stream().sorted(Comparator.comparing(SupplierInfoVO::getVip)).

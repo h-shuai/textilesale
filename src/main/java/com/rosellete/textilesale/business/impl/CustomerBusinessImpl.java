@@ -26,7 +26,7 @@ public class CustomerBusinessImpl implements CustomerBusiness {
     private CustomerService customerService;
 
     @Override
-    public PageInfo<CustomerInfo> findAllCustomerWarehouseRelated() {
+    public PageInfo<CustomerInfoVO> findAllCustomerWarehouseRelated() {
         List<Map<String, String>> allOrderByVip = customerService.findAllOrderByVip();
         List<CustomerInfoVO> collect = allOrderByVip.stream().map(e -> {
             String jsonString = JSON.toJSONString(e);
@@ -36,15 +36,17 @@ public class CustomerBusinessImpl implements CustomerBusiness {
     }
 
     @Override
-    public PageInfo<CustomerInfo> findCustomerListWarehouseRelated(CustomerInfoVO customerInfoVO) {
-//        SupplierAndCustomerConvertorUtil.convertCustomerVO2Info(customerInfoVO, customerInfo);
-//        List<CustomerInfo> customerInfoList = customerService.findCustomerList(customerInfoVO);
-//        List<CustomerInfoVO> collect = customerInfoList.stream().map(e -> {
-//            CustomerInfoVO temp = new CustomerInfoVO();
-////            SupplierAndCustomerConvertorUtil.convertCustomerInfo2VO(e, temp);
-//            return temp;
-//        }).collect(Collectors.toList());
-        return new PageInfo<>();
+    public PageInfo<CustomerInfoVO> findCustomerListWarehouseRelated(CustomerInfoVO customerInfoVO) {
+        String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(customerInfoVO);
+        CustomerInfo customerInfo = new CustomerInfo();
+        BeanUtils.copyProperties(customerInfoVO, customerInfo, nullOrBlankPropertyNames);
+        Page<CustomerInfo> customerInfoList = customerService.findCustomerList(customerInfo);
+        List<CustomerInfoVO> collect = customerInfoList.stream().map(e -> {
+            CustomerInfoVO temp = new CustomerInfoVO();
+            BeanUtils.copyProperties(e,temp);
+            return temp;
+        }).collect(Collectors.toList());
+        return new PageInfo<>(collect);
     }
 
     @Override

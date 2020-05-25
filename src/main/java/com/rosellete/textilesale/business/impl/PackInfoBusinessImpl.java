@@ -87,6 +87,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packInfo.setCustomerName(packDetailInfoVO.getCustomerName());
         packInfo.setCustomerId(packDetailInfoVO.getCustomerNo());
         packInfo.setBusinessType(packDetailInfoVO.getBusinessType());
+        packInfo.setConsignDepId(packDetailInfoVO.getConsignDep());
         packInfo.setProductCount(packDetailInfoVO.getProductCount());
         packInfo.setPieceCount(packDetailInfoVO.getPieceCount());
         packInfo.setRiceCount(packDetailInfoVO.getRiceCount());
