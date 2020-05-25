@@ -33,5 +33,7 @@ public class PackDetailInfoVO {
 
     private String businessType;
 
+    private String consignDep;
+
     private List<PackInfoVO> packInfoVOS;
 }

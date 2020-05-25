@@ -58,7 +58,7 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
             " where t.order_no = ?1", nativeQuery = true)
     int updateStatusAndAmount(@Param("orderNo") String orderNo, @Param("orderStatus") String orderStatus, @Param("amount") Double amount, String updater);
 
-    @Query(value = "select a.customer_no customerNo,b.name customerName,count(*) orderCount,sum(order_amount) orderAmount from t_order_info a,t_customer_info b where IF(?1 is not null, b.name like CONCAT('%', ?1, '%'), 1 = 1) and a.order_status='3' and a.customer_no=b.customer_no group by a.customer_no", nativeQuery = true)
+    @Query(value = "select a.customer_no customerNo,b.name customerName,max(a.consignment_department) consignmentDepartment,count(*) orderCount,sum(order_amount) orderAmount from t_order_info a,t_customer_info b where IF(?1 is not null, b.name like CONCAT('%', ?1, '%'), 1 = 1) and a.order_status='3' and a.customer_no=b.customer_no group by a.customer_no", nativeQuery = true)
     List<Map<String, Object>> getWaitPackCustomer(@Param("customerName") String customerName);
 
     @Query(value = "select a.order_no orderNo,a.customer_no customerNo,c.name customerName,sum(b.product_length) productLength " +

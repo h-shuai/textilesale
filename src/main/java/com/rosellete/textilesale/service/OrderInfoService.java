@@ -67,6 +67,7 @@ public class OrderInfoService {
             OrderInfoVO newInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), OrderInfoVO.class);
             newInfoVO.setBusinessType("1");
             newInfoVO.setOrderAmount(null);
+            newInfoVO.setConsignmentDepartment(null);
             orderInfoVOList.add(newInfoVO);
         }
         return orderInfoVOList;
