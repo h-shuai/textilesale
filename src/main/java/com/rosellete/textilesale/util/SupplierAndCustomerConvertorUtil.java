@@ -47,24 +47,26 @@ public class SupplierAndCustomerConvertorUtil {
         consignorVO.setPriority(customerInfo.getVip());
     }
 
-    public static void convertSupplierInfo2VO(SupplierInfo supplierInfo, SupplierInfoVO supplierInfoVO) {
-        supplierInfoVO.setSupplierNo(supplierInfo.getSupplierNo());
-        supplierInfoVO.setSupplierName(supplierInfo.getName());
-        supplierInfoVO.setSupplierType(supplierInfo.getType());
-        supplierInfoVO.setIndustryType(supplierInfo.getIndustry());
-        supplierInfoVO.setSupplierPhoneNo(supplierInfo.getPhone());
-        supplierInfoVO.setSupplierAddress(supplierInfo.getAddress());
-        supplierInfoVO.setPriority(supplierInfo.getVip());
-    }
-
-    public static void convertSupplierVO2Info(SupplierInfoVO supplierInfoVO, SupplierInfo supplierInfo) {
-        supplierInfo.setSupplierNo(supplierInfoVO.getSupplierNo());
-        supplierInfo.setName(supplierInfoVO.getSupplierName());
-        supplierInfo.setPhone(supplierInfoVO.getSupplierPhoneNo());
-        supplierInfo.setType(supplierInfoVO.getSupplierType());
-        supplierInfo.setIndustry(supplierInfoVO.getIndustryType());
-        supplierInfo.setAddress(supplierInfoVO.getSupplierAddress());
-    }
+//    public static void convertSupplierInfo2VO(SupplierInfo supplierInfo, SupplierInfoVO supplierInfoVO) {
+//        supplierInfoVO.setSupplierNo(supplierInfo.getSupplierNo());
+//        supplierInfoVO.setSupplierName(supplierInfo.getName());
+//        supplierInfoVO.setSupplierType(supplierInfo.getType());
+//        supplierInfoVO.setIndustryType(supplierInfo.getIndustry());
+//        supplierInfoVO.setSupplierPhoneNo(supplierInfo.getPhone());
+//        supplierInfoVO.setSupplierAddress(supplierInfo.getAddress());
+//        supplierInfoVO.setPageNum(supplierInfo.getPageNum());
+//        supplierInfoVO.setPageSize(supplierInfo.getPageSize());
+//        supplierInfoVO.setPriority(supplierInfo.getVip());
+//    }
+//
+//    public static void convertSupplierVO2Info(SupplierInfoVO supplierInfoVO, SupplierInfo supplierInfo) {
+//        supplierInfo.setSupplierNo(supplierInfoVO.getSupplierNo());
+//        supplierInfo.setName(supplierInfoVO.getSupplierName());
+//        supplierInfo.setPhone(supplierInfoVO.getSupplierPhoneNo());
+//        supplierInfo.setType(supplierInfoVO.getSupplierType());
+//        supplierInfo.setIndustry(supplierInfoVO.getIndustryType());
+//        supplierInfo.setAddress(supplierInfoVO.getSupplierAddress());
+//    }
 
     public static void convertCustomerVO2Info(CustomerInfoVO customerInfoVO, CustomerInfo customerInfo) {
         customerInfo.setCustomerNo(customerInfoVO.getCustomerNo());

@@ -11,6 +11,7 @@ import com.rosellete.textilesale.util.SupplierAndCustomerConvertorUtil;
 import com.rosellete.textilesale.vo.SupplierInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -36,11 +37,11 @@ public class SupplierBusinessImpl implements SupplierBusiness {
     @Override
     public PageInfo<SupplierInfoVO> findSupplierListWarehouseRelated(SupplierInfoVO supplierInfoVO) {
         SupplierInfo supplierInfo = new SupplierInfo();
-        SupplierAndCustomerConvertorUtil.convertSupplierVO2Info(supplierInfoVO, supplierInfo);
-        List<SupplierInfo> supplierList = supplierService.findSupplierList(supplierInfo);
+//        SupplierAndCustomerConvertorUtil.convertSupplierVO2Info(supplierInfoVO, supplierInfo);
+        Page<SupplierInfo> supplierList = supplierService.findSupplierList(supplierInfo);
         List<SupplierInfoVO> collect = supplierList.stream().map(e -> {
             SupplierInfoVO temp = new SupplierInfoVO();
-            SupplierAndCustomerConvertorUtil.convertSupplierInfo2VO(e, temp);
+//            SupplierAndCustomerConvertorUtil.convertSupplierInfo2VO(e, temp);
             return temp;
         }).collect(Collectors.toList());
         return new PageInfo<>(collect);
@@ -51,29 +52,34 @@ public class SupplierBusinessImpl implements SupplierBusiness {
         List<SupplierInfoVO> collect = supplierService.findAllOrdered().stream().
                 map(e -> {
                             SupplierInfoVO temp = new SupplierInfoVO();
-                            SupplierAndCustomerConvertorUtil.convertSupplierInfo2VO(e, temp);
+//                            SupplierAndCustomerConvertorUtil.convertSupplierInfo2VO(e, temp);
                             return temp;
                         }
                 ).collect(Collectors.toList());
-        List<SupplierInfoVO> sorted = collect.stream().sorted(Comparator.comparing(SupplierInfoVO::getPriority)).
+        List<SupplierInfoVO> sorted = collect.stream().sorted(Comparator.comparing(SupplierInfoVO::getVip)).
                 collect(Collectors.toList());
         return new PageInfo<>(sorted);
     }
 
     @Override
-    public PageInfo<SupplierInfoVO> findSupplier(SupplierInfoVO supplierInfoVO) {
+    public Page<SupplierInfo> findSupplier(SupplierInfoVO supplierInfoVO) {
         String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(supplierInfoVO);
         SupplierInfo supplierInfo = new SupplierInfo();
         BeanUtils.copyProperties(supplierInfoVO, supplierInfo, nullOrBlankPropertyNames);
-        List<SupplierInfoVO> collect = supplierService.findSupplierList(supplierInfo).stream().
-                map(e -> {
-                            SupplierInfoVO temp = new SupplierInfoVO();
-                            SupplierAndCustomerConvertorUtil.convertSupplierInfo2VO(e, temp);
-                            return temp;
-                        }
-                ).collect(Collectors.toList());
-        List<SupplierInfoVO> sorted = collect.stream().sorted(Comparator.comparing(SupplierInfoVO::getPriority)).
-                collect(Collectors.toList());
-        return new PageInfo<>(sorted);
+        return supplierService.findSupplierList(supplierInfo);
+    }
+
+    @Override
+    public void save(SupplierInfoVO supplierInfoVO) {
+        String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(supplierInfoVO);
+        SupplierInfo supplierInfo = new SupplierInfo();
+        BeanUtils.copyProperties(supplierInfoVO, supplierInfo, nullOrBlankPropertyNames);
+        supplierService.save(supplierInfo);
+    }
+
+    @Override
+    public SupplierInfo findBySupplierNo(int supplierNo) {
+
+        return supplierService.findByPrimaryKey(supplierNo);
     }
 }

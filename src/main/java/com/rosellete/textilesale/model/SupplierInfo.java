@@ -2,10 +2,7 @@ package com.rosellete.textilesale.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -14,6 +11,7 @@ import java.math.BigDecimal;
 @Data
 public class SupplierInfo extends Page implements Serializable{
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "supplier_no", nullable = false, length = 30)
     private Integer supplierNo;
 
