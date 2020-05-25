@@ -16,22 +16,22 @@ public class CustomerInfo extends Page implements Serializable{
     private Integer customerNo;
 
     @Column(name = "name", length = 200)
-    private String name;
+    private String customerName;
 
     @Column(name = "short_name", length = 200)
     private String shortName;
 
     @Column(name = "phone", length = 200)
-    private String phone;
+    private String customerPhoneNo;
 
     @Column(name = "type", length = 200)
-    private String type;
+    private String customerType;
 
     @Column(name = "address", length = 200)
-    private String address;
+    private String customerAddress;
 
     @Column(name = "industry", length = 200)
-    private String industry;
+    private String industryType;
 
     @Column(name = "credit")
     private BigDecimal credit;

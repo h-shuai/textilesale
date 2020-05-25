@@ -59,10 +59,7 @@ public class OrderBusinessImpl implements OrderBusiness {
             OrderInfoVO temp = new OrderInfoVO();
             BeanUtils.copyProperties(e, temp);
             CustomerInfo info = customerService.findByPrimaryKey(e.getCustomerNo());
-            temp.setCustomerName(info.getName());
-            temp.setCustomerPhoneNo(info.getPhone());
-            temp.setCustomerType(info.getType());
-            temp.setIndustryType(info.getIndustry());
+            BeanUtils.copyProperties(info, temp);
             List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(e.getOrderNo());
             List<OrderDetailInfo> filteredList = orderDetailInfoList.stream().filter(detail -> StringUtils.equals("2", detail.getStockStatus())).collect(Collectors.toList());
             temp.setStockedTypeCount(filteredList.size());
@@ -83,12 +80,8 @@ public class OrderBusinessImpl implements OrderBusiness {
             OrderDetailVO temp = new OrderDetailVO();
             BeanUtils.copyProperties(orderInfo, temp);
             BeanUtils.copyProperties(e, temp);
-            temp.setCustomeNo(customerInfo.getCustomerNo());
-            temp.setCustomerName(customerInfo.getName());
-            temp.setCustomerPhoneNo(customerInfo.getPhone());
-            temp.setCustomerType(customerInfo.getType());
-            temp.setIndustryType(customerInfo.getIndustry());
-            temp.setCustomerAddress(customerInfo.getAddress());
+            BeanUtils.copyProperties(customerInfo, temp);
+
             String imageUrl;
             if (StringUtils.isBlank(temp.getImageName())) {
                 imageUrl = "api/download/notfound.jpg";

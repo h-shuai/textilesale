@@ -23,8 +23,8 @@ public class RejectSuppliesInfoService {
     }
 
     public List<RejectSupplies> findRejectSuppliesDetails(RejectSupplies rejectSuppliesInfo, SupplierInfo supplierInfo) {
-        return rejectSuppliesInfoDao.findRejectSuppliesDetails(rejectSuppliesInfo.getRecordNo(), supplierInfo.getSupplierNo(), supplierInfo.getName(), supplierInfo.getType(),
-                supplierInfo.getIndustry(), supplierInfo.getPhone(), (rejectSuppliesInfo.getPageNum() - 1) * rejectSuppliesInfo.getPageSize(), rejectSuppliesInfo.getPageSize());
+        return rejectSuppliesInfoDao.findRejectSuppliesDetails(rejectSuppliesInfo.getRecordNo(), supplierInfo.getSupplierNo(), supplierInfo.getSupplierName(), supplierInfo.getSupplierType(),
+                supplierInfo.getIndustryType(), supplierInfo.getSupplierPhoneNo(), (rejectSuppliesInfo.getPageNum() - 1) * rejectSuppliesInfo.getPageSize(), rejectSuppliesInfo.getPageSize());
     }
 
     public void deleteAll(List<RejectSupplies> existedRejectSuppliesList) {

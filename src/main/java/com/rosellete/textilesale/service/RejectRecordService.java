@@ -15,13 +15,13 @@ public class RejectRecordService {
     private RejectRecordDao rejectRecordDao;
 
     public List<RejectRecord> findRecordList(RejectRecord rejectRecord, SupplierInfo supplierInfo) {
-        return rejectRecordDao.findPageBySupplierInfo(rejectRecord.getRecordNo(), supplierInfo.getSupplierNo(), supplierInfo.getName(), supplierInfo.getType(),
-                supplierInfo.getIndustry(), supplierInfo.getPhone(), (rejectRecord.getPageNum() - 1) * rejectRecord.getPageSize(), rejectRecord.getPageSize());
+        return rejectRecordDao.findPageBySupplierInfo(rejectRecord.getRecordNo(), supplierInfo.getSupplierNo(), supplierInfo.getSupplierName(), supplierInfo.getSupplierType(),
+                supplierInfo.getIndustryType(), supplierInfo.getSupplierPhoneNo(), (rejectRecord.getPageNum() - 1) * rejectRecord.getPageSize(), rejectRecord.getPageSize());
     }
 
     public long findRecordListSize(RejectRecord rejectRecord, SupplierInfo supplierInfo) {
-        return rejectRecordDao.findBySupplierInfo(rejectRecord.getRecordNo(), supplierInfo.getSupplierNo(), supplierInfo.getName(), supplierInfo.getType(),
-                supplierInfo.getIndustry(), supplierInfo.getPhone()).size();
+        return rejectRecordDao.findBySupplierInfo(rejectRecord.getRecordNo(), supplierInfo.getSupplierNo(), supplierInfo.getSupplierName(), supplierInfo.getSupplierType(),
+                supplierInfo.getIndustryType(), supplierInfo.getSupplierPhoneNo()).size();
     }
 
     public void saveRejectRecord(List<RejectRecord> rejectRecordList) {
