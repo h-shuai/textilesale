@@ -1,12 +1,11 @@
 package com.rosellete.textilesale.business.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.PackInfoBusiness;
 import com.rosellete.textilesale.model.PackDetailInfo;
 import com.rosellete.textilesale.model.PackInfo;
 import com.rosellete.textilesale.service.OrderStockDetailInfoService;
 import com.rosellete.textilesale.service.PackInfoService;
+import com.rosellete.textilesale.service.RejectSuppliesStockDetailService;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.PackDetailInfoVO;
 import com.rosellete.textilesale.vo.PackInfoVO;
@@ -14,6 +13,7 @@ import com.rosellete.textilesale.vo.PackSubInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,9 +29,12 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
     @Autowired
     private OrderStockDetailInfoService orderStockDetailInfoService;
 
+    @Autowired
+    private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
+
     @Override
-    public RestResponse getPackListByCustomer(String customer) {
-        return new RestResponse(packInfoService.getPackListByCustomer(customer,"1"));
+    public RestResponse getPackListByCustomer(String customer,String businessType) {
+        return new RestResponse(packInfoService.getPackListByCustomer(customer,"1",businessType));
     }
 
     @Override
@@ -58,7 +61,13 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             for (Map<String,Object> map : prodMaps){
                 if (orderNo.equals(map.get("orderNo"))){
                     PackSubInfoVO packSubInfoVO = new PackSubInfoVO();
-                    packSubInfoVO.setPicurl((String)map.get("prodPic"));
+                    String imageUrl;
+                    if (StringUtils.isBlank((String)map.get("prodPic"))) {
+                        imageUrl = "api/download/notfound.jpg";
+                    } else {
+                        imageUrl = new StringBuffer("api/download").append("/").append((String)map.get("prodPic")).toString();
+                    }
+                    packSubInfoVO.setPicurl(imageUrl);
                     packSubInfoVO.setColthModel((String)map.get("productType"));
                     packSubInfoVO.setPieceOptions(packInfoService.getPackLengthList(packInfo.getId(),packSubInfoVO.getColthModel(),packInfoVO.getOrderNo()));
                     packSubInfoVOS.add(packSubInfoVO);
@@ -77,6 +86,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packInfo.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         packInfo.setCustomerName(packDetailInfoVO.getCustomerName());
         packInfo.setCustomerId(packDetailInfoVO.getCustomerNo());
+        packInfo.setBusinessType(packDetailInfoVO.getBusinessType());
         packInfo.setProductCount(packDetailInfoVO.getProductCount());
         packInfo.setPieceCount(packDetailInfoVO.getPieceCount());
         packInfo.setRiceCount(packDetailInfoVO.getRiceCount());
@@ -87,10 +97,15 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packInfo.setPackNo(maxNo+1);
         packInfoService.savePackInfo(packInfo);
         List<PackDetailInfo> detailList = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
         for (Map<String,Object> map : packDetailInfoVO.getProductInfoList()){
             PackDetailInfo packDetailInfo = new PackDetailInfo();
             packDetailInfo.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-            packDetailInfo.setOrderNo(orderStockDetailInfoService.getStockDetailById(String.valueOf(map.get("id"))).getOrderNo());
+            if (packDetailInfoVO.getBusinessType().equals("0")) {
+                packDetailInfo.setOrderNo(orderStockDetailInfoService.getStockDetailById(String.valueOf(map.get("id"))).getOrderNo());
+            } else {
+                packDetailInfo.setOrderNo(rejectSuppliesStockDetailService.getById(String.valueOf(map.get("id"))).getRecordNo());
+            }
             packDetailInfo.setPackId(packInfo.getId());
             packDetailInfo.setProductType((String)map.get("productType"));
             packDetailInfo.setProdPic((String)map.get("picurl"));
@@ -100,7 +115,12 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             packDetailInfo.setCreateTime(new Date());
             packDetailInfo.setCreateUser("");
             detailList.add(packDetailInfo);
-            orderStockDetailInfoService.updateStatusById("1",packDetailInfo.getStockDetailId());
+            ids.add(packDetailInfo.getStockDetailId());
+        }
+        if (packDetailInfoVO.getBusinessType().equals("0")) {
+            orderStockDetailInfoService.updateStatusByIds("1",ids);
+        } else {
+            rejectSuppliesStockDetailService.updateStatusByIds("1",ids);
         }
         packInfoService.savePackDetailInfo(detailList);
         return new RestResponse(packInfo);
@@ -126,8 +146,10 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
     }
 
     @Override
-    public PageInfo<PackInfoVO> getWaitDeliveryList(PackInfo packInfo) {
-        PageHelper.startPage(packInfo.getPageNum(), packInfo.getPageSize());
-        return new PageInfo<>(packInfoService.getWaitDeliveryList(packInfo));
+    public PagedListHolder<PackInfoVO> getWaitDeliveryList(PackInfo packInfo) {
+        PagedListHolder<PackInfoVO> pagedListHolder = new PagedListHolder<>(packInfoService.getWaitDeliveryList(packInfo));
+        pagedListHolder.setPage(packInfo.getPageNum() - 1);
+        pagedListHolder.setPageSize(packInfo.getPageSize());
+        return pagedListHolder;
     }
 }

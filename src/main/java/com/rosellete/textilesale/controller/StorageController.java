@@ -61,14 +61,14 @@ public class StorageController implements StorageApi {
 
     @Override
     public RestResponse getPackageInventory(String recordNo, String packageNo) {
-        PageInfo<PackageInventoryInfoVO> pageInfo = storageBusiness.getPackageInventory(recordNo, packageNo);
+        PageInfo<PackageInventoryVO> pageInfo = storageBusiness.getPackageInventory(recordNo, packageNo);
         return new RestResponse(pageInfo);
     }
 
 
     @Override
     public RestResponse getStoredInventory(Integer supplierNo) {
-        PageInfo<PackageInventoryInfoVO> pageInfo = storageBusiness.findStoredInventory(supplierNo);
+        PageInfo<ProductTypeVO> pageInfo = storageBusiness.findStoredInventory(supplierNo);
         return new RestResponse(pageInfo);
     }
 
@@ -124,7 +124,7 @@ public class StorageController implements StorageApi {
 
     @Override
     public RestResponse getAllProductType() {
-        PageInfo<ProductTypeInfoVO> pageInfo = storageBusiness.findAllProductType();
+        PageInfo<ProductTypeVO> pageInfo = storageBusiness.findAllProductType();
         return new RestResponse(pageInfo);
     }
 }

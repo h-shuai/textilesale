@@ -24,7 +24,7 @@ public class OrderInfo extends Page implements Serializable {
     private Integer customerNo;
 
     @Column(name = "order_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
 

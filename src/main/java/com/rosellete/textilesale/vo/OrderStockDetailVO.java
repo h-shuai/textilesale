@@ -1,13 +1,13 @@
 package com.rosellete.textilesale.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rosellete.textilesale.model.OrderStockDetailInfo;
+import com.rosellete.textilesale.model.OrderStockDetail;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class OrderStockDetailInfoVO extends OrderStockDetailInfo {
+public class OrderStockDetailVO extends OrderStockDetail {
     private String customerName;
 
     private String customerPhoneNo;

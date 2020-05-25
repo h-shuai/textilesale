@@ -8,13 +8,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 退回供应商物品详细信息实体类
+ * 入库包裹信息表实体类
  */
 @Entity
-@Table(name = "t_reject_supplies_info")
+@Table(name = "t_storage_package_info")
 @Data
-public class RejectSuppliesInfo extends Page implements Serializable {
-
+public class StoragePackage extends Page implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -22,14 +21,17 @@ public class RejectSuppliesInfo extends Page implements Serializable {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @Column(name = "record_no", length = 30, nullable = false)
+    @Column(name = "package_no", nullable = false, length = 40)
+    private String packageNo;
+
+    @Column(name = "packed_stock_length", nullable = false, scale = 10,precision = 2)
+    private Double packedStockLength;
+
+    @Column(name = "record_no", nullable = false, length = 30)
     private String recordNo;
 
-    @Column(name = "product_type", nullable = false, length = 10)
-    private String productType;
-
-    @Column(name = "product_length", nullable = false, scale = 8, precision = 2)
-    private Double productLength;
+    @Column(name = "package_status", nullable = false, length = 1)
+    private String packageStatus;
 
     @Column(name = "create_user", length = 100)
     private String createUser;

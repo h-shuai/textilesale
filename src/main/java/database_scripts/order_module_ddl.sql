@@ -45,7 +45,7 @@ CREATE TABLE t_order_detail_info
     create_date    datetime     DEFAULT NOW() COMMENT '创建时间',
     update_date    datetime     DEFAULT NOW() COMMENT '修改时间',
     PRIMARY KEY (id)
-) ENGINE = InnoDB
+) ENGINE = InnoDB AUTO_INCREMENT=10000
   DEFAULT CHARSET = utf8 comment ='订单明细表';
 
 CREATE TABLE t_order_stock_detail_info
@@ -61,5 +61,5 @@ CREATE TABLE t_order_stock_detail_info
     create_date  datetime COMMENT '创建时间',
     update_date  datetime COMMENT '修改时间',
     PRIMARY KEY (id)
-) ENGINE = InnoDB
+) ENGINE = InnoDB AUTO_INCREMENT=10000
   DEFAULT CHARSET = utf8 comment ='订单备货详情表';

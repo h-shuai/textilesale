@@ -93,4 +93,9 @@ public class PackInfo extends Page implements Serializable {
      */
     @Column(name = "remark")
     private String remark;
+    /**
+     * 业务对象类型：0-客户，1-供应商
+     */
+    @Column(name = "business_type")
+    private String businessType;
 }

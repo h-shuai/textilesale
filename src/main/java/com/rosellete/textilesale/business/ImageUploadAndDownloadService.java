@@ -11,7 +11,8 @@ import java.util.Map;
 public interface ImageUploadAndDownloadService {
     String saveImage(MultipartFile file) throws IOException;
 
-    void readImage(String id, HttpServletRequest request, HttpServletResponse response)throws IOException ;
+    void readImage(String id, HttpServletRequest request, HttpServletResponse response) ;
 
     void deleteImage(String id);
+
 }

@@ -1,13 +1,13 @@
 package com.rosellete.textilesale.business;
 
-import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.model.PackInfo;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.PackDetailInfoVO;
 import com.rosellete.textilesale.vo.PackInfoVO;
+import org.springframework.beans.support.PagedListHolder;
 
 public interface PackInfoBusiness {
-    RestResponse getPackListByCustomer(String customer);
+    RestResponse getPackListByCustomer(String customer,String businessType);
 
     RestResponse getPackDetails(String id);
 
@@ -17,5 +17,5 @@ public interface PackInfoBusiness {
 
     RestResponse deletePackInfoById(String id);
 
-    PageInfo<PackInfoVO> getWaitDeliveryList(PackInfo packInfo);
+    PagedListHolder<PackInfoVO> getWaitDeliveryList(PackInfo packInfo);
 }

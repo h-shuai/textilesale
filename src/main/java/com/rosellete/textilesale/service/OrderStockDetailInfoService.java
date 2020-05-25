@@ -1,7 +1,7 @@
 package com.rosellete.textilesale.service;
 
 import com.rosellete.textilesale.dao.OrderStockDetailInfoDao;
-import com.rosellete.textilesale.model.OrderStockDetailInfo;
+import com.rosellete.textilesale.model.OrderStockDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -15,15 +15,15 @@ public class OrderStockDetailInfoService {
 
     private OrderStockDetailInfoDao orderStockDetailInfoDao;
 
-    public List<OrderStockDetailInfo> findOrderStockDetailInfo(String orderNo, String productType) {
+    public List<OrderStockDetail> findOrderStockDetailInfo(String orderNo, String productType) {
         return orderStockDetailInfoDao.findAllByOrderNoAndProductType(orderNo, productType);
     }
 
-    public void deleteOrderStockDetail(List<OrderStockDetailInfo> orderStockList) {
+    public void deleteOrderStockDetail(List<OrderStockDetail> orderStockList) {
         orderStockDetailInfoDao.deleteAll(orderStockList);
     }
 
-    public void saveOrderStockDetail(List<OrderStockDetailInfo> orderStockDetailInfoList) {
+    public void saveOrderStockDetail(List<OrderStockDetail> orderStockDetailInfoList) {
         orderStockDetailInfoDao.saveAll(orderStockDetailInfoList);
     }
 
@@ -31,18 +31,18 @@ public class OrderStockDetailInfoService {
         return orderStockDetailInfoDao.getPieceList(orderNo, productType);
     }
 
-    public void updateStatusById(String status, String id) {
-        orderStockDetailInfoDao.updateStatusById(status, id);
+    public void updateStatusByIds(String status, List<String> ids) {
+        orderStockDetailInfoDao.updateStatusByIds(status, ids);
     }
 
-    public OrderStockDetailInfo getStockDetailById(String id) {
+    public OrderStockDetail getStockDetailById(String id) {
         return orderStockDetailInfoDao.getStockDetailById(id);
     }
 
-    public List<OrderStockDetailInfo> findAllByOrderNo(String orderNo) {
-        OrderStockDetailInfo info = new OrderStockDetailInfo();
+    public List<OrderStockDetail> findAllByOrderNo(String orderNo) {
+        OrderStockDetail info = new OrderStockDetail();
         info.setOrderNo(orderNo);
-        Example<OrderStockDetailInfo> example = Example.of(info);
+        Example<OrderStockDetail> example = Example.of(info);
         return orderStockDetailInfoDao.findAll(example);
     }
 }

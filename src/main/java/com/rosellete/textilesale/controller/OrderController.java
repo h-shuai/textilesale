@@ -3,8 +3,6 @@ package com.rosellete.textilesale.controller;
 import com.github.pagehelper.PageInfo;
 import com.rosellete.textilesale.business.OrderBusiness;
 import com.rosellete.textilesale.interfaces.OrderApi;
-import com.rosellete.textilesale.model.OrderInfo;
-import com.rosellete.textilesale.service.SysConfigService;
 import com.rosellete.textilesale.util.RestResponse;
 import com.rosellete.textilesale.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +29,7 @@ public class OrderController implements OrderApi {
 
     @Override
     public RestResponse getOrderDetailInfo(@RequestParam("orderNo") String orderNo) {
-        PageInfo<OrderDetailInfoVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo);
+        PageInfo<OrderDetailVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo);
         return new RestResponse(pageInfo);
     }
 
@@ -63,14 +61,30 @@ public class OrderController implements OrderApi {
     }
 
     @Override
+    public RestResponse copyAndCreateOrder(String orderNo) {
+        RestResponse response = new RestResponse();
+        String newOrderNo;
+        try {
+            newOrderNo= orderBusiness.copyAndCreateOrder(orderNo);
+        } catch (Exception e) {
+            newOrderNo=null;
+            response.setCode(999);
+            response.setMsg(null==e.getMessage()?"系统内部错误，请稍后重试":e.getMessage());
+            log.error("订单{}备货完成确认失败", orderNo, e);
+        }
+        response.setData(newOrderNo);
+        return response;
+    }
+
+    @Override
     public RestResponse getOrderStockDetailInfo(String orderNo, String productType) {
-        PageInfo<OrderStockDetailInfoVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo, productType);
+        PageInfo<OrderStockDetailVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo, productType);
         return new RestResponse(pageInfo);
     }
 
     @Override
-    public RestResponse getOrderDetailList(OrderDetailInfoVO orderDetailInfoVO) {
-        PageInfo<OrderDetailInfoVO> pageInfo = orderBusiness.getOrderDetailList(orderDetailInfoVO);
+    public RestResponse getOrderDetailList(OrderDetailVO orderDetailInfoVO) {
+        PageInfo<OrderDetailVO> pageInfo = orderBusiness.getOrderDetailList(orderDetailInfoVO);
         return new RestResponse(pageInfo);
     }
 
@@ -121,13 +135,13 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse getTotalCount(Integer customer) {
-        return new RestResponse(orderBusiness.getTotalCount(customer));
+    public RestResponse getTotalCount(Integer customer,String businessType) {
+        return new RestResponse(orderBusiness.getTotalCount(customer,businessType));
     }
 
     @Override
-    public RestResponse getPieceList(Integer customer) {
-        return new RestResponse(orderBusiness.getPieceList(customer));
+    public RestResponse getPieceList(Integer customer,String businessType) {
+        return new RestResponse(orderBusiness.getPieceList(customer,businessType));
     }
 
     @Override

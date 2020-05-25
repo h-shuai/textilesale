@@ -1,14 +1,13 @@
 package com.rosellete.textilesale.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rosellete.textilesale.model.RejectSuppliesInfo;
+import com.rosellete.textilesale.model.RejectSupplies;
 import lombok.Data;
 
-import javax.persistence.Column;
 import java.util.Date;
 
 @Data
-public class RejectSuppliesInfoVO extends RejectSuppliesInfo {
+public class RejectSuppliesVO extends RejectSupplies {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date rejectedDate;
@@ -23,4 +22,5 @@ public class RejectSuppliesInfoVO extends RejectSuppliesInfo {
 
     private String industryType;
 
+    private String url;
 }

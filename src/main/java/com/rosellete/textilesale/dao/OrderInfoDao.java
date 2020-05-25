@@ -69,7 +69,7 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
 
     @Query(value = "select count(id) from t_order_detail_info where order_no in ?1 union all " +
             "select count(id) from t_order_stock_detail_info where order_no in ?1 union all " +
-            "select count(id) from t_pack_info where customer_id = ?2 union all " +
+            "select count(id) from t_pack_info where customer_id = ?2 and business_type='0' union all " +
             "select coalesce(sum(IFNULL(stock_length,0)),0) from t_pack_detail_info where order_no in ?1 union all " +
             "select count(id) from t_pack_detail_info where order_no in ?1", nativeQuery = true)
     List<String> getTotalCount(@Param("orderNo") List<String> orderNo,@Param("customer") String customer);
