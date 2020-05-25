@@ -93,8 +93,7 @@ public class StorageController implements StorageApi {
 
     @Override
     public  RestResponse getAllCustomer() {
-        PageInfo<CustomerInfoVO> pageInfo = customerBusiness.findAllCustomerWarehouseRelated();
-        return new RestResponse(pageInfo);
+        return new RestResponse(customerBusiness.findAllCustomer(new CustomerInfoVO()));
     }
 
     @Override
@@ -111,8 +110,7 @@ public class StorageController implements StorageApi {
 
     @Override
     public RestResponse getCustomer(@Valid CustomerInfoVO customerInfoVO) {
-        PageInfo<CustomerInfoVO> pageInfo = customerBusiness.findCustomerListWarehouseRelated(customerInfoVO);
-        return new RestResponse(pageInfo);
+        return new RestResponse(customerBusiness.findAllCustomer(customerInfoVO));
     }
 
     @Override

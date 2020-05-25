@@ -68,22 +68,4 @@ public class SupplierAndCustomerConvertorUtil {
 //        supplierInfo.setAddress(supplierInfoVO.getSupplierAddress());
 //    }
 
-    public static void convertCustomerVO2Info(CustomerInfoVO customerInfoVO, CustomerInfo customerInfo) {
-        customerInfo.setCustomerNo(customerInfoVO.getCustomerNo());
-        customerInfo.setName(customerInfoVO.getCustomerName());
-        customerInfo.setPhone(customerInfoVO.getCustomerPhoneNo());
-        customerInfo.setType(customerInfoVO.getCustomerType());
-        customerInfo.setIndustry(customerInfoVO.getIndustryType());
-        customerInfo.setAddress(customerInfoVO.getCustomerAddress());
-    }
-
-    public static void convertCustomerInfo2VO(CustomerInfo customerInfo, CustomerInfoVO customerInfoVO) {
-        customerInfoVO.setCustomerNo(customerInfo.getCustomerNo());
-        customerInfoVO.setCustomerName(customerInfo.getName());
-        customerInfoVO.setCustomerType(customerInfo.getType());
-        customerInfoVO.setIndustryType(customerInfo.getIndustry());
-        customerInfoVO.setCustomerPhoneNo(customerInfo.getPhone());
-        customerInfoVO.setCustomerAddress(customerInfo.getAddress());
-        customerInfoVO.setPriority(customerInfo.getVip());
-    }
 }
