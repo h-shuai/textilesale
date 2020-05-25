@@ -98,4 +98,9 @@ public class PackInfo extends Page implements Serializable {
      */
     @Column(name = "business_type")
     private String businessType;
+    /**
+     * 指定托运部ID
+     */
+    @Column(name = "consign_dep_id")
+    private String consignDepId;
 }

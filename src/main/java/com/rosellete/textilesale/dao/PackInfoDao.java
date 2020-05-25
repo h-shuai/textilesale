@@ -26,8 +26,8 @@ public interface PackInfoDao extends BaseRepository<PackInfo,String> {
     @Query(value = "select * from t_pack_info where customer_id = ?1 and IF(?2 is not null,status = ?2,1=1) and business_type = ?3 order by pack_no",nativeQuery = true)
     List<PackInfo> getPackListByCustomer(@Param("customer") String customer,@Param("status") String status,@Param("businessType") String businessType);
 
-    @Query(value = "select customer_id customerId,customer_name customerName,business_type businessType,count(1) packNum,'托运部1' consignDep from t_pack_info where IF(?1 is not null,customer_name like CONCAT('%', ?1, '%'),1=1) and status=1 group by customer_id,customer_name,business_type",nativeQuery = true)
-    List<Map<String,Object>> getWaitDeliveryList(@Param("customer") String customer);
+    @Query(value = "select a.customer_id customerId,max(a.customer_name) customerName,a.business_type businessType,count(1) packNum,max(coalesce(b.cosign_name,'')) consignDep from t_pack_info a left join t_cosign_mapper b on a.consign_dep_id=b.id where IF(?1 is not null,a.customer_name like CONCAT('%', ?1, '%'),1=1) and IF(?2 is not null,a.consign_dep_id=?2,1=1) and a.status=1 group by a.customer_id,a.business_type",nativeQuery = true)
+    List<Map<String,Object>> getWaitDeliveryList(@Param("customer") String customer,@Param("consignDepId") String consignDepId);
 
     @Transactional
     @Modifying

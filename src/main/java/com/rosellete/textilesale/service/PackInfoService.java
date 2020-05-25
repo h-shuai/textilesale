@@ -77,7 +77,7 @@ public class PackInfoService {
     }
 
     public List<PackInfoVO> getWaitDeliveryList(PackInfo packInfo) {
-        List<Map<String, Object>> maps = packInfoDao.getWaitDeliveryList(packInfo.getCustomerName());
+        List<Map<String, Object>> maps = packInfoDao.getWaitDeliveryList(packInfo.getCustomerName(),packInfo.getConsignDepId());
         List<PackInfoVO> packInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
             PackInfoVO packInfoVO = JSONObject.parseObject(JSONObject.toJSONString(map), PackInfoVO.class);

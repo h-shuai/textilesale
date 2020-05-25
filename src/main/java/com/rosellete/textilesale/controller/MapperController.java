@@ -17,8 +17,8 @@ public class MapperController implements MapperApi {
     @Autowired
     private MapperBusiness mapperBusiness;
     @Override
-    public RestResponse getAllMapperData() {
-        return mapperBusiness.getAllMapperData();
+    public RestResponse getAllMapperData(String type) {
+        return mapperBusiness.getAllMapperData(type);
     }
 
     @Override

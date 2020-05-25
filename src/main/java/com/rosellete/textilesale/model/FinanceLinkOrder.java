@@ -49,7 +49,7 @@ public class FinanceLinkOrder extends Page implements Serializable {
     * 创建日期
     */
     @Column(name = "create_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 }
