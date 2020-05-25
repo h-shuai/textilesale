@@ -25,7 +25,7 @@ public class CustomerService {
 
     public Page<CustomerInfo> findCustomerList(CustomerInfo customerInfo) {
         Example<CustomerInfo> example = Example.of(customerInfo);
-        Sort sort = Sort.by(Sort.Direction.DESC, "vip");
+        Sort sort = Sort.by(Sort.Direction.DESC,"customerNo", "vip");
         Pageable pageable = PageRequest.of(customerInfo.getPageNum() - 1, customerInfo.getPageSize(), sort);
         return customerDao.findAll(example, pageable);
     }

@@ -36,7 +36,7 @@ public class SupplierService {
 
     public Page<SupplierInfo> findSupplierList(SupplierInfo supplierInfo) {
         Example<SupplierInfo> example = Example.of(supplierInfo);
-        Sort sort = Sort.by(Sort.Direction.DESC, "vip");
+        Sort sort = Sort.by(Sort.Direction.DESC,"supplierNo", "vip");
         Pageable pageable = PageRequest.of(supplierInfo.getPageNum() - 1, supplierInfo.getPageSize(), sort);
         return supplierDao.findAll(example, pageable);
     }
