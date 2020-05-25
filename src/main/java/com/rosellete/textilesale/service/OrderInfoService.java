@@ -30,14 +30,14 @@ public class OrderInfoService {
     }
 
     public List<OrderInfo> findOrderListByCustomerInfo(OrderInfo orderInfo, CustomerInfo customerInfo, Date startDate, Date endDate) {
-        return orderInfoDao.findPagedOrderList(orderInfo.getOrderNo(),customerInfo.getCustomerNo(), customerInfo.getName(),
-                customerInfo.getPhone(), orderInfo.getOrderStatus(), startDate, endDate,
+        return orderInfoDao.findPagedOrderList(orderInfo.getOrderNo(),customerInfo.getCustomerNo(), customerInfo.getCustomerName(),
+                customerInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate,
                 (orderInfo.getPageNum()-1)*orderInfo.getPageSize(),orderInfo.getPageSize());
     }
 
     public long findOrderListSizeByCustomerInfo(OrderInfo orderInfo,CustomerInfo customerInfo, Date startDate, Date endDate) {
-        int size = orderInfoDao.findOrderList(orderInfo.getOrderNo(),customerInfo.getCustomerNo(), customerInfo.getName(),
-                customerInfo.getPhone(), orderInfo.getOrderStatus(), startDate, endDate).size();
+        int size = orderInfoDao.findOrderList(orderInfo.getOrderNo(),customerInfo.getCustomerNo(), customerInfo.getCustomerName(),
+                customerInfo.getCustomerPhoneNo(), orderInfo.getOrderStatus(), startDate, endDate).size();
         return size;
 
     }

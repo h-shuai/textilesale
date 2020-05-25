@@ -38,17 +38,17 @@ public class StoragePackageInfoService {
         String industryType=null;
         Integer conszignorNo=null;
         if (StringUtils.equals("1",storageType)){
-            consignor=supplierInfo.getName();
+            consignor=supplierInfo.getSupplierName();
             conszignorNo= supplierInfo.getSupplierNo();
-            consignorPhone=supplierInfo.getPhone();
-            consignorType=supplierInfo.getType();
-            industryType=supplierInfo.getIndustry();
+            consignorPhone=supplierInfo.getSupplierPhoneNo();
+            consignorType=supplierInfo.getSupplierType();
+            industryType=supplierInfo.getIndustryType();
         }else if(StringUtils.equals("2",storageType)){
-            consignor=customerInfo.getName();
+            consignor=customerInfo.getCustomerName();
             conszignorNo= customerInfo.getCustomerNo();
-            consignorPhone=customerInfo.getPhone();
-            consignorType=customerInfo.getType();
-            industryType=customerInfo.getIndustry();
+            consignorPhone=customerInfo.getCustomerPhoneNo();
+            consignorType=customerInfo.getCustomerType();
+            industryType=customerInfo.getIndustryType();
         }
         return storagePackageInfoDao.findByConsignorInfo(storagePackageInfo.getRecordNo(),
                 storageType, conszignorNo,consignor, consignorPhone, consignorType,industryType, startDate, endDate).size();

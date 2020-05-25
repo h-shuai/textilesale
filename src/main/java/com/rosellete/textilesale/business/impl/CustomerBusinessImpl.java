@@ -26,33 +26,33 @@ public class CustomerBusinessImpl implements CustomerBusiness {
     private CustomerService customerService;
 
     @Override
-    public PageInfo<CustomerInfo> findAllCustomerWarehouseRelated() {
-//        List<Map<String, String>> allOrderByVip = customerService.findAllOrderByVip();
-//        List<CustomerInfoVO> collect = allOrderByVip.stream().map(e -> {
-//            String jsonString = JSON.toJSONString(e);
-//            return JSONObject.parseObject(jsonString, CustomerInfoVO.class);
-//        }).collect(Collectors.toList());
-//        return new PageInfo<>(collect);
-        return null;
+    public PageInfo<CustomerInfoVO> findAllCustomerWarehouseRelated() {
+        List<Map<String, String>> allOrderByVip = customerService.findAllOrderByVip();
+        List<CustomerInfoVO> collect = allOrderByVip.stream().map(e -> {
+            String jsonString = JSON.toJSONString(e);
+            return JSONObject.parseObject(jsonString, CustomerInfoVO.class);
+        }).collect(Collectors.toList());
+        return new PageInfo(collect);
     }
 
     @Override
-    public PageInfo<CustomerInfo> findCustomerListWarehouseRelated(CustomerInfoVO customerInfoVO) {
-//        SupplierAndCustomerConvertorUtil.convertCustomerVO2Info(customerInfoVO, customerInfo);
-//        List<CustomerInfo> customerInfoList = customerService.findCustomerList(customerInfoVO);
-//        List<CustomerInfoVO> collect = customerInfoList.stream().map(e -> {
-//            CustomerInfoVO temp = new CustomerInfoVO();
-////            SupplierAndCustomerConvertorUtil.convertCustomerInfo2VO(e, temp);
-//            return temp;
-//        }).collect(Collectors.toList());
-        return new PageInfo<>();
+    public PageInfo<CustomerInfoVO> findCustomerListWarehouseRelated(CustomerInfoVO customerInfoVO) {
+        String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(customerInfoVO);
+        CustomerInfo customerInfo = new CustomerInfo();
+        BeanUtils.copyProperties(customerInfoVO, customerInfo, nullOrBlankPropertyNames);
+        Page<CustomerInfo> customerInfoList = customerService.findCustomerList(customerInfo);
+        List<CustomerInfoVO> collect = customerInfoList.stream().map(e -> {
+            CustomerInfoVO temp = new CustomerInfoVO();
+            BeanUtils.copyProperties(e,temp);
+            return temp;
+        }).collect(Collectors.toList());
+        return new PageInfo<>(collect);
     }
 
     @Override
     public void save(CustomerInfoVO customerInfo) {
         customerService.save(customerInfo);
     }
-
 
     @Override
     public Page<CustomerInfo> findAllCustomer(CustomerInfoVO customerInfoVO) {

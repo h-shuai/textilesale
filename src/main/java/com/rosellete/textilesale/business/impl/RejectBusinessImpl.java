@@ -51,10 +51,8 @@ public class RejectBusinessImpl implements RejectBusiness {
             RejectRecordVO temp = new RejectRecordVO();
             BeanUtils.copyProperties(e, temp);
             SupplierInfo info = supplierService.findByPrimaryKey(e.getSupplierNo());
-            temp.setSupplierName(info.getName());
-            temp.setIndustryType(info.getIndustry());
-            temp.setSupplierPhoneNo(info.getPhone());
-            temp.setSupplierType(info.getType());
+            BeanUtils.copyProperties(info, temp);
+
             return temp;
         }).sorted(Comparator.comparing(RejectRecordVO::getRejectedDate).reversed()).collect(Collectors.toList());
         page.addAll(collect);

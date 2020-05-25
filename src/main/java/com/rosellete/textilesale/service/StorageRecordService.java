@@ -26,17 +26,17 @@ public class StorageRecordService {
         String industryType=null;
         Integer conszignorNo=null;
         if (StringUtils.equals("1",storageRecord.getStorageType())){
-            consignor=supplierInfo.getName();
+            consignor=supplierInfo.getSupplierName();
             conszignorNo= supplierInfo.getSupplierNo();
-            consignorPhone=supplierInfo.getPhone();
-            consignorType=supplierInfo.getType();
-            industryType=supplierInfo.getIndustry();
+            consignorPhone=supplierInfo.getSupplierPhoneNo();
+            consignorType=supplierInfo.getSupplierType();
+            industryType=supplierInfo.getIndustryType();
         }else if(StringUtils.equals("2",storageRecord.getStorageType())){
-            consignor=customerInfo.getName();
+            consignor=customerInfo.getCustomerName();
             conszignorNo= customerInfo.getCustomerNo();
-            consignorPhone=customerInfo.getPhone();
-            consignorType=customerInfo.getType();
-            industryType=customerInfo.getIndustry();
+            consignorPhone=customerInfo.getCustomerPhoneNo();
+            consignorType=customerInfo.getCustomerType();
+            industryType=customerInfo.getIndustryType();
         }
         return storageRecordDao.findPagedByConsignorInfo(storageRecord.getRecordNo(), storageRecord.getStorageType(),
                 conszignorNo,consignor, consignorPhone, consignorType,industryType, startDate, endDate,
@@ -50,17 +50,17 @@ public class StorageRecordService {
         String industryType=null;
         Integer conszignorNo=null;
         if (StringUtils.equals("1",storageRecord.getStorageType())){
-            consignor=supplierInfo.getName();
+            consignor=supplierInfo.getSupplierName();
             conszignorNo= supplierInfo.getSupplierNo();
-            consignorPhone=supplierInfo.getPhone();
-            consignorType=supplierInfo.getType();
-            industryType=supplierInfo.getIndustry();
+            consignorPhone=supplierInfo.getSupplierPhoneNo();
+            consignorType=supplierInfo.getSupplierType();
+            industryType=supplierInfo.getIndustryType();
         }else if(StringUtils.equals("2",storageRecord.getStorageType())){
-            consignor=customerInfo.getName();
+            consignor=customerInfo.getCustomerName();
             conszignorNo= customerInfo.getCustomerNo();
-            consignorPhone=customerInfo.getPhone();
-            consignorType=customerInfo.getType();
-            industryType=customerInfo.getIndustry();
+            consignorPhone=customerInfo.getCustomerPhoneNo();
+            consignorType=customerInfo.getCustomerType();
+            industryType=customerInfo.getIndustryType();
         }
         return storageRecordDao.findByConsignorInfo(storageRecord.getRecordNo(), storageRecord.getStorageType(),
                 conszignorNo,consignor, consignorPhone, consignorType,industryType, startDate, endDate).size();

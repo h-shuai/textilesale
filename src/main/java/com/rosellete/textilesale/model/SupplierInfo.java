@@ -16,22 +16,22 @@ public class SupplierInfo extends Page implements Serializable{
     private Integer supplierNo;
 
     @Column(name = "name", length = 200)
-    private String name;
+    private String supplierName;
 
     @Column(name = "short_name", length = 200)
     private String shortName;
 
     @Column(name = "phone", length = 200)
-    private String phone;
+    private String supplierPhoneNo;
 
     @Column(name = "type", length = 200)
-    private String type;
+    private String supplierType;
 
     @Column(name = "address", length = 200)
-    private String address;
+    private String supplierAddress;
 
     @Column(name = "industry", length = 200)
-    private String industry;
+    private String industryType;
 
     @Column(name = "credit")
     private BigDecimal credit;
