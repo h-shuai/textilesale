@@ -47,41 +47,25 @@ public class SupplierAndCustomerConvertorUtil {
         consignorVO.setPriority(customerInfo.getVip());
     }
 
-    public static void convertSupplierInfo2VO(SupplierInfo supplierInfo, SupplierInfoVO supplierInfoVO) {
-        supplierInfoVO.setSupplierNo(supplierInfo.getSupplierNo());
-        supplierInfoVO.setSupplierName(supplierInfo.getName());
-        supplierInfoVO.setSupplierType(supplierInfo.getType());
-        supplierInfoVO.setIndustryType(supplierInfo.getIndustry());
-        supplierInfoVO.setSupplierPhoneNo(supplierInfo.getPhone());
-        supplierInfoVO.setSupplierAddress(supplierInfo.getAddress());
-        supplierInfoVO.setPriority(supplierInfo.getVip());
-    }
+//    public static void convertSupplierInfo2VO(SupplierInfo supplierInfo, SupplierInfoVO supplierInfoVO) {
+//        supplierInfoVO.setSupplierNo(supplierInfo.getSupplierNo());
+//        supplierInfoVO.setSupplierName(supplierInfo.getName());
+//        supplierInfoVO.setSupplierType(supplierInfo.getType());
+//        supplierInfoVO.setIndustryType(supplierInfo.getIndustry());
+//        supplierInfoVO.setSupplierPhoneNo(supplierInfo.getPhone());
+//        supplierInfoVO.setSupplierAddress(supplierInfo.getAddress());
+//        supplierInfoVO.setPageNum(supplierInfo.getPageNum());
+//        supplierInfoVO.setPageSize(supplierInfo.getPageSize());
+//        supplierInfoVO.setPriority(supplierInfo.getVip());
+//    }
+//
+//    public static void convertSupplierVO2Info(SupplierInfoVO supplierInfoVO, SupplierInfo supplierInfo) {
+//        supplierInfo.setSupplierNo(supplierInfoVO.getSupplierNo());
+//        supplierInfo.setName(supplierInfoVO.getSupplierName());
+//        supplierInfo.setPhone(supplierInfoVO.getSupplierPhoneNo());
+//        supplierInfo.setType(supplierInfoVO.getSupplierType());
+//        supplierInfo.setIndustry(supplierInfoVO.getIndustryType());
+//        supplierInfo.setAddress(supplierInfoVO.getSupplierAddress());
+//    }
 
-    public static void convertSupplierVO2Info(SupplierInfoVO supplierInfoVO, SupplierInfo supplierInfo) {
-        supplierInfo.setSupplierNo(supplierInfoVO.getSupplierNo());
-        supplierInfo.setName(supplierInfoVO.getSupplierName());
-        supplierInfo.setPhone(supplierInfoVO.getSupplierPhoneNo());
-        supplierInfo.setType(supplierInfoVO.getSupplierType());
-        supplierInfo.setIndustry(supplierInfoVO.getIndustryType());
-        supplierInfo.setAddress(supplierInfoVO.getSupplierAddress());
-    }
-
-    public static void convertCustomerVO2Info(CustomerInfoVO customerInfoVO, CustomerInfo customerInfo) {
-        customerInfo.setCustomerNo(customerInfoVO.getCustomerNo());
-        customerInfo.setName(customerInfoVO.getCustomerName());
-        customerInfo.setPhone(customerInfoVO.getCustomerPhoneNo());
-        customerInfo.setType(customerInfoVO.getCustomerType());
-        customerInfo.setIndustry(customerInfoVO.getIndustryType());
-        customerInfo.setAddress(customerInfoVO.getCustomerAddress());
-    }
-
-    public static void convertCustomerInfo2VO(CustomerInfo customerInfo, CustomerInfoVO customerInfoVO) {
-        customerInfoVO.setCustomerNo(customerInfo.getCustomerNo());
-        customerInfoVO.setCustomerName(customerInfo.getName());
-        customerInfoVO.setCustomerType(customerInfo.getType());
-        customerInfoVO.setIndustryType(customerInfo.getIndustry());
-        customerInfoVO.setCustomerPhoneNo(customerInfo.getPhone());
-        customerInfoVO.setCustomerAddress(customerInfo.getAddress());
-        customerInfoVO.setPriority(customerInfo.getVip());
-    }
 }
