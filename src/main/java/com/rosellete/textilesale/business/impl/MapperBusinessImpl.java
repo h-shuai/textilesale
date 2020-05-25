@@ -15,8 +15,8 @@ public class MapperBusinessImpl implements MapperBusiness {
     @Autowired
     private MapperService mapperService;
     @Override
-    public RestResponse getAllMapperData() {
-        return new RestResponse(mapperService.getAllMapperData());
+    public RestResponse getAllMapperData(String type) {
+        return new RestResponse(mapperService.getAllMapperData(type));
     }
 
     @Override

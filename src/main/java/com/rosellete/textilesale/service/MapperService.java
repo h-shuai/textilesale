@@ -24,12 +24,20 @@ public class MapperService {
     @Autowired
     private PaymethodMapperDao paymethodMapperDao;
 
-    public MapperVO getAllMapperData(){
+    public MapperVO getAllMapperData(String type){
         MapperVO mapperVO = new MapperVO();
-        mapperVO.setDriverMappers(driverMapperDao.getAllDriver());
-        mapperVO.setLicenseMappers(licenseMapperDao.getAllLicense());
-        mapperVO.setCosignMappers(cosignMapperDao.getAllCosign());
-        mapperVO.setPaymethodMappers(paymethodMapperDao.getAllPaymethod());
+        if (type.indexOf("1") > -1){
+            mapperVO.setDriverMappers(driverMapperDao.getAllDriver());
+        }
+        if (type.indexOf("2") > -1){
+            mapperVO.setLicenseMappers(licenseMapperDao.getAllLicense());
+        }
+        if (type.indexOf("3") > -1){
+            mapperVO.setCosignMappers(cosignMapperDao.getAllCosign());
+        }
+        if (type.indexOf("4") > -1){
+            mapperVO.setPaymethodMappers(paymethodMapperDao.getAllPaymethod());
+        }
         return mapperVO;
     }
 
