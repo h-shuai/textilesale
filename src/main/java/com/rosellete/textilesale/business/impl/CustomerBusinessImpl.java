@@ -27,13 +27,12 @@ public class CustomerBusinessImpl implements CustomerBusiness {
 
     @Override
     public PageInfo<CustomerInfo> findAllCustomerWarehouseRelated() {
-//        List<Map<String, String>> allOrderByVip = customerService.findAllOrderByVip();
-//        List<CustomerInfoVO> collect = allOrderByVip.stream().map(e -> {
-//            String jsonString = JSON.toJSONString(e);
-//            return JSONObject.parseObject(jsonString, CustomerInfoVO.class);
-//        }).collect(Collectors.toList());
-//        return new PageInfo<>(collect);
-        return null;
+        List<Map<String, String>> allOrderByVip = customerService.findAllOrderByVip();
+        List<CustomerInfoVO> collect = allOrderByVip.stream().map(e -> {
+            String jsonString = JSON.toJSONString(e);
+            return JSONObject.parseObject(jsonString, CustomerInfoVO.class);
+        }).collect(Collectors.toList());
+        return new PageInfo(collect);
     }
 
     @Override
@@ -52,7 +51,6 @@ public class CustomerBusinessImpl implements CustomerBusiness {
     public void save(CustomerInfoVO customerInfo) {
         customerService.save(customerInfo);
     }
-
 
     @Override
     public Page<CustomerInfo> findAllCustomer(CustomerInfoVO customerInfoVO) {
