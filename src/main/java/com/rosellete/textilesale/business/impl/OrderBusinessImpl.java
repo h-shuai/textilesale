@@ -245,7 +245,9 @@ public class OrderBusinessImpl implements OrderBusiness {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderStockSaveVO);
         BeanUtils.copyProperties(orderStockSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailVO> orderDetailList = orderStockSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
+        List<OrderDetailVO> orderDetailList = orderStockSaveVO.getOrderDetailList().stream().
+                filter(e -> StringUtils.isNotBlank(e.getProductType())&&!CollectionUtils.isEmpty(e.getOrderStockingArrays())).
+                collect(Collectors.toList());
         List<OrderDetailInfo> orderDetailInfos = new ArrayList<>(orderDetailList.size());
         List<OrderStockDetail> existedOrderStockList = new ArrayList<>(10);
         List<OrderStockDetail> toBeInsertOrderStockList = new ArrayList<>(10);
@@ -256,7 +258,9 @@ public class OrderBusinessImpl implements OrderBusiness {
                     List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(e.getOrderNo(), e.getProductType());
                     OrderDetailInfo orderDetailInfo = orderDetailInfoList.stream().findFirst().orElse(null);
                     BeanUtils.copyProperties(e, orderDetailInfo, nullOrBlankPropertyNames);
-                    List<OrderStockDetail> orderStockingArrays = e.getOrderStockingArrays();
+                    List<OrderStockDetail> orderStockingArrays = e.getOrderStockingArrays().stream().
+                            filter(element->null!=element.getStockLength()&&0.0D!=element.getStockLength()).
+                            collect(Collectors.toList());
                     Double stockedLength = 0.0D;
                     for (OrderStockDetail stock : orderStockingArrays) {
                         List<OrderStockDetail> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(orderNo, e.getProductType());
@@ -282,9 +286,16 @@ public class OrderBusinessImpl implements OrderBusiness {
                     orderDetailInfos.add(orderDetailInfo);
                 }
         );
+
         orderStockDetailInfoService.deleteOrderStockDetail(existedOrderStockList);
         orderStockDetailInfoService.saveOrderStockDetail(toBeInsertOrderStockList);
         orderDetailInfoService.saveOrderDetailInfo(orderDetailInfos);
+        if (orderDetailInfos.stream().filter(e->StringUtils.equals("2",e.getStockStatus())).count()>=orderDetailInfos.size()){
+            orderInfo.setOrderStatus("2");
+            orderInfo.setUpdateDate(now);
+            orderInfo.setStockDate(now);
+            orderInfo.setStocker(updater);
+        }
         orderInfoService.saveOrderInfo(orderInfo);
 
     }

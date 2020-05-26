@@ -19,7 +19,8 @@ public class StorageRecordService {
     @Autowired
     private StorageRecordDao storageRecordDao;
 
-    public List<StorageRecord> getStorageRecordList(StorageRecord storageRecord,SupplierInfo supplierInfo, CustomerInfo customerInfo, Date startDate, Date endDate) {
+    public List<StorageRecord> getStorageRecordList(StorageRecord storageRecord,SupplierInfo supplierInfo,
+                                                    CustomerInfo customerInfo, Date startDate, Date endDate) {
         String consignor=null;
         String consignorPhone=null;
         String consignorType=null;
@@ -43,7 +44,8 @@ public class StorageRecordService {
                 (storageRecord.getPageNum()-1)*storageRecord.getPageSize(),storageRecord.getPageSize());
     }
 
-    public long getStorageRecordListSize(StorageRecord storageRecord, SupplierInfo supplierInfo, CustomerInfo customerInfo, Date startDate, Date endDate) {
+    public long getStorageRecordListSize(StorageRecord storageRecord, SupplierInfo supplierInfo,
+                                         CustomerInfo customerInfo, Date startDate, Date endDate) {
         String consignor=null;
         String consignorPhone=null;
         String consignorType=null;
@@ -80,8 +82,17 @@ public class StorageRecordService {
     }
 
     public List<Map<String, String>> findSupplierAndCustomer(String storageType, Integer consignorNo,String consignor,
-                                                             String consignorPhoneNo, String consignorType, String industryType) {
-        return storageRecordDao.findSupplierAndCustomer(storageType,consignorNo,consignor,consignorPhoneNo,consignorType,industryType);
+                                                             String consignorPhoneNo, String consignorType,
+                                                             String industryType,Integer pageNum, Integer pageSize) {
+        return storageRecordDao.findPagedSupplierAndCustomer(storageType,consignorNo,consignor,consignorPhoneNo,consignorType,
+                industryType,(pageNum-1)*pageSize,pageSize);
 
+    }
+
+    public long getSupplierAndCustomerListSize(String storageType, Integer consignorNo, String consignor,
+                                               String consignorPhoneNo, String consignorType, String industryType) {
+
+        return storageRecordDao.findSupplierAndCustomer(storageType,consignorNo,consignor,consignorPhoneNo,consignorType,
+                industryType).size();
     }
 }

@@ -219,12 +219,17 @@ public class StorageBusinessImpl implements StorageBusiness {
         String consignorType = StringUtils.trimToNull(consignorVO.getConsignorType());
         String industryType = StringUtils.trimToNull(consignorVO.getIndustryType());
         List<Map<String, String>> allSupplierAndCustomer = storageRecordService.findSupplierAndCustomer(
-                storageType,consignorNo, consignor, consignorPhoneNo,consignorType, industryType);
+                storageType,consignorNo, consignor, consignorPhoneNo,consignorType, industryType,
+                consignorVO.getPageNum(),consignorVO.getPageSize());
         List<ConsignorVO> collect = allSupplierAndCustomer.stream().map(e -> {
             String jsonString = JSON.toJSONString(e);
             return JSONObject.parseObject(jsonString, ConsignorVO.class);
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        com.github.pagehelper.Page page = new com.github.pagehelper.Page(consignorVO.getPageNum(), consignorVO.getPageSize());
+        page.setTotal(storageRecordService.getSupplierAndCustomerListSize(
+                storageType,consignorNo, consignor, consignorPhoneNo,consignorType, industryType));
+        page.addAll(collect);
+        return new PageInfo<>(page);
     }
 
     @Override

@@ -46,7 +46,10 @@ public class CustomerBusinessImpl implements CustomerBusiness {
             BeanUtils.copyProperties(e,temp);
             return temp;
         }).collect(Collectors.toList());
-        return new PageInfo<>(collect);
+        com.github.pagehelper.Page page = new com.github.pagehelper.Page(customerInfoVO.getPageNum(), customerInfoVO.getPageSize());
+        page.setTotal(customerInfoList.getTotalElements());
+        page.addAll(collect);
+        return new PageInfo<>(page);
     }
 
     @Override
