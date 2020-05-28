@@ -8,11 +8,9 @@ import com.rosellete.textilesale.model.FinanceLinkOrder;
 import com.rosellete.textilesale.vo.FinanceInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -25,7 +23,7 @@ public class FinanceInfoService {
     private OrderInfoDao orderInfoDao;
 
     public void saveFinanceInfo(FinanceInfoVO financeInfoVO){
-        String batchNo = UUID.randomUUID().toString().replaceAll("-", "");
+        String batchNo = "BAT" + (new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
         List<FinanceDetailInfo> detailInfos = new ArrayList<>();
         List<FinanceLinkOrder> financeLinkOrders = new ArrayList<>();
         List<String> orders = new ArrayList<>();
