@@ -24,7 +24,7 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
             " and IF(?4 is not null, t1.phone like CONCAT(?4, '%'), 1 = 1))" +
             " and IF(?5 is not null, t.order_status = ?5, 1 = 1)" +
             " and IF(?6 is not null, t.order_date >= ?6, 1 = 1)" +
-            " and IF(?7 is not null, t.order_date < ?7, 1 = 1)", nativeQuery = true)
+            " and IF(?7 is not null, t.order_date < ?7, 1 = 1) order by t.order_date desc,t.order_no desc", nativeQuery = true)
     List<OrderInfo> findOrderList(@Param("orderNo") String orderNo,@Param("customerNo") Integer customerNo, @Param("customerName") String customerName,
                                   @Param("customerPhoneNo") String customerPhoneNo,
                                   @Param("orderStatus") String orderStatus,
@@ -38,7 +38,7 @@ public interface OrderInfoDao extends BaseRepository<OrderInfo, String> {
             " and IF(?4 is not null, t1.phone like CONCAT(?4, '%'), 1 = 1))" +
             " and IF(?5 is not null, t.order_status = ?5, 1 = 1)" +
             " and IF(?6 is not null, t.order_date >= ?6, 1 = 1)" +
-            " and IF(?7 is not null, t.order_date < ?7, 1 = 1) limit ?8,?9", nativeQuery = true)
+            " and IF(?7 is not null, t.order_date < ?7, 1 = 1) order by t.order_date desc,t.order_no desc limit ?8,?9", nativeQuery = true)
     List<OrderInfo> findPagedOrderList(@Param("orderNo") String orderNo,@Param("customerNo") Integer customerNo, @Param("customerName") String customerName,
                                        @Param("customerPhoneNo") String customerPhoneNo,
                                        @Param("orderStatus") String orderStatus,

@@ -16,7 +16,7 @@ public interface RejectRecordDao extends BaseRepository<RejectRecord, String> {
             " and IF(?3 is not null, t1.name like CONCAT(?3, '%'), 1 = 1)" +
             " and IF(?4 is not null, t1.type = ?4, 1 = 1)" +
             " and IF(?5 is not null, t1.industry = ?5, 1 = 1)" +
-            " and IF(?6 is not null, t1.phone like CONCAT(?6, '%'), 1 = 1))", nativeQuery = true)
+            " and IF(?6 is not null, t1.phone like CONCAT(?6, '%'), 1 = 1)) order by t.reject_date desc,t.record_no desc", nativeQuery = true)
     List<RejectRecord> findBySupplierInfo(String recordNo,Integer supplierNo, String supplierName,
                                           String supplierType, String industryType,
                                           String supplierPhoneNo);
@@ -27,7 +27,7 @@ public interface RejectRecordDao extends BaseRepository<RejectRecord, String> {
             " and IF(?3 is not null, t1.name like CONCAT(?3, '%'), 1 = 1)" +
             " and IF(?4 is not null, t1.type = ?4, 1 = 1)" +
             " and IF(?5 is not null, t1.industry = ?5, 1 = 1)" +
-            " and IF(?6 is not null, t1.phone like CONCAT(?6, '%'), 1 = 1))limit ?7,?8", nativeQuery = true)
+            " and IF(?6 is not null, t1.phone like CONCAT(?6, '%'), 1 = 1)) order by t.reject_date desc,t.record_no desc limit ?7,?8", nativeQuery = true)
     List<RejectRecord> findPageBySupplierInfo(String recordNo,Integer supplierNo, String supplierName,
                                               String supplierType, String industryType,
                                               String supplierPhoneNo, @Param("startRow") Integer startRow, @Param("size") Integer size);
