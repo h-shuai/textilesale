@@ -37,6 +37,8 @@ public class OrderBusinessImpl implements OrderBusiness {
     private OrderStockDetailInfoService orderStockDetailInfoService;
     @Autowired
     private RejectSuppliesStockDetailService rejectSuppliesStockDetailService;
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private SysConfigService sysConfigService;
@@ -130,6 +132,18 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderInfo.setOrderStatus("3");
         orderInfo.setUpdateDate(new Date());
         orderInfoService.saveOrderInfo(orderInfo);
+        this.saveAccountDetail(orderInfo);
+    }
+
+    private void saveAccountDetail(OrderInfo orderInfo) {
+        CustomerInfo customerInfo = customerService.findByPrimaryKey(orderInfo.getCustomerNo());
+        AccountVO accountVO = new AccountVO();
+        accountVO.setCustomerNo(String.valueOf(orderInfo.getCustomerNo()));
+        accountVO.setCustomerName(customerInfo.getCustomerName());
+        accountVO.setPayFee(-orderInfo.getOrderAmount());
+        accountVO.setPayMethod(4l);
+        accountVO.setRemark("订单号："+orderInfo.getOrderNo());
+        accountService.saveAccountInfo(accountVO);
     }
 
     @Override
