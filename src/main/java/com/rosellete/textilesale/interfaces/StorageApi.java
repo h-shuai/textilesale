@@ -18,13 +18,13 @@ public interface StorageApi {
     RestResponse saveStorageRecord(@RequestBody @Valid StorageRecordVO storageRecordVO);
 
     @GetMapping(path = "/viewStorageDetail")
-    RestResponse getStoragePackage(@RequestParam("recordNo") String recordNo);
+    RestResponse getStoragePackage(@RequestParam("recordNo") Integer recordNo);
 
     @PostMapping(value = "/queryStoragePackageList", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getStoragePackageList(@RequestBody @Valid ConsignorVO consignorVO);
 
     @GetMapping(path = "/viewPackageInventory")
-    RestResponse getPackageInventory(@RequestParam("recordNo") String recordNo,
+    RestResponse getPackageInventory(@RequestParam("recordNo") Integer recordNo,
                                      @RequestParam("packageNo") String packageNo);
 
     @GetMapping(path = "/getStoredInventory")

@@ -17,8 +17,8 @@ public class OrderInfo extends Page implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "order_no", nullable = false, length = 30)
-    private String orderNo;
+    @Column(name = "order_no", nullable = false, length = 6)
+    private Integer orderNo;
 
     @Column(name = "customer_no", nullable = false, length = 11)
     private Integer customerNo;

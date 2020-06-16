@@ -57,15 +57,15 @@ public class OrderBusinessImpl implements OrderBusiness {
         BeanUtils.copyProperties(orderInfoVO, customerInfo, nullPropertyNames);
         List<OrderInfo> resultSetList = orderInfoService.findOrderListByCustomerInfo(orderInfo, customerInfo, null, null);
         page.setTotal(orderInfoService.findOrderListSizeByCustomerInfo(orderInfo, customerInfo, null, null));
-        List<OrderInfoVO> collect = resultSetList.stream().map(e -> {
+        List<OrderInfoVO> collect = resultSetList.parallelStream().map(e -> {
             OrderInfoVO temp = new OrderInfoVO();
             BeanUtils.copyProperties(e, temp);
             CustomerInfo info = customerService.findByPrimaryKey(e.getCustomerNo());
             BeanUtils.copyProperties(info, temp);
             List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(e.getOrderNo());
-            List<OrderDetailInfo> filteredList = orderDetailInfoList.stream().filter(detail -> StringUtils.equals("2", detail.getStockStatus())).collect(Collectors.toList());
+            List<OrderDetailInfo> filteredList = orderDetailInfoList.parallelStream().filter(detail -> StringUtils.equals("2", detail.getStockStatus())).collect(Collectors.toList());
             temp.setStockedTypeCount(filteredList.size());
-            temp.setStockedSumLength(filteredList.stream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
+            temp.setStockedSumLength(filteredList.parallelStream().map(detail -> detail.getProductLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
             return temp;
         }).sorted(Comparator.comparing(OrderInfoVO::getOrderDate).reversed()).collect(Collectors.toList());
 
@@ -74,11 +74,11 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public PageInfo<OrderDetailVO> getOrderStockDetailInfo(String orderNo) {
+    public PageInfo<OrderDetailVO> getOrderStockDetailInfo(Integer orderNo) {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         CustomerInfo customerInfo = customerService.findByPrimaryKey(orderInfo.getCustomerNo());
         List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNo(orderNo);
-        List<OrderDetailVO> parsedList = orderDetailInfoList.stream().map(e -> {
+        List<OrderDetailVO> parsedList = orderDetailInfoList.parallelStream().map(e -> {
             OrderDetailVO temp = new OrderDetailVO();
             BeanUtils.copyProperties(orderInfo, temp);
             BeanUtils.copyProperties(e, temp);
@@ -94,17 +94,17 @@ public class OrderBusinessImpl implements OrderBusiness {
             List<OrderStockDetail> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(e.getOrderNo(), e.getProductType());
             temp.setOrderStockingArrays(orderStockDetailInfo);
             temp.setStockedFabricCount(orderStockDetailInfo.size());
-            temp.setStockedLength(orderStockDetailInfo.stream().map(stock -> stock.getStockLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
+            temp.setStockedLength(orderStockDetailInfo.parallelStream().map(stock -> stock.getStockLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue());
             return temp;
         }).collect(Collectors.toList());
         return new PageInfo<>(parsedList);
     }
 
     @Override
-    public PageInfo<OrderStockDetailVO> getOrderStockDetailInfo(String orderNo, String productType) {
+    public PageInfo<OrderStockDetailVO> getOrderStockDetailInfo(Integer orderNo, String productType) {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(orderNo, productType);
-        OrderDetailInfo orderDetailInfo = orderDetailInfoList.stream().findFirst().orElse(null);
+        OrderDetailInfo orderDetailInfo = orderDetailInfoList.parallelStream().findFirst().orElse(null);
         List<OrderStockDetail> orderStockDetailInfoList = orderStockDetailInfoService.findOrderStockDetailInfo(orderNo, productType);
         List<OrderStockDetailVO> parsedList = orderStockDetailInfoList.stream().map(e -> {
             OrderStockDetailVO temp = new OrderStockDetailVO();
@@ -117,13 +117,13 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public void confirmOrderStock(String orderNo) {
+    public void confirmOrderStock(Integer orderNo) {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         SysConfig orderConfirmThreshold = sysConfigService.findByCodeName("OrderConfirmThreshold");
         if (null != orderConfirmThreshold) {
             double threshold = Double.parseDouble(orderConfirmThreshold.getCodeValue());
             List<OrderStockDetail> list = orderStockDetailInfoService.findAllByOrderNo(orderNo);
-            double stocked = list.stream().map(e -> e.getStockLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue();
+            double stocked = list.parallelStream().map(e -> e.getStockLength()).reduce((a, b) -> a + b).orElse(0.0).doubleValue();
             double reserve = orderInfo.getReserveSumLength().doubleValue();
             if (Math.abs(100.0 * (stocked - reserve) / reserve) > threshold) {
                 throw new IllegalStateException("配货误差不能大于" + threshold);
@@ -142,12 +142,12 @@ public class OrderBusinessImpl implements OrderBusiness {
         accountVO.setCustomerName(customerInfo.getCustomerName());
         accountVO.setPayFee(-orderInfo.getOrderAmount());
         accountVO.setPayMethod(4l);
-        accountVO.setRemark("订单号："+orderInfo.getOrderNo());
+        accountVO.setRemark("订单号：" + orderInfo.getOrderNo());
         accountService.saveAccountInfo(accountVO);
     }
 
     @Override
-    public void orderRestock(String orderNo) {
+    public void orderRestock(Integer orderNo) {
         orderInfoService.updateOrderStatus(orderNo, "1");
     }
 
@@ -180,7 +180,7 @@ public class OrderBusinessImpl implements OrderBusiness {
                     orderDetailInfoVO.getCustomerName(), orderDetailInfoVO.getDeliveryMode(),
                     orderDetailInfoVO.getConsignmentDepartment(), null, null));
         }
-        List<OrderDetailVO> collect = resultSetList.stream().map(e -> {
+        List<OrderDetailVO> collect = resultSetList.parallelStream().map(e -> {
             String jsonString = JSON.toJSONString(e);
             return JSONObject.parseObject(jsonString, OrderDetailVO.class);
         }).collect(Collectors.toList());
@@ -194,15 +194,20 @@ public class OrderBusinessImpl implements OrderBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
+        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().parallelStream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
+        Integer customerNo = orderSaveVO.getCustomerNo();
+        if (null == customerNo) {
+            customerNo = customerService.saveCustomer(orderSaveVO.getCustomerName(), orderSaveVO.getCustomerPhoneNo());
+            orderInfo.setCustomerNo(customerNo);
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String orderNo = new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1), 6, "0")).toString();
+        Integer orderNo = this.getSequenceNo();
         String creater = "admin";
         Date now = new Date();
         OrderDetailInfo tmp;
         double sumAmount = 0.0;
         double sumLength = 0.0;
-        long typeCount = orderDetailList.stream().map(e -> e.getProductType()).distinct().count();
+        long typeCount = orderDetailList.parallelStream().map(e -> e.getProductType()).distinct().count();
         for (int i = 0; i < orderDetailList.size(); i++) {
             tmp = orderDetailList.get(i);
             tmp.setOrderNo(orderNo);
@@ -232,21 +237,21 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Transactional(rollbackOn = Exception.class)
     @Override
     public void updateOrder(OrderSaveVO orderSaveVO) {
-        String orderNo = orderSaveVO.getOrderNo();
+        Integer orderNo = orderSaveVO.getOrderNo();
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().stream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
+        List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().parallelStream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
         String creater = "admin";
         Date now = new Date();
-        List<OrderDetailInfo> collect = orderDetailList.stream().map(e -> {
+        List<OrderDetailInfo> collect = orderDetailList.parallelStream().map(e -> {
             e.setOrderNo(orderNo);
             e.setUpdateUser(creater);
             e.setUpdateDate(now);
             e.setStockStatus("0");
             return e;
         }).collect(Collectors.toList());
-        double sumAmount = orderDetailList.stream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
+        double sumAmount = orderDetailList.parallelStream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
         orderInfo.setOrderAmount(sumAmount);
         orderInfoService.saveOrderInfo(orderInfo);
         orderDetailInfoService.saveOrderDetailInfo(collect);
@@ -255,25 +260,25 @@ public class OrderBusinessImpl implements OrderBusiness {
     @Transactional(rollbackOn = Exception.class)
     @Override
     public void saveOrderStockDetail(OrderStockSaveVO orderStockSaveVO) {
-        String orderNo = orderStockSaveVO.getOrderNo();
+        Integer orderNo = orderStockSaveVO.getOrderNo();
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderStockSaveVO);
         BeanUtils.copyProperties(orderStockSaveVO, orderInfo, nullPropertyNames);
-        List<OrderDetailVO> orderDetailList = orderStockSaveVO.getOrderDetailList().stream().
-                filter(e -> StringUtils.isNotBlank(e.getProductType())&&!CollectionUtils.isEmpty(e.getOrderStockingArrays())).
+        List<OrderDetailVO> orderDetailList = orderStockSaveVO.getOrderDetailList().parallelStream().
+                filter(e -> StringUtils.isNotBlank(e.getProductType()) && !CollectionUtils.isEmpty(e.getOrderStockingArrays())).
                 collect(Collectors.toList());
         List<OrderDetailInfo> orderDetailInfos = new ArrayList<>(orderDetailList.size());
         List<OrderStockDetail> existedOrderStockList = new ArrayList<>(10);
         List<OrderStockDetail> toBeInsertOrderStockList = new ArrayList<>(10);
         String updater = "admin";
         Date now = new Date();
-        orderDetailList.stream().forEach(e -> {
+        orderDetailList.parallelStream().forEach(e -> {
                     String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(e);
                     List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(e.getOrderNo(), e.getProductType());
-                    OrderDetailInfo orderDetailInfo = orderDetailInfoList.stream().findFirst().orElse(null);
+                    OrderDetailInfo orderDetailInfo = orderDetailInfoList.parallelStream().findFirst().orElse(null);
                     BeanUtils.copyProperties(e, orderDetailInfo, nullOrBlankPropertyNames);
-                    List<OrderStockDetail> orderStockingArrays = e.getOrderStockingArrays().stream().
-                            filter(element->null!=element.getStockLength()&&0.0D!=element.getStockLength()).
+                    List<OrderStockDetail> orderStockingArrays = e.getOrderStockingArrays().parallelStream().
+                            filter(element -> null != element.getStockLength() && 0.0D != element.getStockLength()).
                             collect(Collectors.toList());
                     Double stockedLength = 0.0D;
                     for (OrderStockDetail stock : orderStockingArrays) {
@@ -304,7 +309,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderStockDetailInfoService.deleteOrderStockDetail(existedOrderStockList);
         orderStockDetailInfoService.saveOrderStockDetail(toBeInsertOrderStockList);
         orderDetailInfoService.saveOrderDetailInfo(orderDetailInfos);
-        if (orderDetailInfos.stream().filter(e->StringUtils.equals("2",e.getStockStatus())).count()>=orderDetailInfos.size()){
+        if (orderDetailInfos.parallelStream().filter(e -> StringUtils.equals("2", e.getStockStatus())).count() >= orderDetailInfos.size()) {
             orderInfo.setOrderStatus("2");
             orderInfo.setUpdateDate(now);
             orderInfo.setStockDate(now);
@@ -323,18 +328,18 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public List<String> getTotalCount(Integer customer,String businessType) {
-        return orderInfoService.getTotalCount(customer,businessType);
+    public List<String> getTotalCount(Integer customer, String businessType) {
+        return orderInfoService.getTotalCount(customer, businessType);
     }
 
     @Override
-    public List<PackInfoVO> getPieceList(Integer customer,String businessType) {
-        List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer,businessType);
+    public List<PackInfoVO> getPieceList(Integer customer, String businessType) {
+        List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer, businessType);
         for (PackInfoVO packInfoVO : returnList) {
             for (PackSubInfoVO packSubInfoVO : packInfoVO.getPackSubInfoVOS()) {
                 if (businessType.equals("0")) {
                     packSubInfoVO.setPieceOptions(orderStockDetailInfoService.getPieceList(packInfoVO.getOrderNo(), packSubInfoVO.getColthModel()));
-                }else {
+                } else {
                     packSubInfoVO.setPieceOptions(rejectSuppliesStockDetailService.getPieceList(packInfoVO.getOrderNo(), packSubInfoVO.getColthModel()));
                 }
             }
@@ -349,13 +354,13 @@ public class OrderBusinessImpl implements OrderBusiness {
 
     @Transactional(rollbackOn = Exception.class)
     @Override
-    public String copyAndCreateOrder(String orderNo) {
+    public Integer copyAndCreateOrder(Integer orderNo) {
         OrderInfo orderInfo = orderInfoService.findByPrimaryKey(orderNo);
         OrderInfo newOrder = new OrderInfo();
         BeanUtils.copyProperties(orderInfo, newOrder);
         Date now = new Date();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String newOrderNo = new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1), 6, "0")).toString();
+        Integer newOrderNo = this.getSequenceNo();
         String operator = "admin";
         newOrder.setUpdateDate(now);
         newOrder.setCreateDate(now);
@@ -386,5 +391,10 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderDetailInfoService.saveOrderDetailInfo(toBeInsertList);
         orderInfoService.saveOrderInfo(newOrder);
         return newOrderNo;
+    }
+
+    @Override
+    public Integer getSequenceNo() {
+        return orderInfoService.getMaxOrderNo() + 1;
     }
 }

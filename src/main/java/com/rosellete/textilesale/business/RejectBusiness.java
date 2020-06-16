@@ -10,5 +10,7 @@ public interface RejectBusiness {
 
     void saveRejectRecord(RejectRecordSaveVO rejectRecordSaveVO);
 
-    RejectRecordSaveVO getRejectRecordDetail(String recordNo);
+    RejectRecordSaveVO getRejectRecordDetail(Integer recordNo);
+
+    Integer getSequenceNo();
 }

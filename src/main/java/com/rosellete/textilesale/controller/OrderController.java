@@ -28,13 +28,13 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse getOrderDetailInfo(@RequestParam("orderNo") String orderNo) {
+    public RestResponse getOrderDetailInfo(@RequestParam("orderNo") Integer orderNo) {
         PageInfo<OrderDetailVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo);
         return new RestResponse(pageInfo);
     }
 
     @Override
-    public RestResponse confirmOrderStock(@RequestParam("orderNo") String orderNo) {
+    public RestResponse confirmOrderStock(@RequestParam("orderNo") Integer orderNo) {
         RestResponse response = new RestResponse();
 
         try {
@@ -48,7 +48,7 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse orderRestock(@RequestParam("orderNo") String orderNo) {
+    public RestResponse orderRestock(@RequestParam("orderNo") Integer orderNo) {
         RestResponse response = new RestResponse();
         try {
             orderBusiness.orderRestock(orderNo);
@@ -61,9 +61,9 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse copyAndCreateOrder(String orderNo) {
+    public RestResponse copyAndCreateOrder(Integer orderNo) {
         RestResponse response = new RestResponse();
-        String newOrderNo;
+        Integer newOrderNo;
         try {
             newOrderNo= orderBusiness.copyAndCreateOrder(orderNo);
         } catch (Exception e) {
@@ -77,7 +77,7 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse getOrderStockDetailInfo(String orderNo, String productType) {
+    public RestResponse getOrderStockDetailInfo(Integer orderNo, String productType) {
         PageInfo<OrderStockDetailVO> pageInfo = orderBusiness.getOrderStockDetailInfo(orderNo, productType);
         return new RestResponse(pageInfo);
     }

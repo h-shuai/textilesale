@@ -15,11 +15,11 @@ import java.util.Map;
 public interface OrderDetailInfoDao extends BaseRepository<OrderDetailInfo, Long> {
 
     @Query(value = "SELECT t.* FROM t_order_detail_info t where t.order_no = ?1", nativeQuery = true)
-    List<OrderDetailInfo> findAllByOrderNo(@Param("orderNo") String orderNo);
+    List<OrderDetailInfo> findAllByOrderNo(@Param("orderNo") Integer orderNo);
 
     @Query(value = "SELECT t.* FROM t_order_detail_info t where t.order_no = ?1 and t.product_type = ?2",
             nativeQuery = true)
-    List<OrderDetailInfo> findAllByOrderNoAndProductType(@Param("orderNo") String orderNo,
+    List<OrderDetailInfo> findAllByOrderNoAndProductType(@Param("orderNo") Integer orderNo,
                                                          @Param("productType") String productType);
 
     @Query(value = "SELECT t2.*, t1.customer_name, t1.customer_phone_no, t1.order_date, t1.delivery_mode," +
@@ -29,7 +29,7 @@ public interface OrderDetailInfoDao extends BaseRepository<OrderDetailInfo, Long
             " and IF(?3 is not null, t1.customer_name like CONCAT(?3, '%'), 1 = 1)" +
             " and IF(?4 is not null, t1.delivery_mode = ?4, 1 = 1)" +
             " and IF(?5 is not null, t1.consignment_department = ?5, 1 = 1)", nativeQuery = true)
-    List<Map<String, Object>> findByCustomerInfoAndProductType(@Param("orderNo") String orderNo,
+    List<Map<String, Object>> findByCustomerInfoAndProductType(@Param("orderNo") Integer orderNo,
                                                                @Param("productType") String productType,
                                                                @Param("customerName") String customerName,
                                                                @Param("deliveryMode") String deliveryMode,
@@ -44,7 +44,7 @@ public interface OrderDetailInfoDao extends BaseRepository<OrderDetailInfo, Long
             " and IF(?5 is not null, t1.consignment_department = ?5, 1 = 1)" +
             " and IF(?6 is not null, t1.order_date >= ?6, 1 = 1)" +
             "  and IF(?7 is not null, t1.order_date < ?7, 1 = 1)order by t1.order_date desc,t2.order_no asc limit ?8,?9 ", nativeQuery = true)
-    List<Map<String, Object>> findPageByCustomerInfoAndDate(@Param("orderNo") String orderNo,
+    List<Map<String, Object>> findPageByCustomerInfoAndDate(@Param("orderNo") Integer orderNo,
                                                             @Param("productType") String productType,
                                                             @Param("customerName") String customerName,
                                                             @Param("deliveryMode") String deliveryMode,
@@ -62,7 +62,7 @@ public interface OrderDetailInfoDao extends BaseRepository<OrderDetailInfo, Long
             " and IF(?5 is not null, t1.consignment_department = ?5, 1 = 1)" +
             " and IF(?6 is not null, t1.order_date >= ?6, 1 = 1)" +
             "  and IF(?7 is not null, t1.order_date < ?7, 1 = 1) order by t1.order_date desc,t2.order_no asc", nativeQuery = true)
-    List<Map<String, Object>> findByCustomerInfoAndDate(@Param("orderNo") String orderNo,
+    List<Map<String, Object>> findByCustomerInfoAndDate(@Param("orderNo") Integer orderNo,
                                                         @Param("productType") String productType,
                                                         @Param("customerName") String customerName,
                                                         @Param("deliveryMode") String deliveryMode,

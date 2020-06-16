@@ -19,5 +19,5 @@ public interface RejectApi {
     RestResponse saveRejectRecord(@RequestBody @Valid RejectRecordSaveVO rejectRecordSaveVO);
 
     @GetMapping(path = "/viewRejectRecord")
-    RestResponse getRejectRecordDetail(@RequestParam("recordNo") String recordNo);
+    RestResponse getRejectRecordDetail(@RequestParam("recordNo") Integer recordNo);
 }

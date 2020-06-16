@@ -28,7 +28,7 @@ public class PackDetailInfo implements Serializable {
     * 订单号
     */
     @Column(name = "order_no")
-    private String orderNo;
+    private Integer orderNo;
     /**
     * 打包ID
     */

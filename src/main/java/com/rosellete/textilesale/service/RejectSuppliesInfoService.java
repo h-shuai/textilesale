@@ -18,7 +18,7 @@ public class RejectSuppliesInfoService {
         rejectSuppliesInfoDao.saveAll(list);
     }
 
-    public List<RejectSupplies> findRecordDetailByRecordNo(String recordNo) {
+    public List<RejectSupplies> findRecordDetailByRecordNo(Integer recordNo) {
         return rejectSuppliesInfoDao.findAllByRecordNo(recordNo);
     }
 

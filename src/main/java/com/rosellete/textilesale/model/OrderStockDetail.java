@@ -23,8 +23,8 @@ public class OrderStockDetail extends Page implements Serializable {
     @Column(name = "id", nullable = false, length = 30)
     private Long id;
 
-    @Column(name = "order_no", nullable = false, length = 30)
-    private String orderNo;
+    @Column(name = "order_no", nullable = false, length = 6)
+    private Integer orderNo;
 
     @Column(name = "product_type", nullable = false, length = 10)
     private String productType;

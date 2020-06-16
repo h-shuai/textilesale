@@ -23,7 +23,7 @@ public class OrderInfoService {
     private RejectRecordDao rejectRecordDao;
 
 
-    public OrderInfo findByPrimaryKey(String orderNo) {
+    public OrderInfo findByPrimaryKey(Integer orderNo) {
         Optional<OrderInfo> orderInfo = orderInfoDao.findById(orderNo);
         return orderInfo.orElse(null);
     }
@@ -41,7 +41,7 @@ public class OrderInfoService {
 
     }
 
-    public void updateOrderStatus(String orderNo, String orderStatus) {
+    public void updateOrderStatus(Integer orderNo, String orderStatus) {
         orderInfoDao.updateOrderStatus(orderNo, orderStatus, "admin");
     }
 
@@ -49,7 +49,7 @@ public class OrderInfoService {
         orderInfoDao.save(orderInfo);
     }
 
-    public void updateOrderInfo(String orderNo, String orderStatus, Double sumAmount, String updater) {
+    public void updateOrderInfo(Integer orderNo, String orderStatus, Double sumAmount, String updater) {
         orderInfoDao.updateStatusAndAmount(orderNo, orderStatus, sumAmount, updater);
     }
 
@@ -93,7 +93,7 @@ public class OrderInfoService {
         orderInfo.setOrderNo(null);
         orderInfo.setBusinessType(businessType);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
-        List<String> orderNos = new ArrayList<>();
+        List<Integer> orderNos = new ArrayList<>();
         for (OrderInfoVO orderInfoVO : orderInfoVOList){
             orderNos.add(orderInfoVO.getOrderNo());
         }
@@ -110,7 +110,7 @@ public class OrderInfoService {
         orderInfo.setOrderNo(null);
         orderInfo.setBusinessType(businessType);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
-        List<String> orderNos = new ArrayList<>();
+        List<Integer> orderNos = new ArrayList<>();
         for (OrderInfoVO orderInfoVO : orderInfoVOList){
             orderNos.add(orderInfoVO.getOrderNo());
         }
@@ -121,7 +121,7 @@ public class OrderInfoService {
         } else {
             pieceList = rejectRecordDao.getRejectWaitPieceList(orderNos);
         }
-        for (String orderNo : orderNos){
+        for (Integer orderNo : orderNos){
             List<PackSubInfoVO> packSubInfoVOS = new ArrayList<>();
             PackInfoVO packInfoVO = new PackInfoVO();
             packInfoVO.setOrderNo(orderNo);
@@ -150,7 +150,7 @@ public class OrderInfoService {
         List<OrderInfoVO> returnList = new ArrayList<>();
         for (Map<String,Object> map : list){
             OrderInfoVO infoVO = new OrderInfoVO();
-            infoVO.setOrderNo((String)map.get("orderNo"));
+            infoVO.setOrderNo((Integer)map.get("orderNo"));
             infoVO.setCustomerNo((Integer)map.get("customerNo"));
             infoVO.setCustomerName((String)map.get("customerName"));
             infoVO.setOrderDate((Date)map.get("orderDate"));
@@ -161,5 +161,9 @@ public class OrderInfoService {
         pagedListHolder.setPage(orderInfoVO.getPageNum() - 1);
         pagedListHolder.setPageSize(orderInfoVO.getPageSize());
         return pagedListHolder;
+    }
+
+    public Integer getMaxOrderNo(){
+        return orderInfoDao.findMaxOrderNo();
     }
 }

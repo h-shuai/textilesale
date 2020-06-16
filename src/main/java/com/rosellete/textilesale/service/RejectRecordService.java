@@ -28,12 +28,15 @@ public class RejectRecordService {
         rejectRecordDao.saveAll(rejectRecordList);
     }
 
-    public RejectRecord findByPrimaryKey(String recordNo) {
+    public RejectRecord findByPrimaryKey(Integer recordNo) {
         return rejectRecordDao.findById(recordNo).orElse(null);
     }
 
-    public Integer findSupplierNo(String recordNo) {
+    public Integer findSupplierNo(Integer recordNo) {
         RejectRecord optional = rejectRecordDao.findById(recordNo).orElse(null);
         return optional == null ? null : optional.getSupplierNo();
+    }
+    public Integer getMaxRecordNo(){
+        return rejectRecordDao.findMaxRecordNo();
     }
 }

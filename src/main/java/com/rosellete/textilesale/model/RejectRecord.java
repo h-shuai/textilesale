@@ -16,8 +16,8 @@ import java.util.Date;
 public class RejectRecord extends Page implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name = "record_no", length = 30, nullable = false, unique = true)
-    private String recordNo;
+    @Column(name = "record_no", length = 6, nullable = false, unique = true)
+    private Integer recordNo;
 
     @Column(name = "reject_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

@@ -23,8 +23,8 @@ public class RejectSuppliesStockDetail extends Page implements Serializable {
     @Column(name = "id", nullable = false, length = 30)
     private Long id;
 
-    @Column(name = "record_no", nullable = false, length = 30)
-    private String recordNo;
+    @Column(name = "record_no", nullable = false, length = 6)
+    private Integer recordNo;
 
     @Column(name = "product_type", nullable = false, length = 10)
     private String productType;

@@ -9,5 +9,7 @@ import java.util.List;
 
 @Data
 public class OrderSaveVO extends OrderInfo {
+    private String customerName;
+    private String customerPhoneNo;
     private List<OrderDetailInfo> orderDetailList = new ArrayList<>();
 }

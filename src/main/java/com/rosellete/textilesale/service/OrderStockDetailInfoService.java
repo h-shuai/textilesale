@@ -15,7 +15,7 @@ public class OrderStockDetailInfoService {
 
     private OrderStockDetailInfoDao orderStockDetailInfoDao;
 
-    public List<OrderStockDetail> findOrderStockDetailInfo(String orderNo, String productType) {
+    public List<OrderStockDetail> findOrderStockDetailInfo(Integer orderNo, String productType) {
         return orderStockDetailInfoDao.findAllByOrderNoAndProductType(orderNo, productType);
     }
 
@@ -27,7 +27,7 @@ public class OrderStockDetailInfoService {
         orderStockDetailInfoDao.saveAll(orderStockDetailInfoList);
     }
 
-    public List<Map<String, Object>> getPieceList(String orderNo, String productType) {
+    public List<Map<String, Object>> getPieceList(Integer orderNo, String productType) {
         return orderStockDetailInfoDao.getPieceList(orderNo, productType);
     }
 
@@ -39,7 +39,7 @@ public class OrderStockDetailInfoService {
         return orderStockDetailInfoDao.getStockDetailById(id);
     }
 
-    public List<OrderStockDetail> findAllByOrderNo(String orderNo) {
+    public List<OrderStockDetail> findAllByOrderNo(Integer orderNo) {
         OrderStockDetail info = new OrderStockDetail();
         info.setOrderNo(orderNo);
         Example<OrderStockDetail> example = Example.of(info);

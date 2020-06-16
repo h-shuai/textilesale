@@ -21,7 +21,7 @@ public interface PackDetailInfoDao extends BaseRepository<PackDetailInfo,String>
     List<Map<String,Object>> getProductMap(@Param("packId") String packId);
 
     @Query(value = "select id,stock_length stockLength from t_pack_detail_info where pack_id = ?1 and product_type = ?2 and order_no = ?3",nativeQuery = true)
-    List<Map<String,Object>> getPackDetailRices(@Param("packId") String packId, @Param("product_type") String product_type,@Param("orderNo") String orderNo);
+    List<Map<String,Object>> getPackDetailRices(@Param("packId") String packId, @Param("product_type") String product_type,@Param("orderNo") Integer orderNo);
 
     @Query(value = "select * from t_pack_detail_info where pack_id = ?1",nativeQuery = true)
     List<PackDetailInfo> getPackDetailsByPackId(@Param("packId") String packId);

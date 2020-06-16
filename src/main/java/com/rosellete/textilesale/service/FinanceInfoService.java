@@ -26,7 +26,7 @@ public class FinanceInfoService {
         String batchNo = "BAT" + (new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
         List<FinanceDetailInfo> detailInfos = new ArrayList<>();
         List<FinanceLinkOrder> financeLinkOrders = new ArrayList<>();
-        List<String> orders = new ArrayList<>();
+        List<Integer> orders = new ArrayList<>();
         for (Map<String,Object> map : financeInfoVO.getAccountList()){
             FinanceDetailInfo financeDetailInfo = new FinanceDetailInfo();
             financeDetailInfo.setBatchNo(batchNo);
@@ -43,7 +43,7 @@ public class FinanceInfoService {
             financeLinkOrder.setCreateDate(new Date());
             financeLinkOrder.setStatus("1");
             financeLinkOrders.add(financeLinkOrder);
-            orders.add((String)map.get("orderNo"));
+            orders.add((Integer) map.get("orderNo"));
         }
         financeDetailInfoDao.saveAll(detailInfos);
         orderInfoDao.updateSettleStatus(orders);

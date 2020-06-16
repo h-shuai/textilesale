@@ -14,11 +14,11 @@ public class OrderDetailInfoService {
     @Autowired
     private OrderDetailInfoDao orderDetailInfoDao;
 
-    public List<OrderDetailInfo> findOrderDetailInfoByOrderNoAndProductType(String orderNo, String productType) {
+    public List<OrderDetailInfo> findOrderDetailInfoByOrderNoAndProductType(Integer orderNo, String productType) {
         return orderDetailInfoDao.findAllByOrderNoAndProductType(orderNo, productType);
     }
 
-    public List<OrderDetailInfo> findOrderDetailInfoByOrderNo(String orderNo) {
+    public List<OrderDetailInfo> findOrderDetailInfoByOrderNo(Integer orderNo) {
         return orderDetailInfoDao.findAllByOrderNo(orderNo);
     }
 

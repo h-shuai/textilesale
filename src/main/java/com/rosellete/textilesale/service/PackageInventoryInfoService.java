@@ -35,7 +35,7 @@ public class PackageInventoryInfoService {
         PackageInventory info = new PackageInventory();
         info.setProductType(productType);
         Example<PackageInventory> example = Example.of(info);
-        info = packageInventoryInfoDao.findAll(example, Sort.by("createDate").descending()).stream().findFirst().orElse(null);
+        info = packageInventoryInfoDao.findAll(example, Sort.by("createDate").descending()).parallelStream().findFirst().orElse(null);
         return null == info ? null : info.getImageName();
     }
 }

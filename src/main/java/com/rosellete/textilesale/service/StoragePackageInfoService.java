@@ -22,7 +22,7 @@ public class StoragePackageInfoService {
         storagePackageInfoDao.saveAll(packageList);
     }
 
-    public List<StoragePackage> findAllByRecordNo(String recordNo) {
+    public List<StoragePackage> findAllByRecordNo(Integer recordNo) {
         return storagePackageInfoDao.findByRecordNo(recordNo);
     }
 
@@ -54,11 +54,11 @@ public class StoragePackageInfoService {
                 storageType, conszignorNo,consignor, consignorPhone, consignorType,industryType, startDate, endDate).size();
     }
 
-    public List<StoragePackage> findStoragePackageByPackageNo(String recordNo, String packageNo) {
+    public List<StoragePackage> findStoragePackageByPackageNo(Integer recordNo, String packageNo) {
         return storagePackageInfoDao.findByPackageNo(recordNo, packageNo);
     }
 
-    public StoragePackage findFirstStoragePackage(String recordNo, String packageNo) {
-        return storagePackageInfoDao.findByPackageNo(recordNo, packageNo).stream().findFirst().orElse(null);
+    public StoragePackage findFirstStoragePackage(Integer recordNo, String packageNo) {
+        return storagePackageInfoDao.findByPackageNo(recordNo, packageNo).parallelStream().findFirst().orElse(null);
     }
 }

@@ -26,7 +26,7 @@ public class SupplierBusinessImpl implements SupplierBusiness {
     @Override
     public PageInfo<SupplierInfoVO> findAllSupplierWarehouseRelated() {
         List<Map<String, String>> allOrderByVip = supplierService.findAllOrderByVip();
-        List<SupplierInfoVO> collect = allOrderByVip.stream().map(e -> {
+        List<SupplierInfoVO> collect = allOrderByVip.parallelStream().map(e -> {
             String jsonString = JSON.toJSONString(e);
             return JSONObject.parseObject(jsonString, SupplierInfoVO.class);
         }).collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class SupplierBusinessImpl implements SupplierBusiness {
         SupplierInfo supplierInfo = new SupplierInfo();
         BeanUtils.copyProperties(supplierInfoVO, supplierInfo, nullOrBlankPropertyNames);
         Page<SupplierInfo> supplierList = supplierService.findSupplierList(supplierInfo);
-        List<SupplierInfoVO> collect = supplierList.stream().map(e -> {
+        List<SupplierInfoVO> collect = supplierList.toList().parallelStream().map(e -> {
             SupplierInfoVO temp = new SupplierInfoVO();
             BeanUtils.copyProperties(e, temp);
             return temp;
@@ -52,13 +52,13 @@ public class SupplierBusinessImpl implements SupplierBusiness {
 
     @Override
     public PageInfo<SupplierInfoVO> findAllSupplier() {
-        List<SupplierInfoVO> collect = supplierService.findAllOrderByVip().stream().
+        List<SupplierInfoVO> collect = supplierService.findAllOrderByVip().parallelStream().
                 map(e -> {
                             String jsonString = JSON.toJSONString(e);
                             return JSONObject.parseObject(jsonString, SupplierInfoVO.class);
                         }
                 ).collect(Collectors.toList());
-        List<SupplierInfoVO> sorted = collect.stream().sorted(Comparator.comparing(SupplierInfoVO::getVip)).
+        List<SupplierInfoVO> sorted = collect.parallelStream().sorted(Comparator.comparing(SupplierInfoVO::getVip)).
                 collect(Collectors.toList());
         return new PageInfo<>(sorted);
     }

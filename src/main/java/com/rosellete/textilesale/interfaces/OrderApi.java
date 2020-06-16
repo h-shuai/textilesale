@@ -15,19 +15,19 @@ public interface OrderApi {
     RestResponse getOrderList(@RequestBody @Valid OrderInfoVO orderInfoVO);
 
     @GetMapping(path = "/queryOrderDetail")
-    RestResponse getOrderDetailInfo(@RequestParam("orderNo") String orderNo);
+    RestResponse getOrderDetailInfo(@RequestParam("orderNo") Integer orderNo);
 
     @GetMapping(path = "/confirmOrderStock")
-    RestResponse confirmOrderStock(@RequestParam("orderNo") String orderNo);
+    RestResponse confirmOrderStock(@RequestParam("orderNo") Integer orderNo);
 
     @GetMapping(path = "/restock")
-    RestResponse orderRestock(@RequestParam("orderNo") String orderNo);
+    RestResponse orderRestock(@RequestParam("orderNo") Integer orderNo);
 
     @GetMapping(path = "/copyAndCreateOrder")
-    RestResponse copyAndCreateOrder(@RequestParam("orderNo") String orderNo);
+    RestResponse copyAndCreateOrder(@RequestParam("orderNo") Integer orderNo);
 
     @GetMapping(path = "/queryOrderStockDetail")
-    RestResponse getOrderStockDetailInfo(@RequestParam("orderNo") String orderNo, @RequestParam("productType") String productType);
+    RestResponse getOrderStockDetailInfo(@RequestParam("orderNo") Integer orderNo, @RequestParam("productType") String productType);
 
     @PostMapping(value = "/queryOrderDetailList", consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getOrderDetailList(@RequestBody @Valid OrderDetailVO orderDetailInfoVO);

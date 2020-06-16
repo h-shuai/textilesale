@@ -22,8 +22,8 @@ public class RejectSupplies extends Page implements Serializable {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @Column(name = "record_no", length = 30, nullable = false)
-    private String recordNo;
+    @Column(name = "record_no", length = 6, nullable = false)
+    private Integer recordNo;
 
     @Column(name = "product_type", nullable = false, length = 10)
     private String productType;

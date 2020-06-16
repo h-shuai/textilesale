@@ -8,11 +8,11 @@ public interface StorageBusiness {
 
     void saveStorageRecord(StorageRecordVO storageRecordVO);
 
-    PageInfo<StoragePackageVO> getStoragePackage(String recordNo);
+    PageInfo<StoragePackageVO> getStoragePackage(Integer recordNo);
 
     PageInfo<StoragePackageVO> getStoragePackageList(ConsignorVO consignorVO);
 
-    PageInfo<PackageInventoryVO> getPackageInventory(String recordNo, String packageNo);
+    PageInfo<PackageInventoryVO> getPackageInventory(Integer recordNo, String packageNo);
 
     void savePackageInventoryList(PackageInventorySaveVO packageInventorySaveVO);
 
@@ -24,4 +24,5 @@ public interface StorageBusiness {
 
     PageInfo<ProductTypeVO> findStoredInventory(Integer supplierNo);
 
+    Integer getSequenceNo();
 }

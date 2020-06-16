@@ -28,7 +28,7 @@ public class CustomerBusinessImpl implements CustomerBusiness {
     @Override
     public PageInfo<CustomerInfoVO> findAllCustomerWarehouseRelated() {
         List<Map<String, String>> allOrderByVip = customerService.findAllOrderByVip();
-        List<CustomerInfoVO> collect = allOrderByVip.stream().map(e -> {
+        List<CustomerInfoVO> collect = allOrderByVip.parallelStream().map(e -> {
             String jsonString = JSON.toJSONString(e);
             return JSONObject.parseObject(jsonString, CustomerInfoVO.class);
         }).collect(Collectors.toList());
@@ -41,7 +41,7 @@ public class CustomerBusinessImpl implements CustomerBusiness {
         CustomerInfo customerInfo = new CustomerInfo();
         BeanUtils.copyProperties(customerInfoVO, customerInfo, nullOrBlankPropertyNames);
         Page<CustomerInfo> customerInfoList = customerService.findCustomerList(customerInfo);
-        List<CustomerInfoVO> collect = customerInfoList.stream().map(e -> {
+        List<CustomerInfoVO> collect = customerInfoList.toList().parallelStream().map(e -> {
             CustomerInfoVO temp = new CustomerInfoVO();
             BeanUtils.copyProperties(e,temp);
             return temp;

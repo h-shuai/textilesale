@@ -18,7 +18,7 @@ public class RejectSuppliesStockDetailService {
         rejectSuppliesStockDetailDao.saveAll(list);
     }
 
-    public List<RejectSuppliesStockDetail> findAllByRecordNoAndType(String recordNo,String productType) {
+    public List<RejectSuppliesStockDetail> findAllByRecordNoAndType(Integer recordNo,String productType) {
         RejectSuppliesStockDetail detail = new RejectSuppliesStockDetail();
         detail.setRecordNo(recordNo);
         detail.setProductType(productType);
@@ -26,7 +26,7 @@ public class RejectSuppliesStockDetailService {
         return rejectSuppliesStockDetailDao.findAll(example);
     }
 
-    public List<RejectSuppliesStockDetail> findAllByRecordNo(String recordNo) {
+    public List<RejectSuppliesStockDetail> findAllByRecordNo(Integer recordNo) {
         RejectSuppliesStockDetail detail = new RejectSuppliesStockDetail();
         detail.setRecordNo(recordNo);
         Example<RejectSuppliesStockDetail> example = Example.of(detail);
@@ -37,7 +37,7 @@ public class RejectSuppliesStockDetailService {
         rejectSuppliesStockDetailDao.deleteAll(existedStockDetailList);
     }
 
-    public List<Map<String, Object>> getPieceList(String recordNo, String productType) {
+    public List<Map<String, Object>> getPieceList(Integer recordNo, String productType) {
         return rejectSuppliesStockDetailDao.getPieceList(recordNo, productType);
     }
 

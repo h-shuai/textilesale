@@ -14,12 +14,12 @@ import java.util.Map;
 public interface OrderStockDetailInfoDao extends BaseRepository<OrderStockDetail, Long> {
     @Query(value = "SELECT t.* FROM t_order_stock_detail_info t where t.order_no = ?1 and t.product_type=?2",
             nativeQuery = true)
-    List<OrderStockDetail> findAllByOrderNoAndProductType(@Param("orderNo") String orderNo,
+    List<OrderStockDetail> findAllByOrderNoAndProductType(@Param("orderNo") Integer orderNo,
                                                           @Param("productType") String productType);
 
     @Query(value = "SELECT t.id id,t.product_type productType,t.stock_length stockLength,b.image_name picurl FROM t_order_stock_detail_info t,t_order_detail_info b where t.order_no = ?1 and t.order_no=b.order_no and t.product_type=?2 and t.status='0' and t.product_type=b.product_type",
             nativeQuery = true)
-    List<Map<String,Object>> getPieceList(@Param("orderNo") String orderNo, @Param("productType") String productType);
+    List<Map<String,Object>> getPieceList(@Param("orderNo") Integer orderNo, @Param("productType") String productType);
 
     @Transactional
     @Modifying

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class PackInfoVO extends PackInfo {
-    private String orderNo;
+    private Integer orderNo;
 
     private List<PackSubInfoVO> packSubInfoVOS;
 

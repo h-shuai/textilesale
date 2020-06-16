@@ -7,17 +7,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("订单测试用例")
 @SpringBootTest
 class OrderBusinessTest {
@@ -35,34 +31,41 @@ class OrderBusinessTest {
     void getOrderList() {
         Assertions.assertNotNull(orderBusiness, "orderBusiness is null");
         OrderInfoVO orderInfoVO = new OrderInfoVO();
-        orderInfoVO.setOrderNo("20202504151603979");
+        orderInfoVO.setOrderNo(100000);
         PageInfo<OrderInfoVO> orderList = orderBusiness.getOrderList(orderInfoVO);
         System.out.println("orderList = " + orderList);
-        orderList.getList().stream().forEach(e -> System.out.println("OrderNo="+e.getOrderNo() +"\tCustomerName = " + e.getCustomerName()));
+        orderList.getList().parallelStream().forEach(e -> System.out.println("OrderNo=" + e.getOrderNo() + "\tCustomerName = " + e.getCustomerName()));
     }
 
     @DisplayName("时间格式化字符串")
     @Test
-    void generateOrderNo(){
+    void generateOrderNo() {
         LocalDateTime now = LocalDateTime.now();
         System.out.println("LocalDateTime = " + now);
-        DateTimeFormatter dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssS");
         System.out.println("now.format(dateTimeFormatter) = " + now.format(dateTimeFormatter));
         System.out.println("nanoTime = " + System.nanoTime());
         System.out.println("currentTimeMillis = " + System.currentTimeMillis());
-        dateTimeFormatter=DateTimeFormatter.ofPattern("yyyyMMddHHmmssn");
-        System.out.println("now.format(dateTimeFormatter) = " + now.format(dateTimeFormatter)+"\t"+now.format(dateTimeFormatter).length()+"\t"+now.format(dateTimeFormatter).substring(0,17));
+        dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssn");
+        System.out.println("now.format(dateTimeFormatter) = " + now.format(dateTimeFormatter) + "\t" + now.format(dateTimeFormatter).length() + "\t" + now.format(dateTimeFormatter).substring(0, 17));
 
     }
 
     @DisplayName("空字符串转化")
     @Test
-    void objectTrim2Null(){
+    void objectTrim2Null() {
 
-        OrderInfoVO orderInfoVO =new OrderInfoVO();
-        orderInfoVO.setOrderNo("1");
+        OrderInfoVO orderInfoVO = new OrderInfoVO();
+        orderInfoVO.setOrderNo(100000);
         orderInfoVO.setCustomerName("   ");
         String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderInfoVO);
-        Arrays.stream(nullOrBlankPropertyNames).forEach(e-> System.out.println(e));
+        Arrays.stream(nullOrBlankPropertyNames).forEach(e -> System.out.println(e));
+    }
+
+    @DisplayName("获取最大订单号")
+    @Test
+    void getSequence() {
+        long sequenceNo = orderBusiness.getSequenceNo();
+        System.out.println("sequenceNo = " + sequenceNo);
     }
 }

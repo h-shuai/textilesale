@@ -72,7 +72,7 @@ public class StorageRecordService {
         storageRecordDao.save(storageRecord);
     }
 
-    public StorageRecord findByPrimaryKey(String recordNo) {
+    public StorageRecord findByPrimaryKey(Integer recordNo) {
         Optional<StorageRecord> storageRecord = storageRecordDao.findById(recordNo);
         return storageRecord.orElse(null);
     }
@@ -94,5 +94,9 @@ public class StorageRecordService {
 
         return storageRecordDao.findSupplierAndCustomer(storageType,consignorNo,consignor,consignorPhoneNo,consignorType,
                 industryType).size();
+    }
+
+    public Integer getMaxRecordNo() {
+        return storageRecordDao.findMaxRecordNo();
     }
 }

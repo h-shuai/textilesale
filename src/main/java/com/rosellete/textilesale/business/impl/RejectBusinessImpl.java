@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -47,7 +46,7 @@ public class RejectBusinessImpl implements RejectBusiness {
         BeanUtils.copyProperties(rejectRecordVO, rejectRecord, nullPropertyNames);
         BeanUtils.copyProperties(rejectRecordVO, supplierInfo, nullPropertyNames);
         List<RejectRecord> storageRecordList = rejectRecordService.findRecordList(rejectRecord, supplierInfo);
-        List<RejectRecordVO> collect = storageRecordList.stream().map(e -> {
+        List<RejectRecordVO> collect = storageRecordList.parallelStream().map(e -> {
             RejectRecordVO temp = new RejectRecordVO();
             BeanUtils.copyProperties(e, temp);
             SupplierInfo info = supplierService.findByPrimaryKey(e.getSupplierNo());
@@ -66,21 +65,21 @@ public class RejectBusinessImpl implements RejectBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(rejectRecordSaveVO);
         RejectRecord rejectRecord = new RejectRecord();
         BeanUtils.copyProperties(rejectRecordSaveVO, rejectRecord, nullPropertyNames);
-        final List<ProductTypeVO> list = rejectRecordSaveVO.getProductTypeList().stream().
-                filter(e -> StringUtils.isNotBlank(e.getProductType())&&!CollectionUtils.isEmpty(e.getPacketedStockArrays())).collect(Collectors.toList());
+        final List<ProductTypeVO> list = rejectRecordSaveVO.getProductTypeList().parallelStream().
+                filter(e -> StringUtils.isNotBlank(e.getProductType()) && !CollectionUtils.isEmpty(e.getPacketedStockArrays())).collect(Collectors.toList());
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String creater = "admin";
         Date now = new Date();
         List<RejectRecord> toBeSavedRejectRecordList = new ArrayList<>();
         List<RejectSupplies> toBeInsertRejectSuppliesList = new ArrayList<>();
         List<RejectSuppliesStockDetail> toBeInsertStockDetailList = new ArrayList<>();
-        if (StringUtils.isBlank(rejectRecord.getRecordNo()) && !CollectionUtils.isEmpty(list)) {
-            String recordNo = new StringBuffer(LocalDateTime.now().format(dateTimeFormatter)).append(StringUtils.leftPad(String.valueOf(1), 6, "0")).toString();
-            list.stream().forEach(e -> {
-                final List<PackageInventory> stockList = e.getPacketedStockArrays().stream().
-                        filter(stock -> null!=stock.getStockLength()&&0.0D!=stock.getStockLength()).collect(Collectors.toList());
-                if (!CollectionUtils.isEmpty(stockList)){
-                    double productLength=0.0D;
+        if (null == rejectRecord.getRecordNo() && !CollectionUtils.isEmpty(list)) {
+            Integer recordNo = this.getSequenceNo();
+            list.parallelStream().forEach(e -> {
+                final List<PackageInventory> stockList = e.getPacketedStockArrays().parallelStream().
+                        filter(stock -> null != stock.getStockLength() && 0.0D != stock.getStockLength()).collect(Collectors.toList());
+                if (!CollectionUtils.isEmpty(stockList)) {
+                    double productLength = 0.0D;
                     for (int i = 0; i < stockList.size(); i++) {
                         final PackageInventory packageInventory = stockList.get(i);
                         RejectSuppliesStockDetail stockDetail = new RejectSuppliesStockDetail();
@@ -94,7 +93,7 @@ public class RejectBusinessImpl implements RejectBusiness {
                         stockDetail.setCreateDate(now);
                         stockDetail.setUpdateDate(now);
                         toBeInsertStockDetailList.add(stockDetail);
-                        productLength+=packageInventory.getStockLength();
+                        productLength += packageInventory.getStockLength();
                     }
                     RejectSupplies tmp = new RejectSupplies();
                     tmp.setRecordNo(recordNo);
@@ -110,12 +109,12 @@ public class RejectBusinessImpl implements RejectBusiness {
             });
             RejectRecord tmp = new RejectRecord();
             tmp.setRecordNo(recordNo);
-            long count = list.stream().map(e -> e.getProductType()).distinct().count();
-            tmp.setProductTypeCount((int)count);
+            long count = list.parallelStream().map(e -> e.getProductType()).distinct().count();
+            tmp.setProductTypeCount((int) count);
             tmp.setRejectedDate(now);
             tmp.setSupplierNo(rejectRecordSaveVO.getSupplierNo());
-            tmp.setRejectSumLength(list.stream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.stream()).
-                    filter(e->null!=e.getStockLength()&&0.0D!=e.getStockLength()).map(e -> e.getStockLength()).
+            tmp.setRejectSumLength(list.parallelStream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.parallelStream()).
+                    filter(e -> null != e.getStockLength() && 0.0D != e.getStockLength()).map(e -> e.getStockLength()).
                     reduce((a, b) -> a + b).get());
             tmp.setCreateUser(creater);
             tmp.setUpdateUser(creater);
@@ -124,15 +123,15 @@ public class RejectBusinessImpl implements RejectBusiness {
             toBeSavedRejectRecordList.add(tmp);
         } else if (!CollectionUtils.isEmpty(list)) {
 
-            String recordNo = rejectRecord.getRecordNo();
+            Integer recordNo = rejectRecord.getRecordNo();
             rejectRecord = rejectRecordService.findByPrimaryKey(recordNo);
             List<RejectSupplies> existedRejectSuppliesList = rejectSuppliesInfoService.findRecordDetailByRecordNo(recordNo);
-            List<RejectSuppliesStockDetail> existedStockDetailList=rejectSuppliesStockDetailService.findAllByRecordNo(recordNo);
+            List<RejectSuppliesStockDetail> existedStockDetailList = rejectSuppliesStockDetailService.findAllByRecordNo(recordNo);
 
-            list.stream().forEach(e -> {
-                final List<PackageInventory> stockList = e.getPacketedStockArrays().stream().
-                        filter(stock -> null!=stock.getStockLength()&&0.0D!=stock.getStockLength()).collect(Collectors.toList());
-                if (!CollectionUtils.isEmpty(stockList)){
+            list.parallelStream().forEach(e -> {
+                final List<PackageInventory> stockList = e.getPacketedStockArrays().parallelStream().
+                        filter(stock -> null != stock.getStockLength() && 0.0D != stock.getStockLength()).collect(Collectors.toList());
+                if (!CollectionUtils.isEmpty(stockList)) {
                     for (int i = 0; i < stockList.size(); i++) {
                         final PackageInventory packageInventory = stockList.get(i);
                         RejectSuppliesStockDetail stockDetail = new RejectSuppliesStockDetail();
@@ -151,7 +150,7 @@ public class RejectBusinessImpl implements RejectBusiness {
                     tmp.setRecordNo(recordNo);
                     tmp.setProductType(e.getProductType());
                     tmp.setImageName(packageInventoryInfoService.findLatestImageNameByProductType(tmp.getProductType()));
-                    tmp.setProductLength(stockList.stream().map(s -> s.getStockLength()).reduce((a, b) -> a + b).get().doubleValue());
+                    tmp.setProductLength(stockList.parallelStream().map(s -> s.getStockLength()).reduce((a, b) -> a + b).get().doubleValue());
                     tmp.setCreateUser(creater);
                     tmp.setUpdateUser(creater);
                     tmp.setCreateDate(now);
@@ -160,13 +159,13 @@ public class RejectBusinessImpl implements RejectBusiness {
                 }
 
             });
-            long count = list.stream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.stream()).
+            long count = list.parallelStream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.parallelStream()).
                     filter(e -> null != e.getStockLength() && 0.0D != e.getStockLength()).map(e -> e.getProductType()).distinct().count();
-            rejectRecord.setProductTypeCount((int)count);
+            rejectRecord.setProductTypeCount((int) count);
             rejectRecord.setRejectedDate(now);
             rejectRecord.setSupplierNo(rejectRecordSaveVO.getSupplierNo());
-            rejectRecord.setRejectSumLength(list.stream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.stream()).
-                    filter(e->null!=e.getStockLength()&&0.0D!=e.getStockLength()).map(e -> e.getStockLength()).
+            rejectRecord.setRejectSumLength(list.parallelStream().map(e -> e.getPacketedStockArrays()).flatMap(e -> e.parallelStream()).
+                    filter(e -> null != e.getStockLength() && 0.0D != e.getStockLength()).map(e -> e.getStockLength()).
                     reduce((a, b) -> a + b).get());
             rejectRecord.setUpdateUser(creater);
             rejectRecord.setUpdateDate(now);
@@ -181,14 +180,14 @@ public class RejectBusinessImpl implements RejectBusiness {
     }
 
     @Override
-    public RejectRecordSaveVO getRejectRecordDetail(String recordNo) {
+    public RejectRecordSaveVO getRejectRecordDetail(Integer recordNo) {
         RejectRecord record = rejectRecordService.findByPrimaryKey(recordNo);
         List<RejectSupplies> list = rejectSuppliesInfoService.findRecordDetailByRecordNo(recordNo);
-        List<ProductTypeVO> collect = list.stream().map(e -> {
+        List<ProductTypeVO> collect = list.parallelStream().map(e -> {
             ProductTypeVO temp = new ProductTypeVO();
             temp.setProductType(e.getProductType());
-            final List<RejectSuppliesStockDetail> allByRecordNo = rejectSuppliesStockDetailService.findAllByRecordNoAndType(e.getRecordNo(),e.getProductType());
-            final List<PackageInventory> inventoryList = allByRecordNo.stream().map(stock -> {
+            final List<RejectSuppliesStockDetail> allByRecordNo = rejectSuppliesStockDetailService.findAllByRecordNoAndType(e.getRecordNo(), e.getProductType());
+            final List<PackageInventory> inventoryList = allByRecordNo.parallelStream().map(stock -> {
                 PackageInventory inventory = new PackageInventory();
                 inventory.setProductType(stock.getProductType());
                 inventory.setStockLength(stock.getStockLength());
@@ -198,9 +197,14 @@ public class RejectBusinessImpl implements RejectBusiness {
             temp.setProductLength(e.getProductLength());
             return temp;
         }).collect(Collectors.toList());
-        RejectRecordSaveVO recordSaveVO=new RejectRecordSaveVO();
-        BeanUtils.copyProperties(record,recordSaveVO);
+        RejectRecordSaveVO recordSaveVO = new RejectRecordSaveVO();
+        BeanUtils.copyProperties(record, recordSaveVO);
         recordSaveVO.setProductTypeList(collect);
         return recordSaveVO;
+    }
+
+    @Override
+    public Integer getSequenceNo() {
+        return rejectRecordService.getMaxRecordNo() + 1;
     }
 }

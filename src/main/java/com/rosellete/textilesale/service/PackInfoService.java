@@ -68,7 +68,7 @@ public class PackInfoService {
     public List<Map<String,Object>> getPackDetailList(String packId){
         return packDetailInfoDao.getProductMap(packId);
     }
-    public List<Map<String,Object>> getPackLengthList(String packId,String productType,String orderNo){
+    public List<Map<String,Object>> getPackLengthList(String packId,String productType,Integer orderNo){
         return packDetailInfoDao.getPackDetailRices(packId,productType,orderNo);
     }
 

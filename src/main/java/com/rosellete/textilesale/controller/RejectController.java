@@ -41,7 +41,7 @@ public class RejectController implements RejectApi {
     }
 
     @Override
-    public RestResponse getRejectRecordDetail(String recordNo) {
+    public RestResponse getRejectRecordDetail(Integer recordNo) {
         RejectRecordSaveVO rejectRecordDetail = rejectBusiness.getRejectRecordDetail(recordNo);
         return new RestResponse(JSON.toJSONString(rejectRecordDetail));
     }

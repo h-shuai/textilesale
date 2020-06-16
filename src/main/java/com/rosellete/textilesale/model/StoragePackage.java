@@ -27,8 +27,8 @@ public class StoragePackage extends Page implements Serializable {
     @Column(name = "packed_stock_length", nullable = false, scale = 10,precision = 2)
     private Double packedStockLength;
 
-    @Column(name = "record_no", nullable = false, length = 30)
-    private String recordNo;
+    @Column(name = "record_no", nullable = false, length = 6)
+    private Integer recordNo;
 
     @Column(name = "package_status", nullable = false, length = 1)
     private String packageStatus;

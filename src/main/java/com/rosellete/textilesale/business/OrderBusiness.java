@@ -10,13 +10,13 @@ import java.util.List;
 public interface OrderBusiness {
     PageInfo<OrderInfoVO> getOrderList(OrderInfoVO orderInfoVO);
 
-    PageInfo<OrderDetailVO> getOrderStockDetailInfo(String orderNo);
+    PageInfo<OrderDetailVO> getOrderStockDetailInfo(Integer orderNo);
 
-    PageInfo<OrderStockDetailVO> getOrderStockDetailInfo(String orderNo, String productType);
+    PageInfo<OrderStockDetailVO> getOrderStockDetailInfo(Integer orderNo, String productType);
 
-    void confirmOrderStock(String orderNo);
+    void confirmOrderStock(Integer orderNo);
 
-    void orderRestock(String orderNo);
+    void orderRestock(Integer orderNo);
 
     PageInfo<OrderDetailVO> getOrderDetailList(OrderDetailVO orderDetailInfoVO);
 
@@ -34,5 +34,7 @@ public interface OrderBusiness {
 
     RestResponse getWaitSettleList(OrderInfoVO orderInfoVO);
 
-    String copyAndCreateOrder(String orderNo);
+    Integer copyAndCreateOrder(Integer orderNo);
+
+    Integer getSequenceNo();
 }

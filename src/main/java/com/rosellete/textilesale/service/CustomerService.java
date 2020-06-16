@@ -38,7 +38,14 @@ public class CustomerService {
         String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(customerInfoVO);
         CustomerInfo customerInfo = new CustomerInfo();
         BeanUtils.copyProperties(customerInfoVO, customerInfo, nullOrBlankPropertyNames);
-
         customerDao.save(customerInfo);
+    }
+
+    public Integer saveCustomer(String customerName,String customerPhoneNo) {
+        CustomerInfo customerInfo = new CustomerInfo();
+        customerInfo.setCustomerName(customerName);
+        customerInfo.setCustomerPhoneNo(customerPhoneNo);
+        customerInfo = customerDao.save(customerInfo);
+        return customerInfo.getCustomerNo();
     }
 }

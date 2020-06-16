@@ -48,13 +48,13 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packDetailInfoVO.setStatus(packInfo.getStatus());
         packDetailInfoVO.setRemark(packInfo.getRemark());
         List<Map<String,Object>> prodMaps = packInfoService.getPackDetailList(packInfo.getId());
-        List<String> oldOrderNos = new ArrayList<>();
+        List<Integer> oldOrderNos = new ArrayList<>();
         for (Map<String,Object> map : prodMaps){
-            oldOrderNos.add((String)map.get("orderNo"));
+            oldOrderNos.add((Integer)map.get("orderNo"));
         }
-        List<String> newOrderNos = oldOrderNos.stream().distinct().collect(Collectors.toList());
+        List<Integer> newOrderNos = oldOrderNos.parallelStream().distinct().collect(Collectors.toList());
         List<PackInfoVO> packInfoVOS = new ArrayList<>();
-        for (String orderNo : newOrderNos){
+        for (Integer orderNo : newOrderNos){
             List<PackSubInfoVO> packSubInfoVOS = new ArrayList<>();
             PackInfoVO packInfoVO = new PackInfoVO();
             packInfoVO.setOrderNo(orderNo);
