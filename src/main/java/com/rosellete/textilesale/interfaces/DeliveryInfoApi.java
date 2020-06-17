@@ -15,4 +15,7 @@ public interface DeliveryInfoApi {
 
     @PostMapping(value = "/saveDeliveryInfo",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse saveDeliveryInfo(@RequestBody DeliveryInfoVO deliveryInfoVO);
+
+    @PostMapping(value = "/updDeliveryInfo",consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse updDeliveryInfo(@RequestBody DeliveryInfoVO deliveryInfoVO);
 }

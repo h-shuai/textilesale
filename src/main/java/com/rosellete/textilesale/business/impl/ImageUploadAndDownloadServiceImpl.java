@@ -22,7 +22,8 @@ public class ImageUploadAndDownloadServiceImpl implements ImageUploadAndDownload
 
     @Override
     public String saveImage(MultipartFile file) throws IOException {
-        String folder = sysConfigService.getImagePath();
+//        String folder = sysConfigService.getImagePath();
+        String folder = "/Users/Hs/Downloads/upload/";
         File folderFile = new File(folder);
         if (!folderFile.exists()) {
             folderFile.mkdirs();

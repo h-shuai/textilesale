@@ -140,8 +140,8 @@ public class OrderController implements OrderApi {
     }
 
     @Override
-    public RestResponse getPieceList(Integer customer,String businessType) {
-        return new RestResponse(orderBusiness.getPieceList(customer,businessType));
+    public RestResponse getPieceList(@RequestBody OrderInfoVO orderInfoVO) {
+        return new RestResponse(orderBusiness.getPieceList(orderInfoVO.getCustomer(),orderInfoVO.getBusinessType(),orderInfoVO.getAddress()));
     }
 
     @Override

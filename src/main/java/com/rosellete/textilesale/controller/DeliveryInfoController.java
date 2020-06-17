@@ -26,4 +26,9 @@ public class DeliveryInfoController implements DeliveryInfoApi {
     public RestResponse saveDeliveryInfo(DeliveryInfoVO deliveryInfoVO) {
         return deliveryInfoBusiness.saveDeliveryInfo(deliveryInfoVO);
     }
+
+    @Override
+    public RestResponse updDeliveryInfo(DeliveryInfoVO deliveryInfoVO) {
+        return deliveryInfoBusiness.updDeliveryInfo(deliveryInfoVO);
+    }
 }

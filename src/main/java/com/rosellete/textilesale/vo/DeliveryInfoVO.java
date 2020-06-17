@@ -14,4 +14,10 @@ public class DeliveryInfoVO {
     private String license;
 
     private List<Map<String,Object>> selectedRows;
+
+    private Integer isSelf;
+
+    private List<String> ids;
+
+    private String fileNames;
 }

@@ -14,4 +14,16 @@ public class PackInfoVO extends PackInfo {
     private Integer packNum;
 
     private String consignDep;
+
+    private String modelCount;
+
+    private String pieceCountVue;
+
+    private String packageCount;
+
+    private String riceNum;
+
+    private String pieceNum;
+
+    private List<String> addressOptions;
 }

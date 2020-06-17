@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -328,13 +327,13 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
-    public List<String> getTotalCount(Integer customer, String businessType) {
+    public PackInfoVO getTotalCount(Integer customer, String businessType) {
         return orderInfoService.getTotalCount(customer, businessType);
     }
 
     @Override
-    public List<PackInfoVO> getPieceList(Integer customer, String businessType) {
-        List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer, businessType);
+    public List<PackInfoVO> getPieceList(Integer customer, String businessType,String address) {
+        List<PackInfoVO> returnList = orderInfoService.getWaitPieceList(customer, businessType,address);
         for (PackInfoVO packInfoVO : returnList) {
             for (PackSubInfoVO packSubInfoVO : packInfoVO.getPackSubInfoVOS()) {
                 if (businessType.equals("0")) {

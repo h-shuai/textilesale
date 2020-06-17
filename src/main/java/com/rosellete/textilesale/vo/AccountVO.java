@@ -21,4 +21,6 @@ public class AccountVO extends AccountMain {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;
+
+    private String payType;//1-支出
 }

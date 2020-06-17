@@ -50,7 +50,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         List<Map<String,Object>> prodMaps = packInfoService.getPackDetailList(packInfo.getId());
         List<Integer> oldOrderNos = new ArrayList<>();
         for (Map<String,Object> map : prodMaps){
-            oldOrderNos.add((Integer)map.get("orderNo"));
+            oldOrderNos.add(Integer.valueOf((String)map.get("orderNo")));
         }
         List<Integer> newOrderNos = oldOrderNos.parallelStream().distinct().collect(Collectors.toList());
         List<PackInfoVO> packInfoVOS = new ArrayList<>();

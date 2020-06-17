@@ -47,8 +47,8 @@ public interface OrderApi {
     @RequestMapping("/getTotalCount")
     RestResponse getTotalCount(@RequestParam("customer") Integer customer,@RequestParam("businessType") String businessType);
 
-    @RequestMapping("/getPieceList")
-    RestResponse getPieceList(@RequestParam("customer") Integer customer,@RequestParam("businessType") String businessType);
+    @PostMapping(value = "/getPieceList",consumes = MediaType.APPLICATION_JSON_VALUE)
+    RestResponse getPieceList(@RequestBody OrderInfoVO orderInfoVO);
 
     @PostMapping(value = "/getWaitSettleList",consumes = MediaType.APPLICATION_JSON_VALUE)
     RestResponse getWaitSettleList(@RequestBody OrderInfoVO orderInfoVO);

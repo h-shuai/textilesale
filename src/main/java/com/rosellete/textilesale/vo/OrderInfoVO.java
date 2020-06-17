@@ -33,4 +33,8 @@ public class OrderInfoVO extends OrderInfo {
     private List<Map<String,Object>> selectedRows;
 
     private String businessType; //0-客户，1-供应商
+
+    private Integer customer;
+
+    private String address;
 }

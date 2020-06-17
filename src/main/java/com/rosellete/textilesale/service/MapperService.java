@@ -51,6 +51,7 @@ public class MapperService {
                 driverMapper.setDriverName(String.valueOf(param.get("value")));
                 driverMapper.setDriverPhone(null);
                 driverMapper.setStatus(1);
+                driverMapper.setIsSelf(2);
                 DriverMapper result = driverMapperDao.save(driverMapper);
                 return result.getId();
             }

@@ -3,6 +3,7 @@ package com.rosellete.textilesale.service;
 import com.alibaba.fastjson.JSONObject;
 import com.rosellete.textilesale.dao.OrderInfoDao;
 import com.rosellete.textilesale.dao.RejectRecordDao;
+import com.rosellete.textilesale.dao.SupplierDao;
 import com.rosellete.textilesale.model.CustomerInfo;
 import com.rosellete.textilesale.model.OrderInfo;
 import com.rosellete.textilesale.vo.OrderInfoVO;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -21,6 +23,8 @@ public class OrderInfoService {
     private OrderInfoDao orderInfoDao;
     @Autowired
     private RejectRecordDao rejectRecordDao;
+    @Autowired
+    private SupplierDao supplierDao;
 
 
     public OrderInfo findByPrimaryKey(Integer orderNo) {
@@ -75,9 +79,9 @@ public class OrderInfoService {
     private List<OrderInfoVO> getWaitPackOrderList(OrderInfoVO orderInfo) {
         List<Map<String, Object>> maps;
         if (orderInfo.getBusinessType().equals("0")) {
-            maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(),orderInfo.getCustomerNo());
+            maps = orderInfoDao.getWaitPackOrderList(orderInfo.getOrderNo(),orderInfo.getCustomerNo(),orderInfo.getDeliveryAddress());
         } else {
-            maps = rejectRecordDao.getWaitPackRejectList(orderInfo.getOrderNo(),orderInfo.getCustomerNo());
+            maps = rejectRecordDao.getWaitPackRejectList(orderInfo.getOrderNo(),orderInfo.getCustomerNo(),orderInfo.getDeliveryAddress());
         }
         List<OrderInfoVO> orderInfoVOList = new ArrayList<>();
         for (Map<String, Object> map : maps) {
@@ -87,27 +91,42 @@ public class OrderInfoService {
         return orderInfoVOList;
     }
 
-    public List<String> getTotalCount(Integer customer,String businessType){
+    public PackInfoVO getTotalCount(Integer customer,String businessType){
+        PackInfoVO packInfoVO = new PackInfoVO();
         OrderInfoVO orderInfo = new OrderInfoVO();
         orderInfo.setCustomerNo(customer);
         orderInfo.setOrderNo(null);
         orderInfo.setBusinessType(businessType);
+        orderInfo.setDeliveryAddress(null);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<Integer> orderNos = new ArrayList<>();
         for (OrderInfoVO orderInfoVO : orderInfoVOList){
             orderNos.add(orderInfoVO.getOrderNo());
         }
+        List<String> strs;
+        List<String> addressOptions = new ArrayList<>();
         if (businessType.equals("0")) {
-            return orderInfoDao.getTotalCount(orderNos,String.valueOf(customer));
+            strs = orderInfoDao.getTotalCount(orderNos,String.valueOf(customer));
+            addressOptions = orderInfoDao.getAddressByOrderNos(orderNos);
         } else {
-            return rejectRecordDao.getRejectTotalCount(orderNos,String.valueOf(customer));
+            strs = rejectRecordDao.getRejectTotalCount(orderNos,String.valueOf(customer));
+            String address = supplierDao.findBySupplierNo(String.valueOf(customer)).getSupplierAddress();
+            addressOptions.add(address);
         }
+        packInfoVO.setModelCount(strs.get(0));
+        packInfoVO.setPieceCountVue(strs.get(1));
+        packInfoVO.setPackageCount(strs.get(2));
+        packInfoVO.setRiceNum(strs.get(3));
+        packInfoVO.setPieceNum(strs.get(4));
+        packInfoVO.setAddressOptions(addressOptions);
+        return packInfoVO;
     }
 
-    public List<PackInfoVO> getWaitPieceList(Integer customer,String businessType) {
+    public List<PackInfoVO> getWaitPieceList(Integer customer,String businessType,String address) {
         OrderInfoVO orderInfo = new OrderInfoVO();
         orderInfo.setCustomerNo(customer);
         orderInfo.setOrderNo(null);
+        orderInfo.setDeliveryAddress(address);
         orderInfo.setBusinessType(businessType);
         List<OrderInfoVO> orderInfoVOList = this.getWaitPackOrderList(orderInfo);
         List<Integer> orderNos = new ArrayList<>();
@@ -115,7 +134,7 @@ public class OrderInfoService {
             orderNos.add(orderInfoVO.getOrderNo());
         }
         List<PackInfoVO> returnList = new ArrayList<>();
-        List<Map<String, Object>> pieceList;
+        List<Map<String, String>> pieceList;
         if (businessType.equals("0")) {
             pieceList = orderInfoDao.getWaitPieceList(orderNos);
         } else {
@@ -125,15 +144,15 @@ public class OrderInfoService {
             List<PackSubInfoVO> packSubInfoVOS = new ArrayList<>();
             PackInfoVO packInfoVO = new PackInfoVO();
             packInfoVO.setOrderNo(orderNo);
-            for (Map<String, Object> map : pieceList){
-                if (orderNo.equals(map.get("orderNo"))){
+            for (Map<String, String> map : pieceList){
+                if (String.valueOf(orderNo).equals(String.valueOf(map.get("orderNo")))){
                     PackSubInfoVO packSubInfoVO = new PackSubInfoVO();
-                    packSubInfoVO.setColthModel((String)map.get("colthModel"));
+                    packSubInfoVO.setColthModel(map.get("colthModel"));
                     String imageUrl;
-                    if (StringUtils.isBlank((String)map.get("picurl"))) {
+                    if (StringUtils.isBlank(map.get("picurl"))) {
                         imageUrl = "api/download/notfound.jpg";
                     } else {
-                        imageUrl = new StringBuffer("api/download").append("/").append((String)map.get("picurl")).toString();
+                        imageUrl = new StringBuffer("api/download").append("/").append(map.get("picurl")).toString();
                     }
                     packSubInfoVO.setPicurl(imageUrl);
                     packSubInfoVOS.add(packSubInfoVO);

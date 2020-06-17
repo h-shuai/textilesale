@@ -50,8 +50,13 @@ public class DeliveryInfoBusinessImpl implements DeliveryInfoBusiness {
                 ids.add(packInfo.getId());
             }
         }
-        deliveryInfoService.saveDeliveryInfo(deliveryInfos);
+        List<String> returnStrs = deliveryInfoService.saveDeliveryInfo(deliveryInfos);
         packInfoService.updateStatusByIds(ids);
-        return new RestResponse();
+        return new RestResponse(returnStrs);
+    }
+
+    @Override
+    public RestResponse updDeliveryInfo(DeliveryInfoVO deliveryInfoVO) {
+        return deliveryInfoService.updDeliveryInfo(deliveryInfoVO);
     }
 }

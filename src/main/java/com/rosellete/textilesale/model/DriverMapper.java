@@ -38,4 +38,9 @@ public class DriverMapper implements Serializable {
     */
     @Column(name = "status")
     private Integer status;
+    /**
+     * 是否内部：1-是，2-否
+     */
+    @Column(name = "is_self")
+    private Integer isSelf;
 }

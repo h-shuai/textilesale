@@ -37,6 +37,9 @@ public class AccountService {
             accountMain.setCreateDate(new Date());
             accountMain.setTotalFee(accountVO.getPayFee());
             accountMain.setTotalUseFee(0.0);
+            if (accountVO.getPayType().equals("1")) {
+                accountMain.setTotalUseFee(BigDecimal.valueOf(accountMain.getTotalUseFee()).add(BigDecimal.valueOf(accountVO.getPayFee())).doubleValue());
+            }
             accountMain.setCurrBalance(accountVO.getPayFee());
         } else {
             accountMain.setUpdateUser("");

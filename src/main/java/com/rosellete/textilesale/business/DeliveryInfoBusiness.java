@@ -7,4 +7,6 @@ public interface DeliveryInfoBusiness {
     RestResponse getTodayDepartNum();
 
     RestResponse saveDeliveryInfo(DeliveryInfoVO deliveryInfoVO);
+
+    RestResponse updDeliveryInfo(DeliveryInfoVO deliveryInfoVO);
 }
