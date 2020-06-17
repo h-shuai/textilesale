@@ -263,8 +263,9 @@ public class OrderBusinessImpl implements OrderBusiness {
                 orderDetailInfo.setUpdateDate(now);
                 orderDetailInfos.add(orderDetailInfo);
             });
-            double sumAmount = orderDetailList.parallelStream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
-            orderInfo.setOrderAmount(sumAmount);
+            orderInfo.setOrderAmount(orderDetailList.parallelStream().mapToDouble(e -> e.getAmount()).sum());
+            orderInfo.setReserveTypeCount((int) orderDetailList.parallelStream().map(e->e.getProductType()).distinct().count());
+            orderInfo.setReserveSumLength(orderDetailList.parallelStream().mapToDouble(e->e.getProductLength()).sum());
             orderInfo.setUpdateUser(creator);
             orderInfo.setUpdateDate(now);
             orderInfoService.saveOrderInfo(orderInfo);
