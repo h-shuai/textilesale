@@ -45,4 +45,8 @@ public class OrderStockDetailInfoService {
         Example<OrderStockDetail> example = Example.of(info);
         return orderStockDetailInfoDao.findAll(example);
     }
+
+    public void deleteOrderStockDetailByOrderNo(Integer orderNo) {
+        orderStockDetailInfoDao.deleteAll(this.findAllByOrderNo(orderNo));
+    }
 }
