@@ -59,7 +59,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
             PackInfoVO packInfoVO = new PackInfoVO();
             packInfoVO.setOrderNo(orderNo);
             for (Map<String,Object> map : prodMaps){
-                if (orderNo.equals(map.get("orderNo"))){
+                if (String.valueOf(orderNo).equals(map.get("orderNo"))){
                     PackSubInfoVO packSubInfoVO = new PackSubInfoVO();
                     String imageUrl;
                     if (StringUtils.isBlank((String)map.get("prodPic"))) {
@@ -91,6 +91,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         packInfo.setProductCount(packDetailInfoVO.getProductCount());
         packInfo.setPieceCount(packDetailInfoVO.getPieceCount());
         packInfo.setRiceCount(packDetailInfoVO.getRiceCount());
+        packInfo.setRemark(packDetailInfoVO.getRemark());
         packInfo.setStatus(0);
         packInfo.setCreateTime(new Date());
         packInfo.setCreateUser("");
@@ -133,7 +134,7 @@ public class PackInfoBusinessImpl implements PackInfoBusiness {
         if (packInfo != null){
             packInfo.setStatus(packDetailInfoVO.getStatus()!=null?packDetailInfoVO.getStatus():packInfo.getStatus());
             packInfo.setPackPic(StringUtils.isNotBlank(packDetailInfoVO.getPackPic())?packDetailInfoVO.getPackPic():packInfo.getPackPic());
-            packInfo.setRemark(packDetailInfoVO.getRemark());
+//            packInfo.setRemark(packDetailInfoVO.getRemark());
             packInfo.setUpdateTime(new Date());
             packInfoService.updatePackInfo(packInfo);
         }

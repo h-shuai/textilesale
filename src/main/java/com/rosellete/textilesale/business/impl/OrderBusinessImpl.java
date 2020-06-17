@@ -141,6 +141,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         accountVO.setCustomerName(customerInfo.getCustomerName());
         accountVO.setPayFee(-orderInfo.getOrderAmount());
         accountVO.setPayMethod(4l);
+        accountVO.setPayType("1");
         accountVO.setRemark("订单号：" + orderInfo.getOrderNo());
         accountService.saveAccountInfo(accountVO);
     }
