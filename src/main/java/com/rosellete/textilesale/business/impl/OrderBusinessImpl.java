@@ -146,8 +146,10 @@ public class OrderBusinessImpl implements OrderBusiness {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void orderRestock(Integer orderNo) {
         orderInfoService.updateOrderStatus(orderNo, "1");
+        orderStockDetailInfoService.deleteOrderStockDetailByOrderNo(orderNo);
     }
 
     @Override
@@ -187,7 +189,7 @@ public class OrderBusinessImpl implements OrderBusiness {
         return new PageInfo<>(page);
     }
 
-    @Transactional(rollbackOn = RuntimeException.class)
+    @Transactional(rollbackOn = Exception.class)
     @Override
     public void saveOrder(OrderSaveVO orderSaveVO) {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
@@ -199,9 +201,8 @@ public class OrderBusinessImpl implements OrderBusiness {
             customerNo = customerService.saveCustomer(orderSaveVO.getCustomerName(), orderSaveVO.getCustomerPhoneNo());
             orderInfo.setCustomerNo(customerNo);
         }
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         Integer orderNo = this.getSequenceNo();
-        String creater = "admin";
+        String creator = "admin";
         Date now = new Date();
         OrderDetailInfo tmp;
         double sumAmount = 0.0;
@@ -211,8 +212,8 @@ public class OrderBusinessImpl implements OrderBusiness {
             tmp = orderDetailList.get(i);
             tmp.setOrderNo(orderNo);
             tmp.setImageName(packageInventoryInfoService.findLatestImageNameByProductType(tmp.getProductType()));
-            tmp.setCreateUser(creater);
-            tmp.setUpdateUser(creater);
+            tmp.setCreateUser(creator);
+            tmp.setUpdateUser(creator);
             tmp.setCreateDate(now);
             tmp.setUpdateDate(now);
             tmp.setStockStatus("0");
@@ -224,9 +225,9 @@ public class OrderBusinessImpl implements OrderBusiness {
         orderInfo.setOrderAmount(sumAmount);
         orderInfo.setReserveSumLength(sumLength);
         orderInfo.setReserveTypeCount((int) typeCount);
-        orderInfo.setClerkName(creater);
-        orderInfo.setCreateUser(creater);
-        orderInfo.setUpdateUser(creater);
+        orderInfo.setClerkName(creator);
+        orderInfo.setCreateUser(creator);
+        orderInfo.setUpdateUser(creator);
         orderInfo.setCreateDate(now);
         orderInfo.setUpdateDate(now);
         orderInfoService.saveOrderInfo(orderInfo);
@@ -241,19 +242,33 @@ public class OrderBusinessImpl implements OrderBusiness {
         String[] nullPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(orderSaveVO);
         BeanUtils.copyProperties(orderSaveVO, orderInfo, nullPropertyNames);
         List<OrderDetailInfo> orderDetailList = orderSaveVO.getOrderDetailList().parallelStream().filter(e -> StringUtils.isNotBlank(e.getProductType())).collect(Collectors.toList());
-        String creater = "admin";
-        Date now = new Date();
-        List<OrderDetailInfo> collect = orderDetailList.parallelStream().map(e -> {
-            e.setOrderNo(orderNo);
-            e.setUpdateUser(creater);
-            e.setUpdateDate(now);
-            e.setStockStatus("0");
-            return e;
-        }).collect(Collectors.toList());
-        double sumAmount = orderDetailList.parallelStream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
-        orderInfo.setOrderAmount(sumAmount);
-        orderInfoService.saveOrderInfo(orderInfo);
-        orderDetailInfoService.saveOrderDetailInfo(collect);
+        if (!CollectionUtils.isEmpty(orderDetailList)){
+            String creator = "admin";
+            Date now = new Date();
+            List<OrderDetailInfo> orderDetailInfos = new ArrayList<>(orderDetailList.size());
+            orderDetailList.parallelStream().forEach(e -> {
+                OrderDetailInfo orderDetailInfo = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(e.getOrderNo(), e.getProductType()).
+                        parallelStream().findFirst().orElse(null);
+                String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(e);
+                if (null!=orderDetailInfo){
+                    BeanUtils.copyProperties(e, orderDetailInfo, nullOrBlankPropertyNames);
+                }else {
+                    orderDetailInfo.setOrderNo(orderNo);
+                    orderDetailInfo.setCreateDate(now);
+                    orderDetailInfo.setStockStatus("0");
+                    orderInfo.setOrderStatus("1");
+                }
+                orderDetailInfo.setUpdateUser(creator);
+                orderDetailInfo.setUpdateDate(now);
+                orderDetailInfos.add(orderDetailInfo);
+            });
+            double sumAmount = orderDetailList.parallelStream().map(e -> e.getAmount()).reduce((a, b) -> a + b).get().doubleValue();
+            orderInfo.setOrderAmount(sumAmount);
+            orderInfo.setUpdateUser(creator);
+            orderInfo.setUpdateDate(now);
+            orderInfoService.saveOrderInfo(orderInfo);
+            orderDetailInfoService.saveOrderDetailInfo(orderDetailInfos);
+        }
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -266,56 +281,57 @@ public class OrderBusinessImpl implements OrderBusiness {
         List<OrderDetailVO> orderDetailList = orderStockSaveVO.getOrderDetailList().parallelStream().
                 filter(e -> StringUtils.isNotBlank(e.getProductType()) && !CollectionUtils.isEmpty(e.getOrderStockingArrays())).
                 collect(Collectors.toList());
-        List<OrderDetailInfo> orderDetailInfos = new ArrayList<>(orderDetailList.size());
-        List<OrderStockDetail> existedOrderStockList = new ArrayList<>(10);
-        List<OrderStockDetail> toBeInsertOrderStockList = new ArrayList<>(10);
-        String updater = "admin";
-        Date now = new Date();
-        orderDetailList.parallelStream().forEach(e -> {
-                    String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(e);
-                    List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(e.getOrderNo(), e.getProductType());
-                    OrderDetailInfo orderDetailInfo = orderDetailInfoList.parallelStream().findFirst().orElse(null);
-                    BeanUtils.copyProperties(e, orderDetailInfo, nullOrBlankPropertyNames);
-                    List<OrderStockDetail> orderStockingArrays = e.getOrderStockingArrays().parallelStream().
-                            filter(element -> null != element.getStockLength() && 0.0D != element.getStockLength()).
-                            collect(Collectors.toList());
-                    Double stockedLength = 0.0D;
-                    for (OrderStockDetail stock : orderStockingArrays) {
-                        List<OrderStockDetail> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(orderNo, e.getProductType());
-                        stock.setOrderNo(e.getOrderNo());
-                        stock.setCreateDate(now);
-                        stock.setCreateUser(updater);
-                        stock.setStatus("0");
-                        stock.setUpdateDate(now);
-                        stock.setUpdateUser(updater);
-                        stockedLength += stock.getStockLength();
-                        toBeInsertOrderStockList.add(stock);
-                        if (!CollectionUtils.isEmpty(orderStockDetailInfo)) {
-                            existedOrderStockList.addAll(orderStockDetailInfo);
+        if (!CollectionUtils.isEmpty(orderDetailList)){
+            List<OrderDetailInfo> orderDetailInfos = new ArrayList<>(orderDetailList.size());
+            List<OrderStockDetail> existedOrderStockList = new ArrayList<>(10);
+            List<OrderStockDetail> toBeInsertOrderStockList = new ArrayList<>(10);
+            String updater = "admin";
+            Date now = new Date();
+            orderDetailList.parallelStream().forEach(e -> {
+                        String[] nullOrBlankPropertyNames = NullPropertiesUtil.getNullOrBlankPropertyNames(e);
+                        List<OrderDetailInfo> orderDetailInfoList = orderDetailInfoService.findOrderDetailInfoByOrderNoAndProductType(e.getOrderNo(), e.getProductType());
+                        OrderDetailInfo orderDetailInfo = orderDetailInfoList.parallelStream().findFirst().orElse(null);
+                        BeanUtils.copyProperties(e, orderDetailInfo, nullOrBlankPropertyNames);
+                        List<OrderStockDetail> orderStockingArrays = e.getOrderStockingArrays().parallelStream().
+                                filter(element -> null != element.getStockLength() && 0.0D != element.getStockLength()).
+                                collect(Collectors.toList());
+                        Double stockedLength = 0.0D;
+                        for (OrderStockDetail stock : orderStockingArrays) {
+                            List<OrderStockDetail> orderStockDetailInfo = orderStockDetailInfoService.findOrderStockDetailInfo(orderNo, e.getProductType());
+                            stock.setOrderNo(e.getOrderNo());
+                            stock.setCreateDate(now);
+                            stock.setCreateUser(updater);
+                            stock.setStatus("0");
+                            stock.setUpdateDate(now);
+                            stock.setUpdateUser(updater);
+                            stockedLength += stock.getStockLength();
+                            toBeInsertOrderStockList.add(stock);
+                            if (!CollectionUtils.isEmpty(orderStockDetailInfo)) {
+                                existedOrderStockList.addAll(orderStockDetailInfo);
+                            }
                         }
+                        if (stockedLength.compareTo(0.0D) > 0 && stockedLength.compareTo(orderDetailInfo.getProductLength()) >= 0D) {
+                            orderDetailInfo.setStockStatus("2");
+                        } else {
+                            orderDetailInfo.setStockStatus("1");
+                        }
+                        orderDetailInfo.setUpdateUser(updater);
+                        orderDetailInfo.setUpdateDate(now);
+                        orderDetailInfos.add(orderDetailInfo);
                     }
-                    if (stockedLength.compareTo(0.0D) > 0 && stockedLength.compareTo(orderDetailInfo.getProductLength()) >= 0D) {
-                        orderDetailInfo.setStockStatus("2");
-                    } else {
-                        orderDetailInfo.setStockStatus("1");
-                    }
-                    orderDetailInfo.setUpdateUser(updater);
-                    orderDetailInfo.setUpdateDate(now);
-                    orderDetailInfos.add(orderDetailInfo);
-                }
-        );
+            );
 
-        orderStockDetailInfoService.deleteOrderStockDetail(existedOrderStockList);
-        orderStockDetailInfoService.saveOrderStockDetail(toBeInsertOrderStockList);
-        orderDetailInfoService.saveOrderDetailInfo(orderDetailInfos);
-        if (orderDetailInfos.parallelStream().filter(e -> StringUtils.equals("2", e.getStockStatus())).count() >= orderDetailInfos.size()) {
-            orderInfo.setOrderStatus("2");
-            orderInfo.setUpdateDate(now);
-            orderInfo.setStockDate(now);
-            orderInfo.setStocker(updater);
+            orderStockDetailInfoService.deleteOrderStockDetail(existedOrderStockList);
+            orderStockDetailInfoService.saveOrderStockDetail(toBeInsertOrderStockList);
+            orderDetailInfoService.saveOrderDetailInfo(orderDetailInfos);
+            if (orderDetailInfos.parallelStream().filter(e -> StringUtils.equals("2", e.getStockStatus())).count() >= orderDetailInfos.size()) {
+                orderInfo.setOrderStatus("2");
+                orderInfo.setUpdateDate(now);
+                orderInfo.setStockDate(now);
+                orderInfo.setStocker(updater);
+            }
+            orderInfoService.saveOrderInfo(orderInfo);
         }
-        orderInfoService.saveOrderInfo(orderInfo);
-
     }
 
     @Override
@@ -358,7 +374,6 @@ public class OrderBusinessImpl implements OrderBusiness {
         OrderInfo newOrder = new OrderInfo();
         BeanUtils.copyProperties(orderInfo, newOrder);
         Date now = new Date();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         Integer newOrderNo = this.getSequenceNo();
         String operator = "admin";
         newOrder.setUpdateDate(now);
