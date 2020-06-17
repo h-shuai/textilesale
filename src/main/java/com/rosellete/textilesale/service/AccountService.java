@@ -45,6 +45,9 @@ public class AccountService {
             accountMain.setUpdateUser("");
             accountMain.setUpdateDate(new Date());
             accountMain.setTotalFee(BigDecimal.valueOf(accountMain.getTotalFee()).add(BigDecimal.valueOf(accountVO.getPayFee())).doubleValue());
+            if (accountVO.getPayType().equals("1")) {
+                accountMain.setTotalUseFee(BigDecimal.valueOf(accountMain.getTotalUseFee()).add(BigDecimal.valueOf(accountVO.getPayFee())).doubleValue());
+            }
             accountMain.setCurrBalance(BigDecimal.valueOf(accountMain.getCurrBalance()).add(BigDecimal.valueOf(accountVO.getPayFee())).doubleValue());
         }
         AccountMain successMain = accountMainDao.save(accountMain);
